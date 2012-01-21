@@ -17,81 +17,97 @@
 package com.blastedstudios.crittercaptors;
 
 import com.badlogic.gdx.ApplicationListener;
+import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Peripheral;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g3d.loaders.ModelLoaderRegistry;
+import com.badlogic.gdx.graphics.g3d.model.keyframe.KeyframedAnimation;
+import com.badlogic.gdx.graphics.g3d.model.keyframe.KeyframedModel;
 import com.badlogic.gdx.math.Vector2;
 
 public class CritterCaptors implements ApplicationListener {
-	SpriteBatch spriteBatch;
-	BitmapFont font;
-	Vector2 textPosition = new Vector2(100, 100);
-	Vector2 textDirection = new Vector2(1, 1);
+    private Camera camera;
+    private KeyframedModel model;
+    private KeyframedAnimation anim;
+    private Texture texture = null;
+    private final String knightTexturePath = "data/models/knight/knight.jpg",
+    					knightModelPath = "data/models/knight/knight.g3d";
+	private float animTime = 0;
+	private SpriteBatch spriteBatch;
+	private BitmapFont font;
 
 	@Override
 	public void create () {
-		font = new BitmapFont();
-		font.setColor(Color.RED);
+		model = ModelLoaderRegistry.loadKeyframedModel(Gdx.files.internal(knightModelPath));
+        if (knightTexturePath != null) 
+        	texture = new Texture(Gdx.files.internal(knightTexturePath), Format.RGB565, true);
+		anim = model.getAnimations()[0];
 		spriteBatch = new SpriteBatch();
+		font = new BitmapFont(Gdx.files.getFileHandle("data/arial-15.fnt", FileType.Internal), Gdx.files.getFileHandle(
+				"data/arial-15.png", FileType.Internal), false);
 	}
 
 	@Override
 	public void render () {
-		int centerX = Gdx.graphics.getWidth() / 2;
-		int centerY = Gdx.graphics.getHeight() / 2;
+		animTime += Gdx.graphics.getDeltaTime();
+		if (animTime >= anim.totalDuration)
+			animTime = 0;
+		
+		Gdx.gl10.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
+		Gdx.gl10.glEnable(GL10.GL_DEPTH_TEST);
 
-		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
-
-		// more fun but confusing :)
-		// textPosition.add(textDirection.tmp().mul(Gdx.graphics.getDeltaTime()).mul(60));
-		textPosition.x += textDirection.x * Gdx.graphics.getDeltaTime() * 60;
-		textPosition.y += textDirection.y * Gdx.graphics.getDeltaTime() * 60;
-
-		if (textPosition.x < 0) {
-			textDirection.x = -textDirection.x;
-			textPosition.x = 0;
+		if (texture != null) {
+			Gdx.gl10.glEnable(GL10.GL_TEXTURE_2D);
+			texture.bind();
 		}
-		if (textPosition.x > Gdx.graphics.getWidth()) {
-			textDirection.x = -textDirection.x;
-			textPosition.x = Gdx.graphics.getWidth();
+		Gdx.gl10.glFrontFace(GL10.GL_CW);
+		
+		model.setAnimation(anim.name, animTime, false);
+		
+		Gdx.gl10.glPushMatrix();
+		Gdx.gl10.glTranslatef(0, 0, 0);
+		model.render();
+		Gdx.gl10.glPopMatrix();
+		
+		if (texture != null) {
+			Gdx.gl.glDisable(GL10.GL_TEXTURE_2D);
 		}
-		if (textPosition.y < 0) {
-			textDirection.y = -textDirection.y;
-			textPosition.y = 0;
-		}
-		if (textPosition.y > Gdx.graphics.getHeight()) {
-			textDirection.y = -textDirection.y;
-			textPosition.y = Gdx.graphics.getHeight();
-		}
-
+		
 		spriteBatch.begin();
-		spriteBatch.setColor(Color.WHITE);
-		font.draw(spriteBatch, "Hello World!", (int)textPosition.x, (int)textPosition.y);
+		font.drawMultiLine(spriteBatch, "acc x=" + Gdx.input.getAccelerometerX() + 
+				"\nacc y=" + Gdx.input.getAccelerometerY() + 
+				"\nacc z=" + Gdx.input.getAccelerometerZ() +
+				"\nazimuth=" + Gdx.input.getAzimuth() + 
+				"\npitch=" + Gdx.input.getPitch() + 
+				"\nroll=" + Gdx.input.getRoll(), 4, 256);
+		/*font.drawMultiLine(spriteBatch, "gpsIsAvailable=" + Gdx.input.isPeripheralAvailable(Peripheral.GPS) +
+				"\nlat=" + Gdx.input.getGPSLatitude() + 
+				"\nlon=" + Gdx.input.getGPSLongitude() + 
+				"\nalt=" + Gdx.input.getGPSAltitude() +
+				"\ndeltax=" + Gdx.input.getDeltaX() + "\ndeltay=" + Gdx.input.getDeltaY() +
+				"\nx=" + Gdx.input.getX() + "\ny=" + Gdx.input.getY(), 164, 256);*/
 		spriteBatch.end();
 	}
 
 	@Override
 	public void resize (int width, int height) {
-		spriteBatch.getProjectionMatrix().setToOrtho2D(0, 0, width, height);
-		textPosition.set(0, 0);
+        float aspectRatio = (float) width / (float) height;
+        camera = new PerspectiveCamera(67, 2f * aspectRatio, 2f);
+        camera.translate(0, 30, 40);
+        camera.direction.set(0, -.4f, -1).nor();
+        camera.update();
+        camera.apply(Gdx.gl10);
 	}
 
-	@Override
-	public void pause () {
-
-	}
-
-	@Override
-	public void resume () {
-
-	}
-
-	@Override
-	public void dispose () {
-
-	}
-
+	@Override public void pause () {}
+	@Override public void resume () {}
+	@Override public void dispose () {}
 }
