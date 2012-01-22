@@ -12,6 +12,11 @@ import javax.swing.ImageIcon;
 public class AffinityCalculator {
 	private static final Color SUBURBAN_COLOR = new Color(220,220,220);
 	
+	/**
+	 * @return hashmap containing percentages of affinities from the @param image.
+	 * One may use this to derive the actual affinity, for instance, .85 suburban will
+	 * be defined as suburban area and will spawn only creatures from that affinity.
+	 */
 	public static HashMap<AffinityEnum,Float> getAffinitiesFromTexture(BufferedImage image){
 		float pixelCount = image.getWidth() * image.getHeight();
 		HashMap<Color,Float> map = getColorMap(image);

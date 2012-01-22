@@ -22,6 +22,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.Random;
 
 import javax.imageio.ImageIO;
 
@@ -46,6 +47,7 @@ import com.blastedstudios.crittercaptors.creature.AffinityCalculator;
 import com.blastedstudios.crittercaptors.creature.AffinityEnum;
 
 public class CritterCaptors implements ApplicationListener {
+	public static Random random = new Random();
     private Camera camera;
     private KeyframedModel kinghtModel;
     private KeyframedAnimation knightAnim;
