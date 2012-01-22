@@ -20,6 +20,6 @@ import com.badlogic.gdx.backends.jogl.JoglApplication;
 
 public class CritterCaptorsDesktop {
 	public static void main (String[] argv) {
-		new JoglApplication(new CritterCaptors(), "Critter Captors", 480, 320, false);
+		new JoglApplication(new CritterCaptors(), "Critter Captors", 800, 600, false);
 	}
 }
