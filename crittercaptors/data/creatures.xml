@@ -1,7 +1,27 @@
 <creatures>
+	<creature name="Armadillo" hpMax="39" attack="52" defense="43" specialAttack="60" 
+			specialDefense="50" speed="65" experience="0" >
+		<affinity>rural</affinity>
+		<affinity>restricted</affinity>
+		<affinity>road</affinity>
+		<ability name="Bite" level="1"/>
+	</creature>
 	<creature name="Gecko" hpMax="39" attack="52" defense="43" specialAttack="60" 
 			specialDefense="50" speed="65" experience="0" >
 		<affinity>coastal</affinity>
+		<affinity>education</affinity>
+		<affinity>suburban</affinity>
+		<ability name="Bite" level="1"/>
+	</creature>
+	<creature name="Penguin" hpMax="39" attack="52" defense="43" specialAttack="60" 
+			specialDefense="50" speed="65" experience="0" >
+		<affinity>ocean</affinity>
+		<affinity>park</affinity>
+		<ability name="Bite" level="1"/>
+	</creature>
+	<creature name="Squirrel" hpMax="39" attack="52" defense="43" specialAttack="60" 
+			specialDefense="50" speed="65" experience="0" >
+		<affinity>urban</affinity>
 		<ability name="Bite" level="1"/>
 	</creature>
 </creatures>

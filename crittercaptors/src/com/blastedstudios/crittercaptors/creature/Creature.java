@@ -6,6 +6,8 @@ import java.util.List;
 
 import org.w3c.dom.Element;
 
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.blastedstudios.crittercaptors.CritterCaptors;
 import com.blastedstudios.crittercaptors.ExperienceManager;
 import com.blastedstudios.crittercaptors.util.XMLUtil;
@@ -19,6 +21,7 @@ public class Creature {
 	private HashMap<Ability,Integer> abilities;
 	private int hpMax, attack, defense, specialAttack, specialDefense, speed,
 		experience, hpCurrent;
+	public Vector3 location = new Vector3();
 	
 	public Creature(String name, int hpMax, int attack, int defense, int specialAttack, 
 			int specialDefense,	int speed, int experience, List<AffinityEnum> affinities, 
@@ -68,15 +71,23 @@ public class Creature {
 		return specialDefense + ExperienceManager.getLevel(experience) / 50;
 	}
 	
+	public List<AffinityEnum> getAffinities(){
+		return affinities;
+	}
+
+	public String getName() {
+		return name;
+	}
+	
 	public Creature clone(){
 		return new Creature(name, hpMax, attack, defense, specialAttack, 
 				specialDefense, speed, experience, affinities, abilities);
 	}
 	
-	public Creature fromXML(Element ele){
+	public static Creature fromXML(Element ele){
 		List<AffinityEnum> affinities = new ArrayList<AffinityEnum>();
 		for(Element affinityEle : XMLUtil.iterableElementList(ele.getElementsByTagName("affinity")))
-			affinities.add(AffinityEnum.valueOf(affinityEle.getNodeValue()));
+			affinities.add(AffinityEnum.valueOf(affinityEle.getFirstChild().getNodeValue()));
 		HashMap<Ability,Integer> abilities = new HashMap<Ability,Integer>();
 		for(Element abilityEle : XMLUtil.iterableElementList(ele.getElementsByTagName("ability")))
 			abilities.put(Ability.abilities.get(abilityEle.getAttribute("name")), Integer.parseInt(abilityEle.getAttribute("level")));

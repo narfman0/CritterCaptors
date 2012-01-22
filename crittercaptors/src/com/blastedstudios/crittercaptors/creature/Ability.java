@@ -10,6 +10,7 @@ import com.blastedstudios.crittercaptors.util.XMLUtil;
 public class Ability {
 	public static HashMap<String,Ability> abilities;
 	static{
+		abilities = new HashMap<String, Ability>();
 		for(Element abilityElement : XMLUtil.iterableElementList(XMLUtil.parse("data/abilities.xml").getElementsByTagName("ability"))){
 			Ability ability = fromXML(abilityElement);
 			abilities.put(ability.name, ability);
