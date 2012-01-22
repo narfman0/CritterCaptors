@@ -1,11 +1,11 @@
 package com.blastedstudios.crittercaptors.creature;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.w3c.dom.Element;
 
-import com.blastedstudios.crittercaptors.Ability;
 import com.blastedstudios.crittercaptors.CritterCaptors;
 import com.blastedstudios.crittercaptors.ExperienceManager;
 import com.blastedstudios.crittercaptors.util.XMLUtil;
@@ -16,13 +16,13 @@ import com.blastedstudios.crittercaptors.util.XMLUtil;
 public class Creature {
 	private String name;
 	private List<AffinityEnum> affinities;
-	private List<Ability> abilities;
+	private HashMap<Ability,Integer> abilities;
 	private int hpMax, attack, defense, specialAttack, specialDefense, speed,
 		experience, hpCurrent;
 	
 	public Creature(String name, int hpMax, int attack, int defense, int specialAttack, 
 			int specialDefense,	int speed, int experience, List<AffinityEnum> affinities, 
-			List<Ability> abilities){
+			HashMap<Ability,Integer> abilities){
 		this.name = name;
 		this.hpMax = hpMax;
 		this.hpCurrent = hpMax;
@@ -77,9 +77,9 @@ public class Creature {
 		List<AffinityEnum> affinities = new ArrayList<AffinityEnum>();
 		for(Element affinityEle : XMLUtil.iterableElementList(ele.getElementsByTagName("affinity")))
 			affinities.add(AffinityEnum.valueOf(affinityEle.getNodeValue()));
-		List<Ability> abilities = new ArrayList<Ability>();
+		HashMap<Ability,Integer> abilities = new HashMap<Ability,Integer>();
 		for(Element abilityEle : XMLUtil.iterableElementList(ele.getElementsByTagName("ability")))
-			abilities.add(Ability.abilities.get(abilityEle.getNodeValue()));
+			abilities.put(Ability.abilities.get(abilityEle.getAttribute("name")), Integer.parseInt(abilityEle.getAttribute("level")));
 		return new Creature(ele.getAttribute("name"), Integer.parseInt(ele.getAttribute("hpMax")), 
 				Integer.parseInt(ele.getAttribute("attack")), Integer.parseInt(ele.getAttribute("defense")), 
 				Integer.parseInt(ele.getAttribute("specialAttack")), Integer.parseInt(ele.getAttribute("specialDefense")),

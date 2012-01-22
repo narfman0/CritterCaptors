@@ -1,0 +1,20 @@
+<abilities>
+	<ability name="Kick" power="20" affinity="physical"/>
+	<ability name="Swipe" power="25" affinity="physical"/>
+	<ability name="Bite" power="25" affinity="physical"/>
+	<ability name="Bareknuckle" power="30" affinity="urban"/>
+	<ability name="Cheap Shot" power="30" affinity="urban"/>
+	<ability name="Headbutt" power="35" affinity="urban"/>
+	<ability name="Wink" power="15" affinity="education"/>
+	<ability name="Slap" power="20" affinity="education"/>
+	<ability name="Chop" power="25" affinity="education"/>
+	<ability name="Flood" power="40" affinity="coastal"/>
+	<ability name="Tail Slap" power="35" affinity="coastal"/>
+	<ability name="Tsunami" power="55" affinity="ocean"/>
+	<ability name="Dance" power="20" affinity="park"/>
+	<ability name="Tactical Strike" power="40" affinity="restricted"/>
+	<ability name="Dive" power="30" affinity=""restricted""/>
+	<ability name="Spill" power="20" affinity="road"/>
+	<ability name="Slay" power="35" affinity="suburban"/>
+	<ability name="Drop" power="30" affinity="suburban"/>
+</abilities>

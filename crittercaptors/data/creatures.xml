@@ -1,0 +1,7 @@
+<creatures>
+	<creature name="Gecko" hpMax="39" attack="52" defense="43" specialAttack="60" 
+			specialDefense="50" speed="65" experience="0" >
+		<affinity>coastal</affinity>
+		<ability name="Bite" level="1"/>
+	</creature>
+</creatures>
