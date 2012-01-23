@@ -35,6 +35,7 @@ import com.badlogic.gdx.graphics.g3d.model.Model;
 import com.badlogic.gdx.math.Vector3;
 import com.blastedstudios.crittercaptors.creature.Creature;
 import com.blastedstudios.crittercaptors.creature.CreatureManager;
+import com.blastedstudios.crittercaptors.ui.UIManager;
 
 public class CritterCaptors implements ApplicationListener {
 	public static Random random = new Random();
@@ -47,6 +48,7 @@ public class CritterCaptors implements ApplicationListener {
 	private HashMap<String,Model> modelMap;
 	private CreatureManager creatureManager;
 	private WorldLocationManager worldLocationManager;
+	private UIManager uiManager;
 
 	@Override
 	public void create () {
@@ -64,12 +66,18 @@ public class CritterCaptors implements ApplicationListener {
 		modelMap.put("skydome", ModelLoaderRegistry.load(Gdx.files.internal("data/sky/skydome.obj")));
 		for(String name : creatureManager.getCreatureTemplateNames())
 			modelMap.put(name, ModelLoaderRegistry.load(Gdx.files.internal("data/models/static/" + name.toLowerCase() + ".obj")));
+		uiManager = new UIManager();
 	}
 
 	@Override
 	public void render () {
-		update();
 		Gdx.gl10.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
+		if(uiManager.isActive()){
+			uiManager.render();
+			return;
+		}
+		
+		update();
 		Gdx.gl10.glEnable(GL10.GL_TEXTURE_2D);
 		
 		drawSky();

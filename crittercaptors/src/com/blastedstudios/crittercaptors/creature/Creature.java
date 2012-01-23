@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import com.badlogic.gdx.graphics.Camera;
@@ -80,9 +81,20 @@ public class Creature {
 		return name;
 	}
 	
+	public void setExperience(int experience){
+		this.experience = experience;
+	}
+	
 	public Creature clone(){
 		return new Creature(name, hpMax, attack, defense, specialAttack, 
 				specialDefense, speed, experience, affinities, abilities);
+	}
+	
+	public Element asXML(Document doc){
+		Element node = doc.createElement("creature");
+		node.setAttribute("name", name);
+		node.setAttribute("experience", Integer.toString(experience));
+		return node;
 	}
 	
 	public static Creature fromXML(Element ele){

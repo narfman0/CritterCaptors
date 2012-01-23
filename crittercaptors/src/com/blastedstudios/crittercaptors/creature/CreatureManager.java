@@ -77,4 +77,12 @@ public class CreatureManager {
 					names.add(template.getName());
 		return names;
 	}
+	
+	public Creature create(String name){
+		for(AffinityEnum affinity : AffinityEnum.values())
+			for(Creature template: creatureTemplates.get(affinity))
+				if(template.getName().equals(name))
+					return template.clone();
+		return null;
+	}
 }
