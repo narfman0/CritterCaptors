@@ -7,6 +7,7 @@ import java.util.List;
 import org.w3c.dom.Element;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.blastedstudios.crittercaptors.CritterCaptors;
@@ -16,7 +17,8 @@ public class CreatureManager {
 	private List<Creature> creatures;
 	private HashMap<AffinityEnum,List<Creature>> creatureTemplates;
 	private float timeSinceLastSpawn = 0;
-	private static final float TIME_BETWEEN_SPAWNS = 4;
+	private static final float TIME_BETWEEN_SPAWNS = 4,
+		TIME_BETWEEN_CREATURE_CHANGE_DIRECTION = 10;
 	
 	public CreatureManager(){
 		creatures = new ArrayList<Creature>();
@@ -32,16 +34,26 @@ public class CreatureManager {
 	}
 
 	public void update(HashMap<AffinityEnum, Float> worldAffinities, Vector3 location) {
+		//check if we are going to spawn a creature
 		timeSinceLastSpawn += Gdx.graphics.getDeltaTime();
 		if(timeSinceLastSpawn > TIME_BETWEEN_SPAWNS){
 			timeSinceLastSpawn = 0;
 			Creature creature = spawn(worldAffinities); 
 			float angle = CritterCaptors.random.nextFloat() * 360f;
-			creature.location = new Vector3(
-					location.x + (float)Math.cos(angle) * 100f,
-					location.y,
-					location.z + (float)Math.sin(angle) * 100f);
+			creature.camera.position.x = location.x + (float)Math.cos(angle) * 100f;
+			creature.camera.position.z = location.z + (float)Math.sin(angle) * 100f;
 			creatures.add(creature);
+		}
+		//move creatures
+		for(Creature creature : creatures){
+			creature.timeSinceDirectionChange += Gdx.graphics.getDeltaTime();
+			if(creature.timeSinceDirectionChange > TIME_BETWEEN_CREATURE_CHANGE_DIRECTION)
+				creature.timeSinceDirectionChange = 0;
+			else if(creature.timeSinceDirectionChange < TIME_BETWEEN_CREATURE_CHANGE_DIRECTION / 10)
+				creature.camera.rotate(CritterCaptors.TURN_RATE * Gdx.graphics.getDeltaTime(), 0, 1, 0);
+			else if(creature.timeSinceDirectionChange < TIME_BETWEEN_CREATURE_CHANGE_DIRECTION / 1.5)
+				creature.camera.position.add(creature.camera.direction.tmp().mul(Gdx.graphics.getDeltaTime()));
+			creature.camera.update();
 		}
 	}
 

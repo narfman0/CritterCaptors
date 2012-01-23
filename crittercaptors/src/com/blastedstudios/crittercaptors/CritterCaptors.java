@@ -47,6 +47,7 @@ import com.badlogic.gdx.graphics.g3d.model.Model;
 import com.badlogic.gdx.graphics.g3d.model.keyframe.KeyframedAnimation;
 import com.badlogic.gdx.graphics.g3d.model.keyframe.KeyframedModel;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.blastedstudios.crittercaptors.creature.AffinityCalculator;
@@ -56,6 +57,7 @@ import com.blastedstudios.crittercaptors.creature.CreatureManager;
 
 public class CritterCaptors implements ApplicationListener {
 	public static Random random = new Random();
+	public static final float MOVE_SPEED = 10f, TURN_RATE = 100f;
     private Camera camera;
     private KeyframedModel kinghtModel;
     private KeyframedAnimation knightAnim;
@@ -121,7 +123,8 @@ public class CritterCaptors implements ApplicationListener {
 		
 		for(Creature creature : creatureManager.getCreatures()){
 			Gdx.gl10.glPushMatrix();
-			Gdx.gl10.glTranslatef(creature.location.x, 0, creature.location.z);
+			Gdx.gl10.glTranslatef(creature.camera.position.x, creature.camera.position.y, creature.camera.position.z);
+			Gdx.gl10.glRotatef((float)Math.toDegrees(Math.atan2(creature.camera.direction.x, creature.camera.direction.z)), 0, 1, 0);
 			Gdx.gl10.glScalef(100f, 100f, 100f);
 			modelMap.get(creature.getName().toLowerCase()).render();
 			Gdx.gl10.glPopMatrix();
@@ -140,8 +143,6 @@ public class CritterCaptors implements ApplicationListener {
 				"\nlon=" + Gdx.input.getGPSLongitude() + 
 				"\nalt=" + Gdx.input.getGPSAltitude() +*/
 				"\nnumCreatures=" + creatureManager.getCreatures().size() +
-				(creatureManager.getCreatures().size() > 0 ? "\ncreature[0].pos=" + creatureManager.getCreatures().get(0).location.x + 
-						"," + creatureManager.getCreatures().get(0).location.z: "") +
 				"\ncurrentLocation=" + camera.position.x + "," + camera.position.z + 
 				"\ndeltax=" + Gdx.input.getDeltaX() + "\ndeltay=" + Gdx.input.getDeltaY() +
 				"\nx=" + Gdx.input.getX() + "\ny=" + Gdx.input.getY(), 164, 256);
@@ -171,10 +172,10 @@ public class CritterCaptors implements ApplicationListener {
 		if (Gdx.input.isKeyPressed(Keys.S))
 			movement.add(camera.direction.tmp().mul(-Gdx.graphics.getDeltaTime()));
 		if (Gdx.input.isKeyPressed(Keys.A))
-			camera.rotate(100 * Gdx.graphics.getDeltaTime(), 0, 1, 0);
+			camera.rotate(TURN_RATE * Gdx.graphics.getDeltaTime(), 0, 1, 0);
 		if (Gdx.input.isKeyPressed(Keys.D))
-			camera.rotate(-100 * Gdx.graphics.getDeltaTime(), 0, 1, 0);
-		camera.position.add(movement.mul(10));
+			camera.rotate(-TURN_RATE * Gdx.graphics.getDeltaTime(), 0, 1, 0);
+		camera.position.add(movement.mul(MOVE_SPEED));
         camera.update();
         camera.apply(Gdx.gl10);
 	}

@@ -6,6 +6,9 @@ import java.util.List;
 
 import org.w3c.dom.Element;
 
+import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.blastedstudios.crittercaptors.CritterCaptors;
@@ -21,7 +24,8 @@ public class Creature {
 	private HashMap<Ability,Integer> abilities;
 	private int hpMax, attack, defense, specialAttack, specialDefense, speed,
 		experience, hpCurrent;
-	public Vector3 location = new Vector3();
+	public Camera camera = new PerspectiveCamera(67, 1.33f, 2f);
+	public float timeSinceDirectionChange = 0;
 	
 	public Creature(String name, int hpMax, int attack, int defense, int specialAttack, 
 			int specialDefense,	int speed, int experience, List<AffinityEnum> affinities, 
