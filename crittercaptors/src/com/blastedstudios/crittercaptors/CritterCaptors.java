@@ -16,26 +16,14 @@
 
 package com.blastedstudios.crittercaptors;
 
-import static org.junit.Assert.fail;
-
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Random;
-
-import javax.imageio.ImageIO;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.Input.Peripheral;
 import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Pixmap.Format;
@@ -44,14 +32,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.loaders.ModelLoaderRegistry;
 import com.badlogic.gdx.graphics.g3d.model.Model;
-import com.badlogic.gdx.graphics.g3d.model.keyframe.KeyframedAnimation;
-import com.badlogic.gdx.graphics.g3d.model.keyframe.KeyframedModel;
-import com.badlogic.gdx.math.Matrix4;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.blastedstudios.crittercaptors.creature.AffinityCalculator;
-import com.blastedstudios.crittercaptors.creature.AffinityEnum;
 import com.blastedstudios.crittercaptors.creature.Creature;
 import com.blastedstudios.crittercaptors.creature.CreatureManager;
 
@@ -59,14 +40,8 @@ public class CritterCaptors implements ApplicationListener {
 	public static Random random = new Random();
 	public static final float MOVE_SPEED = 10f, TURN_RATE = 100f;
     private Camera camera;
-    private KeyframedModel kinghtModel;
-    private KeyframedAnimation knightAnim;
-    private Texture knightTexture, skyTexture;
-    private final String knightTexturePath = "data/models/knight/knight.jpg",
-		knightModelPath = "data/models/knight/knight.g3d",
-		skyTexturePath = "data/sky/skydome.png",
-		skyModelPath = "data/sky/skydome.obj";
-	private float animTime = 0;
+    private Texture skyTexture;
+    private final String skyTexturePath = "data/sky/skydome.png";
 	private SpriteBatch spriteBatch;
 	private BitmapFont font;
 	private HashMap<String,Model> modelMap;
@@ -75,18 +50,6 @@ public class CritterCaptors implements ApplicationListener {
 
 	@Override
 	public void create () {
-		modelMap = new HashMap<String, Model>();
-		modelMap.put("skydome", ModelLoaderRegistry.load(Gdx.files.internal("data/sky/skydome.obj")));
-		modelMap.put("armadillo", ModelLoaderRegistry.load(Gdx.files.internal("data/models/static/armadillo.obj")));
-		modelMap.put("gecko", ModelLoaderRegistry.load(Gdx.files.internal("data/models/static/gecko.obj")));
-		modelMap.put("penguin", ModelLoaderRegistry.load(Gdx.files.internal("data/models/static/penguin.obj")));
-		modelMap.put("squirrel", ModelLoaderRegistry.load(Gdx.files.internal("data/models/static/squirrel.obj")));
-		
-		kinghtModel = ModelLoaderRegistry.loadKeyframedModel(Gdx.files.internal(knightModelPath));
-        if (knightTexturePath != null) 
-        	knightTexture = new Texture(Gdx.files.internal(knightTexturePath), Format.RGB565, true);
-		knightAnim = kinghtModel.getAnimations()[0];
-        
         if (skyTexturePath != null) 
         	skyTexture = new Texture(Gdx.files.internal(skyTexturePath), Format.RGB565, true);
         
@@ -96,15 +59,16 @@ public class CritterCaptors implements ApplicationListener {
 
 		creatureManager = new CreatureManager();
 		worldLocationManager = new WorldLocationManager();
+		
+		modelMap = new HashMap<String, Model>();
+		modelMap.put("skydome", ModelLoaderRegistry.load(Gdx.files.internal("data/sky/skydome.obj")));
+		for(String name : creatureManager.getCreatureTemplateNames())
+			modelMap.put(name, ModelLoaderRegistry.load(Gdx.files.internal("data/models/static/" + name.toLowerCase() + ".obj")));
 	}
 
 	@Override
 	public void render () {
 		update();
-		animTime += Gdx.graphics.getDeltaTime();
-		if (animTime >= knightAnim.totalDuration)
-			animTime = 0;
-		
 		Gdx.gl10.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 		Gdx.gl10.glEnable(GL10.GL_TEXTURE_2D);
 		
@@ -112,21 +76,12 @@ public class CritterCaptors implements ApplicationListener {
 		Gdx.gl10.glEnable(GL10.GL_DEPTH_TEST);
 		Gdx.gl10.glFrontFace(GL10.GL_CW);
 		
-		kinghtModel.setAnimation(knightAnim.name, animTime, false);
-		
-		Gdx.gl10.glPushMatrix();
-		Gdx.gl10.glTranslatef(0, 0, 0);
-		Gdx.gl10.glScalef(.1f, .1f, .1f);
-		knightTexture.bind();
-		kinghtModel.render();
-		Gdx.gl10.glPopMatrix();
-		
 		for(Creature creature : creatureManager.getCreatures()){
 			Gdx.gl10.glPushMatrix();
 			Gdx.gl10.glTranslatef(creature.camera.position.x, creature.camera.position.y, creature.camera.position.z);
 			Gdx.gl10.glRotatef((float)Math.toDegrees(Math.atan2(creature.camera.direction.x, creature.camera.direction.z)), 0, 1, 0);
 			Gdx.gl10.glScalef(100f, 100f, 100f);
-			modelMap.get(creature.getName().toLowerCase()).render();
+			modelMap.get(creature.getName()).render();
 			Gdx.gl10.glPopMatrix();
 		}
 		

@@ -7,8 +7,6 @@ import java.util.List;
 import org.w3c.dom.Element;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.math.Matrix4;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.blastedstudios.crittercaptors.CritterCaptors;
 import com.blastedstudios.crittercaptors.util.XMLUtil;
@@ -69,5 +67,14 @@ public class CreatureManager {
 
 	public List<Creature> getCreatures() {
 		return creatures;
+	}
+	
+	public List<String> getCreatureTemplateNames() {
+		List<String> names = new ArrayList<String>();
+		for(AffinityEnum affinity : AffinityEnum.values())
+			for(Creature template: creatureTemplates.get(affinity))
+				if(!names.contains(template.getName()))
+					names.add(template.getName());
+		return names;
 	}
 }
