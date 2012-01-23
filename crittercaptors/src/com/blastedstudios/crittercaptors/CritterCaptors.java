@@ -49,6 +49,7 @@ public class CritterCaptors implements ApplicationListener {
 	private CreatureManager creatureManager;
 	private WorldLocationManager worldLocationManager;
 	private UIManager uiManager;
+	private Character character;
 
 	@Override
 	public void create () {
@@ -75,6 +76,10 @@ public class CritterCaptors implements ApplicationListener {
 		if(uiManager.isActive()){
 			uiManager.render();
 			return;
+		}
+		if(uiManager.selectedCharacter != null){
+			character = Character.load(creatureManager, uiManager.selectedCharacter);
+			uiManager.selectedCharacter = null;
 		}
 		
 		update();
@@ -105,6 +110,7 @@ public class CritterCaptors implements ApplicationListener {
 				"\nlat=" + Gdx.input.getGPSLatitude() + 
 				"\nlon=" + Gdx.input.getGPSLongitude() + 
 				"\nalt=" + Gdx.input.getGPSAltitude() +*/
+				"\nnumCharacterCreatures=" + character.getOwnedCreatures().size() +
 				"\nnumCreatures=" + creatureManager.getCreatures().size() +
 				"\ncurrentLocation=" + camera.position.x + "," + camera.position.z + 
 				"\ndeltax=" + Gdx.input.getDeltaX() + "\ndeltay=" + Gdx.input.getDeltaY() +

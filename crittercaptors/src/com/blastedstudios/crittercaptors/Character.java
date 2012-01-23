@@ -17,10 +17,26 @@ public class Character {
 	private int cash = 0;
 	private List<Creature> ownedCreatures;
 	
-	public Character(String name, int cash, ArrayList<Creature> ownedCreatures){
+	private Character(String name, int cash, ArrayList<Creature> ownedCreatures){
 		this.name = name;
 		this.cash = cash;
 		this.ownedCreatures = ownedCreatures;
+	}
+	
+	public List<Creature> getOwnedCreatures(){
+		return ownedCreatures;
+	}
+	
+	public String getName(){
+		return name;
+	}
+	
+	public int getCash(){
+		return cash;
+	}
+
+	public void setCash(int cash){
+		this.cash = cash;
 	}
 	
 	public static String[] getSavedCharactersNames(){

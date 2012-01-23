@@ -21,13 +21,19 @@ public class UIManager implements ClickListener {
 	private static final String MAIN_NEW_GAME_TEXT = "main ng",
 		MAIN_LOAD_GAME_TEXT = "main load",
 		NEW_GAME_ENTER_NAME = "ng enter name", NEW_GAME_START = "ng ok", 
-		NEW_GAME_CANCEL = "ng cancel", LOAD_GAME_CANCEL = "load cancel";
+		NEW_GAME_CANCEL = "ng cancel", LOAD_GAME_CANCEL = "load cancel",
+		LOAD_GAME_OK = "load ok", LOAD_CHARACTER_LIST = "load list";
+	private final TextField newGameNameTextfield;
+	private final List savedCharacterList;
 	private Stage stage;
 	private Skin skin;
+	public String selectedCharacter;
 
 	public UIManager(){
 		skin = new Skin(Gdx.files.internal("data/ui/uiskin.json"), Gdx.files.internal("data/ui/uiskin.png"));
 		stage = new Stage(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
+		newGameNameTextfield = new TextField("", "Enter name here", skin.getStyle(TextFieldStyle.class), NEW_GAME_ENTER_NAME);
+		savedCharacterList = new List(com.blastedstudios.crittercaptors.Character.getSavedCharactersNames(), skin.getStyle(ListStyle.class), LOAD_CHARACTER_LIST);
 		Gdx.input.setInputProcessor(stage);
 		stage.addActor(createMainMenu());
 	}
@@ -51,7 +57,6 @@ public class UIManager implements ClickListener {
 	}
 	
 	private Window createNewGameMenu(){
-		final TextField textfield = new TextField("", "Enter name here", skin.getStyle(TextFieldStyle.class), NEW_GAME_ENTER_NAME);
 		final Button newGameButton = new TextButton("Start", skin.getStyle(TextButtonStyle.class), NEW_GAME_START);
 		final Button cancelButton = new TextButton("Cancel", skin.getStyle(TextButtonStyle.class), NEW_GAME_CANCEL);
 		newGameButton.setClickListener(this);
@@ -62,7 +67,7 @@ public class UIManager implements ClickListener {
 		window.height = stage.height();
 		window.defaults().spaceBottom(10);
 		window.row().fill().expandX();
-		window.add(textfield).minWidth(100).expandX().fillX().colspan(3);
+		window.add(newGameNameTextfield).minWidth(100).expandX().fillX().colspan(3);
 		window.row();
 		window.add(newGameButton).fill(0f, 0f);
 		window.add(cancelButton).fill(0f, 0f);
@@ -71,10 +76,11 @@ public class UIManager implements ClickListener {
 	}
 
 	private Window createLoadMenu(){
+		final Button okButton = new TextButton("Load", skin.getStyle(TextButtonStyle.class), LOAD_GAME_OK);
 		final Button cancelButton = new TextButton("Cancel", skin.getStyle(TextButtonStyle.class), LOAD_GAME_CANCEL);
+		okButton.setClickListener(this);
 		cancelButton.setClickListener(this);
-		final List list = new List(com.blastedstudios.crittercaptors.Character.getSavedCharactersNames(), skin.getStyle(ListStyle.class), "list");
-		final ScrollPane scrollPane = new ScrollPane(list, skin.getStyle(ScrollPaneStyle.class), "scroll");
+		final ScrollPane scrollPane = new ScrollPane(savedCharacterList, skin.getStyle(ScrollPaneStyle.class), "scroll");
 		Window window = new Window("Load", skin.getStyle(WindowStyle.class), "window");
 		window.x = window.y = 0;
 		window.width = stage.width();
@@ -82,6 +88,8 @@ public class UIManager implements ClickListener {
 		window.defaults().spaceBottom(10);
 		window.row().fill().expandX();
 		window.add(scrollPane).minWidth(100).expandX().fillX().colspan(3);
+		window.row();
+		window.add(okButton).fill(0f, 0f);
 		window.row();
 		window.add(cancelButton).fill(0f, 0f);
 		window.pack();
@@ -103,12 +111,16 @@ public class UIManager implements ClickListener {
 			stage.addActor(createLoadMenu());
 		}else if(actor.name.equals(NEW_GAME_START)){
 			stage.removeActor(actor.parent);
+			selectedCharacter = newGameNameTextfield.getMessageText();
 		}else if(actor.name.equals(NEW_GAME_CANCEL)){
 			stage.removeActor(actor.parent);
 			stage.addActor(createMainMenu());
 		}else if(actor.name.equals(LOAD_GAME_CANCEL)){
 			stage.removeActor(actor.parent);
 			stage.addActor(createMainMenu());
+		}else if(actor.name.equals(LOAD_GAME_OK)){
+			stage.removeActor(actor.parent);
+			selectedCharacter = savedCharacterList.getSelection();
 		}
 	}
 	
