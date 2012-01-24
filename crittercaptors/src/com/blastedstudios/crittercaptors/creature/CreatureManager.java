@@ -9,6 +9,7 @@ import org.w3c.dom.Element;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector3;
 import com.blastedstudios.crittercaptors.CritterCaptors;
+import com.blastedstudios.crittercaptors.ui.worldmap.WorldMap;
 import com.blastedstudios.crittercaptors.util.XMLUtil;
 
 public class CreatureManager {
@@ -48,7 +49,7 @@ public class CreatureManager {
 			if(creature.timeSinceDirectionChange > TIME_BETWEEN_CREATURE_CHANGE_DIRECTION)
 				creature.timeSinceDirectionChange = 0;
 			else if(creature.timeSinceDirectionChange < TIME_BETWEEN_CREATURE_CHANGE_DIRECTION / 10)
-				creature.camera.rotate(CritterCaptors.TURN_RATE * Gdx.graphics.getDeltaTime(), 0, 1, 0);
+				creature.camera.rotate(WorldMap.TURN_RATE * Gdx.graphics.getDeltaTime(), 0, 1, 0);
 			else if(creature.timeSinceDirectionChange < TIME_BETWEEN_CREATURE_CHANGE_DIRECTION / 1.5)
 				creature.camera.position.add(creature.camera.direction.tmp().mul(Gdx.graphics.getDeltaTime()));
 			creature.camera.update();

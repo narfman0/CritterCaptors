@@ -62,6 +62,8 @@ public class Character {
 					ownedCreatures.add(creature);
 				}
 			}
+		if(ownedCreatures.size() == 0)
+			ownedCreatures.add(creatureManager.create(creatureManager.getCreatureTemplateNames().get(0)));
 		return new Character(name, cash, ownedCreatures);
 	}
 	

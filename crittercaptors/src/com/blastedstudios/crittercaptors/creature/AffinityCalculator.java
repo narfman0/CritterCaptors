@@ -1,13 +1,8 @@
 package com.blastedstudios.crittercaptors.creature;
 
 import java.awt.Color;
-import java.awt.Image;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-
-import javax.swing.ImageIcon;
 
 public class AffinityCalculator {
 	private static final Color SUBURBAN_COLOR = new Color(220,220,220);
