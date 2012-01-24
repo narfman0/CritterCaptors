@@ -23,6 +23,7 @@ public class WorldMap extends AbstractScreen {
     private Camera camera;
     public static final float MOVE_SPEED = 10f, TURN_RATE = 100f,
 		REMOVE_DISTANCE = 1000000f, FIGHT_DISTANCE = 300f;
+    private SideMenu sideMenu = null;
 	
 	public WorldMap(CritterCaptors game) {
 		super(game);
@@ -81,6 +82,8 @@ public class WorldMap extends AbstractScreen {
 				"\ndeltax=" + Gdx.input.getDeltaX() + "\ndeltay=" + Gdx.input.getDeltaY() +
 				"\nx=" + Gdx.input.getX() + "\ny=" + Gdx.input.getY(), 164, 256);
 		spriteBatch.end();
+		stage.act(Gdx.graphics.getDeltaTime());
+		stage.draw();
 	}
 
 	private void processInput () {
@@ -93,6 +96,9 @@ public class WorldMap extends AbstractScreen {
 			camera.rotate(TURN_RATE * Gdx.graphics.getDeltaTime(), 0, 1, 0);
 		if (Gdx.input.isKeyPressed(Keys.D))
 			camera.rotate(-TURN_RATE * Gdx.graphics.getDeltaTime(), 0, 1, 0);
+		if (Gdx.input.isKeyPressed(Keys.ESCAPE))
+			if(sideMenu == null || sideMenu.dispose)
+				stage.addActor(sideMenu = new SideMenu(game, skin));
 		camera.position.add(movement.mul(MOVE_SPEED));
         camera.update();
         camera.apply(Gdx.gl10);
