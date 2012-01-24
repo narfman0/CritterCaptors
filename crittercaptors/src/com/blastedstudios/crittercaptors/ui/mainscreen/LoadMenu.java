@@ -16,18 +16,28 @@ import com.blastedstudios.crittercaptors.CritterCaptors;
 import com.blastedstudios.crittercaptors.ui.AbstractScreen;
 import com.blastedstudios.crittercaptors.ui.worldmap.WorldMap;
 
-public class LoadMenu extends AbstractScreen implements ClickListener {
-	private static final String LOAD_GAME_CANCEL = "load cancel",
-		LOAD_GAME_OK = "load ok", LOAD_CHARACTER_LIST = "load list";
+public class LoadMenu extends AbstractScreen {
+	private static final String LOAD_CHARACTER_LIST = "load list";
 	private final List savedCharacterList;
 
-	public LoadMenu(CritterCaptors game){
+	public LoadMenu(final CritterCaptors game){
 		super(game);
 		savedCharacterList = new List(Character.getSavedCharactersNames(), skin.getStyle(ListStyle.class), LOAD_CHARACTER_LIST);
-		final Button okButton = new TextButton("Load", skin.getStyle(TextButtonStyle.class), LOAD_GAME_OK);
-		final Button cancelButton = new TextButton("Cancel", skin.getStyle(TextButtonStyle.class), LOAD_GAME_CANCEL);
-		okButton.setClickListener(this);
-		cancelButton.setClickListener(this);
+		final Button okButton = new TextButton("Load", skin.getStyle(TextButtonStyle.class), "load ok");
+		final Button cancelButton = new TextButton("Cancel", skin.getStyle(TextButtonStyle.class), "load cancel");
+		okButton.setClickListener(new ClickListener() {
+			@Override public void click(Actor arg0, float arg1, float arg2) {
+				game.setCharacter(Character.load(game.getCreatureManager(), savedCharacterList.getSelection()));
+				game.setScreen(new WorldMap(game));
+				dispose();
+			}
+		});
+		cancelButton.setClickListener(new ClickListener() {
+			@Override public void click(Actor arg0, float arg1, float arg2) {
+				game.setScreen(new MainMenu(game));
+				dispose();
+			}
+		});
 		final ScrollPane scrollPane = new ScrollPane(savedCharacterList, skin.getStyle(ScrollPaneStyle.class), "scroll");
 		Window window = new Window("Load", skin.getStyle(WindowStyle.class), "window");
 		window.x = window.y = 0;
@@ -42,16 +52,5 @@ public class LoadMenu extends AbstractScreen implements ClickListener {
 		window.add(cancelButton).fill(0f, 0f);
 		window.pack();
 		stage.addActor(window);
-	}
-
-	@Override public void click(Actor actor, float arg1, float arg2) {
-		if(actor.name.equals(LOAD_GAME_CANCEL)){
-			game.setScreen(new MainMenu(game));
-			dispose();
-		}else if(actor.name.equals(LOAD_GAME_OK)){
-			game.setCharacter(Character.load(game.getCreatureManager(), savedCharacterList.getSelection()));
-			game.setScreen(new WorldMap(game));
-			dispose();
-		}
 	}
 }

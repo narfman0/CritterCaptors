@@ -14,18 +14,27 @@ import com.blastedstudios.crittercaptors.CritterCaptors;
 import com.blastedstudios.crittercaptors.ui.AbstractScreen;
 import com.blastedstudios.crittercaptors.ui.worldmap.WorldMap;
 
-public class NewGameMenu extends AbstractScreen implements ClickListener {
-	private static final String NEW_GAME_ENTER_NAME = "ng enter name", 
-	NEW_GAME_START = "ng ok", NEW_GAME_CANCEL = "ng cancel";
+public class NewGameMenu extends AbstractScreen {
 	private final TextField newGameNameTextfield;
 		
-	public NewGameMenu(CritterCaptors game){
+	public NewGameMenu(final CritterCaptors game){
 		super(game);
-		newGameNameTextfield = new TextField("", "Enter name here", skin.getStyle(TextFieldStyle.class), NEW_GAME_ENTER_NAME);
-		final Button newGameButton = new TextButton("Start", skin.getStyle(TextButtonStyle.class), NEW_GAME_START);
-		final Button cancelButton = new TextButton("Cancel", skin.getStyle(TextButtonStyle.class), NEW_GAME_CANCEL);
-		newGameButton.setClickListener(this);
-		cancelButton.setClickListener(this);
+		newGameNameTextfield = new TextField("", "Enter name here", skin.getStyle(TextFieldStyle.class), "name");
+		final Button newGameButton = new TextButton("Start", skin.getStyle(TextButtonStyle.class), "ok");
+		final Button cancelButton = new TextButton("Cancel", skin.getStyle(TextButtonStyle.class), "cancel");
+		newGameButton.setClickListener(new ClickListener() {
+			@Override public void click(Actor arg0, float arg1, float arg2) {
+				game.setCharacter(Character.load(game.getCreatureManager(), newGameNameTextfield.getMessageText()));
+				game.setScreen(new WorldMap(game));
+				dispose();
+			}
+		});
+		cancelButton.setClickListener(new ClickListener() {
+			@Override public void click(Actor arg0, float arg1, float arg2) {
+				game.setScreen(new MainMenu(game));
+				dispose();
+			}
+		});
 		Window window = new Window("New Game", skin.getStyle(WindowStyle.class), "window");
 		window.x = window.y = 0;
 		window.width = stage.width();
@@ -38,16 +47,5 @@ public class NewGameMenu extends AbstractScreen implements ClickListener {
 		window.add(cancelButton).fill(0f, 0f);
 		window.pack();
 		stage.addActor(window);
-	}
-
-	@Override public void click(Actor actor, float arg1, float arg2) {
-		if(actor.name.equals(NEW_GAME_START)){
-			game.setCharacter(Character.load(game.getCreatureManager(), newGameNameTextfield.getMessageText()));
-			game.setScreen(new WorldMap(game));
-			dispose();
-		}else if(actor.name.equals(NEW_GAME_CANCEL)){
-			game.setScreen(new MainMenu(game));
-			dispose();
-		}
 	}
 }
