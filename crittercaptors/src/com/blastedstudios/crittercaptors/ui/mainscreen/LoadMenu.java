@@ -1,5 +1,6 @@
 package com.blastedstudios.crittercaptors.ui.mainscreen;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.ClickListener;
@@ -27,9 +28,11 @@ public class LoadMenu extends AbstractScreen {
 		final Button cancelButton = new TextButton("Cancel", skin.getStyle(TextButtonStyle.class), "load cancel");
 		okButton.setClickListener(new ClickListener() {
 			@Override public void click(Actor arg0, float arg1, float arg2) {
-				game.setCharacter(Character.load(game.getCreatureManager(), savedCharacterList.getSelection()));
-				game.setScreen(new WorldMap(game));
-				dispose();
+				if(savedCharacterList.getSelection() != null){
+					game.setCharacter(Character.load(game.getCreatureManager(), savedCharacterList.getSelection()));
+					game.setScreen(new WorldMap(game));
+					dispose();
+				}
 			}
 		});
 		cancelButton.setClickListener(new ClickListener() {
@@ -40,7 +43,6 @@ public class LoadMenu extends AbstractScreen {
 		});
 		final ScrollPane scrollPane = new ScrollPane(savedCharacterList, skin.getStyle(ScrollPaneStyle.class), "scroll");
 		Window window = new Window("Load", skin.getStyle(WindowStyle.class), "window");
-		window.x = window.y = 0;
 		window.width = stage.width();
 		window.height = stage.height();
 		window.defaults().spaceBottom(10);
@@ -51,6 +53,8 @@ public class LoadMenu extends AbstractScreen {
 		window.row();
 		window.add(cancelButton).fill(0f, 0f);
 		window.pack();
+		window.x = Gdx.graphics.getWidth()/2 - window.width/2;
+		window.y = Gdx.graphics.getHeight()/2 - window.height/2;
 		stage.addActor(window);
 	}
 }

@@ -1,5 +1,6 @@
 package com.blastedstudios.crittercaptors.ui.mainscreen;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.ClickListener;
@@ -36,7 +37,6 @@ public class NewGameMenu extends AbstractScreen {
 			}
 		});
 		Window window = new Window("New Game", skin.getStyle(WindowStyle.class), "window");
-		window.x = window.y = 0;
 		window.width = stage.width();
 		window.height = stage.height();
 		window.defaults().spaceBottom(10);
@@ -46,6 +46,8 @@ public class NewGameMenu extends AbstractScreen {
 		window.add(newGameButton).fill(0f, 0f);
 		window.add(cancelButton).fill(0f, 0f);
 		window.pack();
+		window.x = Gdx.graphics.getWidth()/2 - window.width/2;
+		window.y = Gdx.graphics.getHeight()/2 - window.height/2;
 		stage.addActor(window);
 	}
 }

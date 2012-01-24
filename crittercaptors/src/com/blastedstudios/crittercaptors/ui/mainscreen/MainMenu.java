@@ -1,5 +1,6 @@
 package com.blastedstudios.crittercaptors.ui.mainscreen;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.ClickListener;
@@ -13,8 +14,9 @@ import com.blastedstudios.crittercaptors.ui.AbstractScreen;
 public class MainMenu extends AbstractScreen {
 	public MainMenu(final CritterCaptors game){
 		super(game);
-		final Button newGameButton = new TextButton("New", skin.getStyle(TextButtonStyle.class), "new");
+		final Button newGameButton = new TextButton("New Game", skin.getStyle(TextButtonStyle.class), "new");
 		final Button loadGameButton = new TextButton("Load", skin.getStyle(TextButtonStyle.class), "load");
+		final Button exitButton = new TextButton("Exit", skin.getStyle(TextButtonStyle.class), "exit");
 		newGameButton.setClickListener(new ClickListener() {
 			@Override public void click(Actor arg0, float arg1, float arg2) {
 				game.setScreen(new NewGameMenu(game));
@@ -27,16 +29,22 @@ public class MainMenu extends AbstractScreen {
 				dispose();
 			}
 		});
+		exitButton.setClickListener(new ClickListener() {
+			@Override public void click(Actor arg0, float arg1, float arg2) {
+				Gdx.app.exit();
+			}
+		});
 		Window window = new Window("Critter Captors", skin.getStyle(WindowStyle.class), "window");
-		window.x = window.y = 0;
 		window.width = stage.width();
 		window.height = stage.height();
-		window.defaults().spaceBottom(10);
-		window.row().fill().expandX();
-		window.add(newGameButton).fill(0f, 0f);
+		window.add(newGameButton);
 		window.row();
-		window.add(loadGameButton).fill(0f, 0f);
+		window.add(loadGameButton);
+		window.row();
+		window.add(exitButton);
 		window.pack();
+		window.x = Gdx.graphics.getWidth()/2 - window.width/2;
+		window.y = Gdx.graphics.getHeight()/2 - window.height/2;
 		stage.addActor(window);
 	}
 }
