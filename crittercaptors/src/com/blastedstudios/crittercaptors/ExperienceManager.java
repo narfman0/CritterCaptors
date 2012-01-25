@@ -15,7 +15,7 @@ public class ExperienceManager {
 	
 	public static int getLevel(int experience){
 		for(int level = 0; level<levelToExperience.length; level++)
-			if(levelToExperience[level] < experience || level == 100)
+			if(levelToExperience[level] > experience || level == 100)
 				return level-1;
 		return -1;
 	}

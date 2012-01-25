@@ -39,6 +39,10 @@ public class Character {
 		this.cash = cash;
 	}
 	
+	public Creature getActiveCreature(){
+		return ownedCreatures.get(0);
+	}
+	
 	public static String[] getSavedCharactersNames(){
 		Document saveFile = XMLUtil.parse(SAVE_PATH);
 		NodeList saveNodes = saveFile.getDocumentElement().getElementsByTagName("save");

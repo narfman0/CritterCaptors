@@ -24,6 +24,7 @@ public class Creature {
 		experience, hpCurrent;
 	public Camera camera = new PerspectiveCamera(67, 1.33f, 2f);
 	public float timeSinceDirectionChange = 0;
+	private List<Ability> activeAbilities;
 	
 	public Creature(String name, int hpMax, int attack, int defense, int specialAttack, 
 			int specialDefense,	int speed, int experience, List<AffinityEnum> affinities, 
@@ -39,6 +40,10 @@ public class Creature {
 		this.experience = experience;
 		this.affinities = affinities;
 		this.abilities = abilities;
+		activeAbilities = new ArrayList<Ability>();
+		for(Ability ability : abilities.keySet())
+			if(abilities.get(ability) <= ExperienceManager.getLevel(experience) && activeAbilities.size() <= 4)
+				activeAbilities.add(ability);
 	}
 
 	public int attackPhysical(Creature enemy, Ability ability){
@@ -88,6 +93,10 @@ public class Creature {
 	public Creature clone(){
 		return new Creature(name, hpMax, attack, defense, specialAttack, 
 				specialDefense, speed, experience, affinities, abilities);
+	}
+	
+	public List<Ability> getActiveAbilities(){
+		return activeAbilities;
 	}
 	
 	public Element asXML(Document doc){

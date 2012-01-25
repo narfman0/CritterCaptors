@@ -14,6 +14,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.blastedstudios.crittercaptors.CritterCaptors;
 import com.blastedstudios.crittercaptors.creature.Creature;
 import com.blastedstudios.crittercaptors.ui.AbstractScreen;
+import com.blastedstudios.crittercaptors.ui.battle.BattleScreen;
 
 public class WorldMap extends AbstractScreen {
     private Texture skyTexture;
@@ -22,7 +23,7 @@ public class WorldMap extends AbstractScreen {
 	private BitmapFont font;
     private Camera camera;
     public static final float MOVE_SPEED = 10f, TURN_RATE = 100f,
-		REMOVE_DISTANCE = 1000000f, FIGHT_DISTANCE = 300f;
+		REMOVE_DISTANCE = 1000000f, FIGHT_DISTANCE = 40f;
     private SideMenu sideMenu = null;
 	
 	public WorldMap(CritterCaptors game) {
@@ -40,9 +41,10 @@ public class WorldMap extends AbstractScreen {
 		game.getCreatureManager().update(game.getWorldLocationManager().getWorldAffinities(), camera.position);
 		for(int i=0; i<game.getCreatureManager().getCreatures().size(); i++){
 			float distance = game.getCreatureManager().getCreatures().get(i).camera.position.dst2(camera.position);
-			if(distance < FIGHT_DISTANCE)
-				;
-			if(distance > REMOVE_DISTANCE)
+			if(distance < FIGHT_DISTANCE){
+				game.setScreen(new BattleScreen(game, game.getCreatureManager().getCreatures().get(i)));
+				dispose();
+			}if(distance > REMOVE_DISTANCE)
 				game.getCreatureManager().getCreatures().remove(i--);
 		}
 		
@@ -108,7 +110,7 @@ public class WorldMap extends AbstractScreen {
 	public void resize (int width, int height) {
         float aspectRatio = (float) width / (float) height;
         camera = new PerspectiveCamera(67, 2f * aspectRatio, 2f);
-        camera.translate(0, 1, 6);
+        camera.translate(0, 1, 0);
         camera.direction.set(0, 0, -1).nor();
         camera.update();
         camera.apply(Gdx.gl10);
