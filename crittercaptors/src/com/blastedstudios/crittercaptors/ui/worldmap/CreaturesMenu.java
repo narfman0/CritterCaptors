@@ -46,7 +46,7 @@ public class CreaturesMenu extends Window {
 				actor.getStage().removeActor(actor.parent);
 			}
 		});
-		add(cancelButton);
+		add(cancelButton).colspan(2);
 		this.pack();
 		x = Gdx.graphics.getWidth() / 2 - width / 2;
 		y = Gdx.graphics.getHeight() / 2 - height / 2;

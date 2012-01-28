@@ -18,7 +18,7 @@ public class Character {
 	private int cash = 0;
 	private List<Creature> ownedCreatures;
 	
-	private Character(String name, int cash, ArrayList<Creature> ownedCreatures){
+	public Character(String name, int cash, ArrayList<Creature> ownedCreatures){
 		this.name = name;
 		this.cash = cash;
 		this.ownedCreatures = ownedCreatures;
@@ -76,15 +76,9 @@ public class Character {
 						creature.setActive(Integer.parseInt(creatureElement.getAttribute("active")));
 					ownedCreatures.add(creature);
 				}
+				return new Character(name, cash, ownedCreatures);
 			}
-		if(ownedCreatures.size() == 0){
-			Creature constructed = creatureManager.create(creatureManager.getCreatureTemplateNames().get(0));
-			constructed.setActive(0);
-			constructed.setExperience(ExperienceManager.getExperience(5));
-			constructed.heal();
-			ownedCreatures.add(constructed);
-		}
-		return new Character(name, cash, ownedCreatures);
+		return null;
 	}
 	
 	public void save(){

@@ -1,9 +1,12 @@
 package com.blastedstudios.crittercaptors.ui.mainscreen;
 
+import java.util.ArrayList;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.ui.List;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
@@ -12,20 +15,31 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle;
 import com.blastedstudios.crittercaptors.Character;
 import com.blastedstudios.crittercaptors.CritterCaptors;
+import com.blastedstudios.crittercaptors.ExperienceManager;
+import com.blastedstudios.crittercaptors.creature.Creature;
 import com.blastedstudios.crittercaptors.ui.AbstractScreen;
 import com.blastedstudios.crittercaptors.ui.worldmap.WorldMap;
 
 public class NewGameMenu extends AbstractScreen {
 	private final TextField newGameNameTextfield;
+	private static final int INITIAL_LEVEL = 5;
 		
 	public NewGameMenu(final CritterCaptors game){
 		super(game);
 		newGameNameTextfield = new TextField("", "Enter name here", skin.getStyle(TextFieldStyle.class), "name");
 		final Button newGameButton = new TextButton("Start", skin.getStyle(TextButtonStyle.class), "ok");
 		final Button cancelButton = new TextButton("Cancel", skin.getStyle(TextButtonStyle.class), "cancel");
+		final List initialCreatureList = new List(new String[]{"Armadillo","Gecko","Penguin"}, skin);
+		initialCreatureList.setSelectedIndex(0);
 		newGameButton.setClickListener(new ClickListener() {
 			@Override public void click(Actor arg0, float arg1, float arg2) {
-				game.setCharacter(Character.load(game.getCreatureManager(), newGameNameTextfield.getText()));
+				ArrayList<Creature> ownedCreatures = new ArrayList<Creature>();
+				Creature constructed = game.getCreatureManager().create(initialCreatureList.getSelection());
+				constructed.setActive(0);
+				constructed.setExperience(ExperienceManager.getExperience(INITIAL_LEVEL));
+				constructed.heal();
+				ownedCreatures.add(constructed);
+				game.setCharacter(new Character(newGameNameTextfield.getText(), 0, ownedCreatures));
 				game.setScreen(new WorldMap(game));
 				dispose();
 			}
@@ -38,7 +52,9 @@ public class NewGameMenu extends AbstractScreen {
 		});
 		Window window = new Window("New Game", skin.getStyle(WindowStyle.class), "window");
 		window.row();
-		window.add(newGameNameTextfield).minWidth(100).expandX().fillX().colspan(3);
+		window.add(newGameNameTextfield).colspan(2);
+		window.row();
+		window.add(initialCreatureList).colspan(2);
 		window.row();
 		window.add(newGameButton);
 		window.add(cancelButton);
