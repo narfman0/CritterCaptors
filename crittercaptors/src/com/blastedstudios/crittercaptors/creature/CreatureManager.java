@@ -13,11 +13,12 @@ import com.blastedstudios.crittercaptors.ui.worldmap.WorldMap;
 import com.blastedstudios.crittercaptors.util.XMLUtil;
 
 public class CreatureManager {
-	private List<Creature> creatures;
-	private HashMap<AffinityEnum,List<Creature>> creatureTemplates;
+	private final List<Creature> creatures;
+	private final HashMap<AffinityEnum,List<Creature>> creatureTemplates;
 	private float timeSinceLastSpawn = 0;
 	private static final float TIME_BETWEEN_SPAWNS = 4,
-		TIME_BETWEEN_CREATURE_CHANGE_DIRECTION = 10;
+		TIME_BETWEEN_CREATURE_CHANGE_DIRECTION = 10,
+		SPAWN_DISTANCE_FROM_PLAYER = 10f;//100f;
 	
 	public CreatureManager(){
 		creatures = new ArrayList<Creature>();
@@ -39,8 +40,8 @@ public class CreatureManager {
 			timeSinceLastSpawn = 0;
 			Creature creature = spawn(worldAffinities); 
 			float angle = CritterCaptors.random.nextFloat() * 360f;
-			creature.camera.position.x = location.x + (float)Math.cos(angle) * 100f;
-			creature.camera.position.z = location.z + (float)Math.sin(angle) * 100f;
+			creature.camera.position.x = location.x + (float)Math.cos(angle) * SPAWN_DISTANCE_FROM_PLAYER;
+			creature.camera.position.z = location.z + (float)Math.sin(angle) * SPAWN_DISTANCE_FROM_PLAYER;
 			creatures.add(creature);
 		}
 		//move creatures

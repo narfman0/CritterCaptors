@@ -3,7 +3,7 @@ package com.blastedstudios.crittercaptors.creature;
 import java.util.List;
 
 public class AffinityDamage {
-	static float[][] damageTable = new float[][]{
+	private static float[][] damageTable = new float[][]{
 	//attacker ↓ defender→	physical	education,	suburban,	urban,	rural,	coastal,ocean,	restricted,	park,	road
 			/*physical*/{	1,			1,			1,			1,		1,		1,		1,		1,			1,		1},
 			/*education*/{	1,			1.5f,		1,			1,		2,		1,		1,		2,			.5f,	.5f},

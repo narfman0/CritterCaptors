@@ -8,7 +8,7 @@ import com.blastedstudios.crittercaptors.creature.AffinityEnum;
 import com.blastedstudios.crittercaptors.util.XMLUtil;
 
 public class Ability {
-	public static HashMap<String,Ability> abilities;
+	final public static HashMap<String,Ability> abilities;
 	static{
 		abilities = new HashMap<String, Ability>();
 		for(Element abilityElement : XMLUtil.iterableElementList(XMLUtil.parse("data/abilities.xml").getElementsByTagName("ability"))){
@@ -17,9 +17,9 @@ public class Ability {
 		}
 	}
 	
-	public int power;
-	public AffinityEnum affinity;
-	public String name;
+	final public int power;
+	final public AffinityEnum affinity;
+	final public String name;
 	
 	public Ability(String name, int power, AffinityEnum affinity){
 		this.name = name;

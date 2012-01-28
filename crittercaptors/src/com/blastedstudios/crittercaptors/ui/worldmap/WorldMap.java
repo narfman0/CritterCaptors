@@ -46,6 +46,7 @@ public class WorldMap extends AbstractScreen {
 			float distance = game.getCreatureManager().getCreatures().get(i).camera.position.dst2(camera.position);
 			if(distance < FIGHT_DISTANCE){
 				game.setScreen(new BattleScreen(game, game.getCreatureManager().getCreatures().get(i)));
+				game.getCreatureManager().getCreatures().clear();
 				dispose();
 			}if(distance > REMOVE_DISTANCE)
 				game.getCreatureManager().getCreatures().remove(i--);

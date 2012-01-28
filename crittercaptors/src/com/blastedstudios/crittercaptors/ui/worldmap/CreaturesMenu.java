@@ -28,7 +28,7 @@ public class CreaturesMenu extends Window {
 				button = new TextButton(buttonText, skin.getStyle(TextButtonStyle.class), "creature");
 				button.setClickListener(new ClickListener() {
 					@Override public void click(Actor actor, float arg1, float arg2) {
-						actor.parent.parent.addActor(new CreaturesMenu(game, skin));
+						actor.getStage().addActor(new CreaturesMenu(game, skin));
 					}
 				});
 			}
@@ -43,7 +43,7 @@ public class CreaturesMenu extends Window {
 		final Button cancelButton = new TextButton("Cancel", skin.getStyle(TextButtonStyle.class), "cancel");
 		cancelButton.setClickListener(new ClickListener() {
 			@Override public void click(Actor actor, float arg1, float arg2) {
-				actor.parent.parent.removeActorRecursive(actor.parent);
+				actor.getStage().removeActor(actor.parent);
 			}
 		});
 		add(cancelButton);

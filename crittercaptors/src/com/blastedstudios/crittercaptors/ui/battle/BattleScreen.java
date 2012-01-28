@@ -6,16 +6,23 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.blastedstudios.crittercaptors.CritterCaptors;
+import com.blastedstudios.crittercaptors.ExperienceManager;
 import com.blastedstudios.crittercaptors.creature.Creature;
 import com.blastedstudios.crittercaptors.ui.AbstractScreen;
+import com.blastedstudios.crittercaptors.ui.worldmap.WorldMap;
 
 public class BattleScreen extends AbstractScreen {
 	private Creature enemy;
     private Camera camera;
+    private CreatureInfoWindow creatureInfoWindow, enemyInfoWindow;
 
 	public BattleScreen(CritterCaptors game, Creature enemy) {
 		super(game);
 		this.enemy = enemy;
+		creatureInfoWindow = new CreatureInfoWindow(game, skin, game.getCharacter().getActiveCreature(), 0, (int)stage.height()-200);
+		enemyInfoWindow = new CreatureInfoWindow(game, skin, enemy, (int)stage.width()-200, 200);
+		stage.addActor(creatureInfoWindow);
+		stage.addActor(enemyInfoWindow);
 		stage.addActor(new BottomMenu(game, skin, this));
 	}
 	
@@ -49,7 +56,16 @@ public class BattleScreen extends AbstractScreen {
 	}
 
 	public void fight(String name) {
-		//dofight
+		int enemyChoice = CritterCaptors.random.nextInt(enemy.getActiveAbilities().size());
+		Creature playerCreature = game.getCharacter().getActiveCreature(); 
+		if(enemy.receiveDamage(playerCreature.attack(enemy, name))){//enemy is dead
+			//show window indicating victory!
+			playerCreature.addExperience(ExperienceManager.getKillExperience(enemy));
+			game.setScreen(new WorldMap(game));
+		}else
+			playerCreature.receiveDamage(enemy.attack(playerCreature, enemy.getActiveAbilities().get(enemyChoice).name));
+		creatureInfoWindow.update();
+		enemyInfoWindow.update();
 		stage.addActor(new BottomMenu(game, skin, this));
 	}
 

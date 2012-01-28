@@ -3,6 +3,7 @@ package com.blastedstudios.crittercaptors.ui.battle;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.ClickListener;
@@ -24,15 +25,15 @@ public class FightMenu extends Window {
 		//final Button creaturesButton = new TextButton("Creatures", skin.getStyle(TextButtonStyle.class), "creatures");
 		cancelButton.setClickListener(new ClickListener() {
 			@Override public void click(Actor actor, float arg1, float arg2) {
-				actor.parent.addActor(new BottomMenu(game, skin, battleScreen));
-				actor.parent.parent.removeActorRecursive(actor.parent);
+				actor.getStage().addActor(new BottomMenu(game, skin, battleScreen));
+				actor.getStage().removeActor(actor.parent);
 			}
 		});
 		for(Button attackButton : attackButtons)
 			attackButton.setClickListener(new ClickListener() {
 				@Override public void click(Actor actor, float arg1, float arg2) {
-					actor.parent.parent.removeActorRecursive(actor.parent);
 					battleScreen.fight(actor.name);
+					actor.getStage().removeActor(actor.parent);
 				}
 			});
 		add(attackButtons.get(0));
@@ -47,8 +48,8 @@ public class FightMenu extends Window {
 		//row();
 		add(cancelButton);
 		pack();
-		x = 8;
-		y = 8;
+		x = Gdx.graphics.getWidth() / 2 - width / 2;
+		y = Gdx.graphics.getHeight() / 2 - height / 2;
 	}
 
 }

@@ -48,16 +48,26 @@ public class Creature {
 				activeAbilities.add(ability);
 	}
 
-	public int attackPhysical(Creature enemy, Ability ability){
+	private int attackPhysical(Creature enemy, Ability ability){
 		return (int) (((((( (ExperienceManager.getLevel(experience) * 2f / 5f) + 2f) * 
 				getAttack() * ability.power / enemy.getDefense())) / 50f) * 
                 /*CH ×*/ getR() / 100f) * AffinityDamage.getDamageMultiplier(affinities, enemy.affinities));
 	}
 	
-	public int attackSpecial(Creature enemy, Ability ability){
+	private int attackSpecial(Creature enemy, Ability ability){
 		return (int) ((((((((ExperienceManager.getLevel(experience) * 2f / 5f) + 2f) * 
 				ability.power * getSpecialAttack() / 50f) / enemy.getSpecialDefense())) / 2f) * 
                 /*CH ×*/ getR() / 100f) * AffinityDamage.getDamageMultiplier(ability.affinity, enemy.affinities));
+	}
+	
+	public int attack(Creature enemy, String abilityName){
+		for(Ability activeAbility : activeAbilities)
+			if(activeAbility.name.equals(abilityName))
+				if(activeAbility.affinity == AffinityEnum.physical)
+					return attackPhysical(enemy, activeAbility);
+				else
+					return attackSpecial(enemy, activeAbility);
+		return 0;
 	}
 	
 	private static int getR(){
@@ -84,7 +94,16 @@ public class Creature {
 		return hpMax + ExperienceManager.getLevel(experience) / 50;
 	}
 	public int getHPCurrent(){
-		return hpCurrent + ExperienceManager.getLevel(experience) / 50;
+		return Math.max(0, hpCurrent + ExperienceManager.getLevel(experience) / 50);
+	}
+	
+	/**
+	 * @param damage received by creature
+	 * @return if the creature is dead
+	 */
+	public boolean receiveDamage(int damage){
+		hpCurrent -= damage;
+		return getHPCurrent() <= 0;
 	}
 	
 	public List<AffinityEnum> getAffinities(){
@@ -112,6 +131,10 @@ public class Creature {
 	
 	public void setExperience(int experience){
 		this.experience = experience;
+	}
+	
+	public void addExperience(int experience){
+		this.experience += experience;
 	}
 	
 	public Creature clone(){

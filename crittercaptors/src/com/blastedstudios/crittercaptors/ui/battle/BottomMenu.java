@@ -19,14 +19,14 @@ public class BottomMenu extends Window {
 		//bag
 		runButton.setClickListener(new ClickListener() {
 			@Override public void click(Actor actor, float arg1, float arg2) {
-				actor.parent.parent.removeActorRecursive(actor.parent);
+				actor.getStage().removeActor(actor.parent);
 				game.setScreen(new WorldMap(game));
 			}
 		});
 		fightButton.setClickListener(new ClickListener() {
 			@Override public void click(Actor actor, float arg1, float arg2) {
-				actor.parent.addActor(new FightMenu(game, skin, battleScreen));
-				actor.parent.parent.removeActorRecursive(actor.parent);
+				actor.getStage().addActor(new FightMenu(game, skin, battleScreen));
+				actor.getStage().removeActor(actor.parent);
 			}
 		});
 		add(fightButton);

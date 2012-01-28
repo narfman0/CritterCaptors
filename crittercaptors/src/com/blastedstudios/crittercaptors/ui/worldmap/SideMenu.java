@@ -21,13 +21,13 @@ public class SideMenu extends Window{
 		final Button exitButton = new TextButton("Exit", skin.getStyle(TextButtonStyle.class), "exit");
 		creaturesButton.setClickListener(new ClickListener() {
 			@Override public void click(Actor actor, float arg1, float arg2) {
-				actor.parent.parent.addActor(new CreaturesMenu(game, skin));
+				actor.getStage().addActor(new CreaturesMenu(game, skin));
 			}
 		});
 		cancelButton.setClickListener(new ClickListener() {
 			@Override public void click(Actor actor, float arg1, float arg2) {
 				dispose = true;
-				actor.parent.parent.removeActorRecursive(actor.parent);
+				actor.getStage().removeActor(actor.parent);
 			}
 		});
 		exitButton.setClickListener(new ClickListener() {
