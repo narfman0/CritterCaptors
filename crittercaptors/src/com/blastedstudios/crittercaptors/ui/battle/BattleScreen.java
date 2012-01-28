@@ -61,6 +61,7 @@ public class BattleScreen extends AbstractScreen {
 		if(enemy.receiveDamage(playerCreature.attack(enemy, name))){//enemy is dead
 			//show window indicating victory!
 			playerCreature.addExperience(ExperienceManager.getKillExperience(enemy));
+			playerCreature.getEV().add(enemy.getEVYield());
 			game.setScreen(new WorldMap(game));
 		}else
 			playerCreature.receiveDamage(enemy.attack(playerCreature, enemy.getActiveAbilities().get(enemyChoice).name));

@@ -3,6 +3,7 @@ package com.blastedstudios.crittercaptors.creature;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -21,19 +22,20 @@ public class Creature {
 	private List<AffinityEnum> affinities;
 	private HashMap<Ability,Integer> abilities;
 	private int experience, hpCurrent;
-	private Stats baseStats, ivStats, evStats;
+	private Stats baseStats, ivStats, evStats, evYield;
 	public Camera camera = new PerspectiveCamera(67, 1.33f, 2f);
 	public float timeSinceDirectionChange = 0;
 	private List<Ability> activeAbilities;
 	private int active;
 	
-	public Creature(String name, Stats baseStats, Stats ivStats, Stats evStats,
-			int experience, List<AffinityEnum> affinities, 
+	public Creature(String name, Stats baseStats, Stats ivStats, Stats evStats, 
+			Stats evYield, int experience, List<AffinityEnum> affinities, 
 			HashMap<Ability,Integer> abilities, int active){
 		this.name = name;
 		this.baseStats = baseStats;
 		this.ivStats = ivStats;
 		this.evStats = evStats;
+		this.evYield = evYield;
 		this.experience = experience;
 		this.affinities = affinities;
 		this.abilities = abilities;
@@ -120,6 +122,14 @@ public class Creature {
 		return ExperienceManager.getLevel(experience);
 	}
 	
+	public void setIV(Stats iv){
+		ivStats = iv;
+	}
+	
+	public void setEV(Stats ev){
+		evStats = ev;
+	}
+	
 	public int getPercentLevelComplete(){
 		int currentLevelXP = ExperienceManager.getExperience(getLevel()+1) - 
 			ExperienceManager.getExperience(getLevel());
@@ -144,8 +154,13 @@ public class Creature {
 	}
 	
 	public Creature clone(){
-		return new Creature(name, baseStats, ivStats, evStats, experience, 
-				affinities, abilities, active);
+		Random rand = CritterCaptors.random;
+		Stats ivStats = new Stats(rand.nextInt(31), rand.nextInt(31),
+				rand.nextInt(31), rand.nextInt(31), rand.nextInt(31),
+				rand.nextInt(31));
+		Creature creature = new Creature(name, baseStats, ivStats, evStats,
+				evYield, experience, affinities, abilities, active);
+		return creature;
 	}
 	
 	public List<Ability> getActiveAbilities(){
@@ -168,7 +183,8 @@ public class Creature {
 		int active = -1;
 		HashMap<Ability,Integer> abilities = new HashMap<Ability,Integer>();
 		for(Element abilityEle : XMLUtil.iterableElementList(ele.getElementsByTagName("ability")))
-			abilities.put(Ability.abilities.get(abilityEle.getAttribute("name")), Integer.parseInt(abilityEle.getAttribute("level")));
+			abilities.put(Ability.abilities.get(abilityEle.getAttribute("name")), 
+					Integer.parseInt(abilityEle.getAttribute("level")));
 		Stats baseStats = new Stats(), ivStats = new Stats(), evStats = new Stats();
 		if(ele.getElementsByTagName("baseStats").getLength() > 0)
 			baseStats = Stats.fromXML((Element)ele.getElementsByTagName("baseStats").item(0));
@@ -176,8 +192,9 @@ public class Creature {
 			ivStats = Stats.fromXML((Element)ele.getElementsByTagName("ivStats").item(0));
 		if(ele.getElementsByTagName("evStats").getLength() > 0)
 			evStats = Stats.fromXML((Element)ele.getElementsByTagName("evStats").item(0));
+		Stats evYield = Stats.fromXML((Element)ele.getElementsByTagName("evYield").item(0));
 		return new Creature(ele.getAttribute("name"), baseStats, ivStats, 
-				evStats, Integer.parseInt(ele.getAttribute("experience")), 
+				evStats, evYield, Integer.parseInt(ele.getAttribute("experience")), 
 				affinities, abilities, active);
 	}
 
@@ -187,5 +204,17 @@ public class Creature {
 
 	public int getActive() {
 		return active;
+	}
+
+	public Stats getIV() {
+		return ivStats;
+	}
+
+	public Stats getEV() {
+		return evStats;
+	}
+	
+	public Stats getEVYield() {
+		return evYield;
 	}
 }

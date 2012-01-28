@@ -6,10 +6,12 @@ import java.util.List;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import com.blastedstudios.crittercaptors.creature.Creature;
 import com.blastedstudios.crittercaptors.creature.CreatureManager;
+import com.blastedstudios.crittercaptors.creature.Stats;
 import com.blastedstudios.crittercaptors.util.XMLUtil;
 
 public class Character {
@@ -72,6 +74,8 @@ public class Character {
 				for(Element creatureElement : XMLUtil.iterableElementList(saveElement.getElementsByTagName("creature"))){
 					Creature creature = creatureManager.create(creatureElement.getAttribute("name"));
 					creature.setExperience(Integer.parseInt(creatureElement.getAttribute("experience")));
+					creature.setIV(Stats.fromXML((Element)creatureElement.getElementsByTagName("ivStats").item(0)));
+					creature.setEV(Stats.fromXML((Element)creatureElement.getElementsByTagName("evStats").item(0)));
 					if(creatureElement.hasAttribute("active"))
 						creature.setActive(Integer.parseInt(creatureElement.getAttribute("active")));
 					ownedCreatures.add(creature);
@@ -89,8 +93,11 @@ public class Character {
 		Element saveElement = saveFile.createElement("save");
 		saveElement.setAttribute("name", name);
 		saveElement.setAttribute("cash", Integer.toString(cash));
-		for(Creature owned : ownedCreatures)
-			saveElement.appendChild(owned.asXML(saveFile));
+		for(Creature owned : ownedCreatures){
+			Node element = saveElement.appendChild(owned.asXML(saveFile));
+			element.appendChild(owned.getIV().asXML(saveFile, "ivStats"));
+			element.appendChild(owned.getEV().asXML(saveFile, "evStats"));
+		}
 		saveFile.getDocumentElement().appendChild(saveElement);
 		XMLUtil.writeToFile(saveFile, "data/saves.xml");
 	}

@@ -2,6 +2,7 @@
 	<ability name="Kick" power="20" affinity="physical"/>
 	<ability name="Swipe" power="25" affinity="physical"/>
 	<ability name="Bite" power="25" affinity="physical"/>
+	<ability name="Tackle" power="25" affinity="physical"/>
 	<ability name="Bareknuckle" power="30" affinity="urban"/>
 	<ability name="Cheap Shot" power="30" affinity="urban"/>
 	<ability name="Headbutt" power="35" affinity="urban"/>
