@@ -95,6 +95,21 @@ public class Creature {
 		return name;
 	}
 	
+	public int getLevel(){
+		return ExperienceManager.getLevel(experience);
+	}
+	
+	public float getPercentLevelComplete(){
+		int currentLevelXP = ExperienceManager.getExperience(getLevel()+1) - 
+			ExperienceManager.getExperience(getLevel());
+		int amountCompleted = experience - ExperienceManager.getExperience(getLevel());
+		return (float)amountCompleted / (float)currentLevelXP;
+	}
+	
+	public int getExperience(){
+		return experience;
+	}
+	
 	public void setExperience(int experience){
 		this.experience = experience;
 	}

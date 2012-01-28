@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import com.blastedstudios.crittercaptors.creature.Creature;
@@ -78,8 +77,11 @@ public class Character {
 					ownedCreatures.add(creature);
 				}
 			}
-		if(ownedCreatures.size() == 0)
-			ownedCreatures.add(creatureManager.create(creatureManager.getCreatureTemplateNames().get(0)));
+		if(ownedCreatures.size() == 0){
+			Creature constructed = creatureManager.create(creatureManager.getCreatureTemplateNames().get(0));
+			constructed.setActive(0);
+			ownedCreatures.add(constructed);
+		}
 		return new Character(name, cash, ownedCreatures);
 	}
 	
