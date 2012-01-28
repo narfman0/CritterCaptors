@@ -1,10 +1,12 @@
 package com.blastedstudios.crittercaptors;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import com.blastedstudios.crittercaptors.creature.Creature;
@@ -25,6 +27,14 @@ public class Character {
 	
 	public List<Creature> getOwnedCreatures(){
 		return ownedCreatures;
+	}
+
+	public HashMap<Integer,Creature> getActiveCreatures(){
+		HashMap<Integer,Creature> creatures = new HashMap<Integer,Creature>();
+		for(Creature creature : ownedCreatures)
+			if(creature.getActive() != -1)
+				creatures.put(creature.getActive(), creature);
+		return creatures;
 	}
 	
 	public String getName(){
@@ -61,8 +71,10 @@ public class Character {
 			if(saveElement.getAttribute("name").equals(name)){
 				cash = Integer.parseInt(saveElement.getAttribute("cash"));
 				for(Element creatureElement : XMLUtil.iterableElementList(saveElement.getElementsByTagName("creature"))){
-					Creature creature = creatureManager.create(name);
+					Creature creature = creatureManager.create(creatureElement.getAttribute("name"));
 					creature.setExperience(Integer.parseInt(creatureElement.getAttribute("experience")));
+					if(creatureElement.hasAttribute("active"))
+						creature.setActive(Integer.parseInt(creatureElement.getAttribute("active")));
 					ownedCreatures.add(creature);
 				}
 			}
@@ -75,12 +87,13 @@ public class Character {
 		Document saveFile = XMLUtil.parse(SAVE_PATH);
 		for(Element saveElement : XMLUtil.iterableElementList(saveFile.getDocumentElement().getElementsByTagName("save")))
 			if(saveElement.getAttribute("name").equals(name))
-				saveFile.removeChild(saveElement);
+				saveFile.getDocumentElement().removeChild(saveElement);
 		Element saveElement = saveFile.createElement("save");
 		saveElement.setAttribute("name", name);
 		saveElement.setAttribute("cash", Integer.toString(cash));
 		for(Creature owned : ownedCreatures)
 			saveElement.appendChild(owned.asXML(saveFile));
+		saveFile.getDocumentElement().appendChild(saveElement);
 		XMLUtil.writeToFile(saveFile, "data/saves.xml");
 	}
 }

@@ -44,7 +44,7 @@ public class LoadMenu extends AbstractScreen {
 		final ScrollPane scrollPane = new ScrollPane(savedCharacterList, skin.getStyle(ScrollPaneStyle.class), "scroll");
 		Window window = new Window("Load", skin.getStyle(WindowStyle.class), "window");
 		window.row();
-		window.add(scrollPane).minWidth(100).expandX().fillX().colspan(3);
+		window.add(scrollPane).minWidth(124).minHeight(200).expandX().fillX().colspan(3);
 		window.row();
 		window.add(okButton);
 		window.row();

@@ -25,7 +25,7 @@ public class NewGameMenu extends AbstractScreen {
 		final Button cancelButton = new TextButton("Cancel", skin.getStyle(TextButtonStyle.class), "cancel");
 		newGameButton.setClickListener(new ClickListener() {
 			@Override public void click(Actor arg0, float arg1, float arg2) {
-				game.setCharacter(Character.load(game.getCreatureManager(), newGameNameTextfield.getMessageText()));
+				game.setCharacter(Character.load(game.getCreatureManager(), newGameNameTextfield.getText()));
 				game.setScreen(new WorldMap(game));
 				dispose();
 			}

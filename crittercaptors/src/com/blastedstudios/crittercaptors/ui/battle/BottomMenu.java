@@ -16,6 +16,7 @@ public class BottomMenu extends Window {
 		final Button fightButton = new TextButton("Fight", skin.getStyle(TextButtonStyle.class), "fight");
 		final Button runButton = new TextButton("Run", skin.getStyle(TextButtonStyle.class), "run");
 		//final Button creaturesButton = new TextButton("Creatures", skin.getStyle(TextButtonStyle.class), "creatures");
+		//bag
 		runButton.setClickListener(new ClickListener() {
 			@Override public void click(Actor actor, float arg1, float arg2) {
 				actor.parent.parent.removeActorRecursive(actor.parent);

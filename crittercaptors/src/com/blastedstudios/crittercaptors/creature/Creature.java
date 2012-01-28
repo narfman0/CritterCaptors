@@ -25,10 +25,11 @@ public class Creature {
 	public Camera camera = new PerspectiveCamera(67, 1.33f, 2f);
 	public float timeSinceDirectionChange = 0;
 	private List<Ability> activeAbilities;
+	private int active;
 	
 	public Creature(String name, int hpMax, int attack, int defense, int specialAttack, 
 			int specialDefense,	int speed, int experience, List<AffinityEnum> affinities, 
-			HashMap<Ability,Integer> abilities){
+			HashMap<Ability,Integer> abilities, int active){
 		this.name = name;
 		this.hpMax = hpMax;
 		this.hpCurrent = hpMax;
@@ -40,6 +41,7 @@ public class Creature {
 		this.experience = experience;
 		this.affinities = affinities;
 		this.abilities = abilities;
+		this.active = active;
 		activeAbilities = new ArrayList<Ability>();
 		for(Ability ability : abilities.keySet())
 			if(abilities.get(ability) <= ExperienceManager.getLevel(experience) && activeAbilities.size() <= 4)
@@ -78,6 +80,13 @@ public class Creature {
 		return specialDefense + ExperienceManager.getLevel(experience) / 50;
 	}
 	
+	public int getHPMax(){
+		return hpMax + ExperienceManager.getLevel(experience) / 50;
+	}
+	public int getHPCurrent(){
+		return hpCurrent + ExperienceManager.getLevel(experience) / 50;
+	}
+	
 	public List<AffinityEnum> getAffinities(){
 		return affinities;
 	}
@@ -92,7 +101,7 @@ public class Creature {
 	
 	public Creature clone(){
 		return new Creature(name, hpMax, attack, defense, specialAttack, 
-				specialDefense, speed, experience, affinities, abilities);
+				specialDefense, speed, experience, affinities, abilities, active);
 	}
 	
 	public List<Ability> getActiveAbilities(){
@@ -103,6 +112,8 @@ public class Creature {
 		Element node = doc.createElement("creature");
 		node.setAttribute("name", name);
 		node.setAttribute("experience", Integer.toString(experience));
+		if(active != -1)
+			node.setAttribute("active", Integer.toString(active));
 		return node;
 	}
 	
@@ -110,6 +121,7 @@ public class Creature {
 		List<AffinityEnum> affinities = new ArrayList<AffinityEnum>();
 		for(Element affinityEle : XMLUtil.iterableElementList(ele.getElementsByTagName("affinity")))
 			affinities.add(AffinityEnum.valueOf(affinityEle.getFirstChild().getNodeValue()));
+		int active = -1;
 		HashMap<Ability,Integer> abilities = new HashMap<Ability,Integer>();
 		for(Element abilityEle : XMLUtil.iterableElementList(ele.getElementsByTagName("ability")))
 			abilities.put(Ability.abilities.get(abilityEle.getAttribute("name")), Integer.parseInt(abilityEle.getAttribute("level")));
@@ -117,6 +129,14 @@ public class Creature {
 				Integer.parseInt(ele.getAttribute("attack")), Integer.parseInt(ele.getAttribute("defense")), 
 				Integer.parseInt(ele.getAttribute("specialAttack")), Integer.parseInt(ele.getAttribute("specialDefense")),
 				Integer.parseInt(ele.getAttribute("speed")), Integer.parseInt(ele.getAttribute("experience")), 
-				affinities, abilities);
+				affinities, abilities, active);
+	}
+
+	public void setActive(int active) {
+		this.active = active;
+	}
+
+	public int getActive() {
+		return active;
 	}
 }

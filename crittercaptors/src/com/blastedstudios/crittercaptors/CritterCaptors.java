@@ -38,8 +38,13 @@ public class CritterCaptors extends Game {
 		worldLocationManager = new WorldLocationManager();
 		modelMap = new HashMap<String, Model>();
 		modelMap.put("skydome", ModelLoaderRegistry.load(Gdx.files.internal("data/sky/skydome.obj")));
-		for(String name : creatureManager.getCreatureTemplateNames())
-			modelMap.put(name, ModelLoaderRegistry.load(Gdx.files.internal("data/models/static/" + name.toLowerCase() + ".obj")));
+		for(String name : creatureManager.getCreatureTemplateNames()){
+			try{
+				modelMap.put(name, ModelLoaderRegistry.load(Gdx.files.internal("data/models/static/" + name.toLowerCase() + ".obj")));
+			}catch(Exception e){
+				modelMap.put(name, ModelLoaderRegistry.load(Gdx.files.internal("data/models/" + name.toLowerCase() + ".g3d")));
+			}
+		}
 		setScreen(new MainMenu(this));
 	}
 	

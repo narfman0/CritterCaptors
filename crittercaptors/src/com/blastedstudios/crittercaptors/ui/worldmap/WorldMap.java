@@ -14,6 +14,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.blastedstudios.crittercaptors.CritterCaptors;
 import com.blastedstudios.crittercaptors.creature.Creature;
 import com.blastedstudios.crittercaptors.ui.AbstractScreen;
+import com.blastedstudios.crittercaptors.ui.Terrain;
 import com.blastedstudios.crittercaptors.ui.battle.BattleScreen;
 
 public class WorldMap extends AbstractScreen {
@@ -25,6 +26,7 @@ public class WorldMap extends AbstractScreen {
     public static final float MOVE_SPEED = 10f, TURN_RATE = 100f,
 		REMOVE_DISTANCE = 1000000f, FIGHT_DISTANCE = 40f;
     private SideMenu sideMenu = null;
+    private Terrain terrain;
 	
 	public WorldMap(CritterCaptors game) {
 		super(game);
@@ -34,6 +36,7 @@ public class WorldMap extends AbstractScreen {
 		spriteBatch = new SpriteBatch();
 		font = new BitmapFont(Gdx.files.getFileHandle("data/fonts/arial-15.fnt", FileType.Internal), 
 				Gdx.files.getFileHandle("data/fonts/arial-15.png", FileType.Internal), false);
+		terrain = new Terrain();
 	}
 	
 	@Override public void render (float arg0) {
@@ -49,14 +52,12 @@ public class WorldMap extends AbstractScreen {
 		}
 		
 		Gdx.gl10.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
-		
 		processInput();
-		Gdx.gl10.glEnable(GL10.GL_TEXTURE_2D);
-		
 		drawSky();
 		Gdx.gl10.glEnable(GL10.GL_DEPTH_TEST);
 		Gdx.gl10.glFrontFace(GL10.GL_CW);
-		
+		Gdx.gl10.glDisable(GL10.GL_TEXTURE_2D);
+		Gdx.gl10.glEnable(GL10.GL_COLOR_MATERIAL);
 		for(Creature creature : game.getCreatureManager().getCreatures()){
 			Gdx.gl10.glPushMatrix();
 			Gdx.gl10.glTranslatef(creature.camera.position.x, creature.camera.position.y, creature.camera.position.z);
@@ -65,8 +66,8 @@ public class WorldMap extends AbstractScreen {
 			game.getModel(creature.getName()).render();
 			Gdx.gl10.glPopMatrix();
 		}
+		terrain.render();
 		
-		Gdx.gl.glDisable(GL10.GL_TEXTURE_2D);
 		spriteBatch.begin();
 		font.drawMultiLine(spriteBatch, "acc x=" + Gdx.input.getAccelerometerX() + 
 				"\nacc y=" + Gdx.input.getAccelerometerY() + 
@@ -117,6 +118,7 @@ public class WorldMap extends AbstractScreen {
 	}
 
 	private void drawSky(){
+		Gdx.gl10.glEnable(GL10.GL_TEXTURE_2D);
 		Gdx.gl10.glDisable(GL10.GL_DEPTH_TEST);
 		Gdx.gl10.glPushMatrix();
 		Gdx.gl10.glTranslatef(camera.position.x, camera.position.y, camera.position.z);

@@ -57,7 +57,7 @@ public class BattleScreen extends AbstractScreen {
         float aspectRatio = (float) width / (float) height;
         camera = new PerspectiveCamera(67, 2f * aspectRatio, 2f);
         camera.translate(40,40,100);
-        camera.direction.set(0, 0, -1).nor();
+        camera.lookAt(0, 0, 0);
         camera.update();
         camera.apply(Gdx.gl10);
 	}
