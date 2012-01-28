@@ -15,10 +15,12 @@ public class CreatureInfoWindow extends Window {
 	public CreatureInfoWindow(final CritterCaptors game, final Skin skin, 
 			final Creature creature, final int x, final int y) {
 		super(skin);
+		this.touchable = false;
 		this.creature = creature;
 		levelLabel = new Label(creature.getLevel()+"", skin);
 		hpRatio = new Label(creature.getHPCurrent() + "/" + creature.getHPMax(), skin);
 		hpSlider = new Slider(0, creature.getHPMax(), 1, skin);
+		hpSlider.touchable = false;
 		add(new Label(creature.getName(), skin));
 		add(new Label("Lvl: ",skin));
 		add(levelLabel);
@@ -36,5 +38,6 @@ public class CreatureInfoWindow extends Window {
 		hpRatio.setText(creature.getHPCurrent() + "/" + creature.getHPMax());
 		hpSlider.setValue(creature.getHPCurrent());
 		hpSlider.setRange(0, creature.getHPMax());
+		hpSlider.invalidate();
 	}
 }

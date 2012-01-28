@@ -20,7 +20,7 @@ public class BattleScreen extends AbstractScreen {
 		super(game);
 		this.enemy = enemy;
 		creatureInfoWindow = new CreatureInfoWindow(game, skin, game.getCharacter().getActiveCreature(), 0, (int)stage.height()-200);
-		enemyInfoWindow = new CreatureInfoWindow(game, skin, enemy, (int)stage.width()-200, 200);
+		enemyInfoWindow = new CreatureInfoWindow(game, skin, enemy, (int)stage.width()-236, 200);
 		stage.addActor(creatureInfoWindow);
 		stage.addActor(enemyInfoWindow);
 		stage.addActor(new BottomMenu(game, skin, this));

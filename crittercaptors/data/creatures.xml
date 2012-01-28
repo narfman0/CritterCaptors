@@ -6,8 +6,8 @@
 		<affinity>road</affinity>
 		<ability name="Bite" level="1"/>
 	</creature>
-	<creature name="Gecko" hpMax="39" attack="52" defense="43" specialAttack="60" 
-			specialDefense="50" speed="65" experience="0" >
+	<creature name="Gecko" hpMax="45" attack="49" defense="49" specialAttack="65" 
+			specialDefense="65" speed="45" experience="0" >
 		<affinity>coastal</affinity>
 		<affinity>education</affinity>
 		<affinity>suburban</affinity>

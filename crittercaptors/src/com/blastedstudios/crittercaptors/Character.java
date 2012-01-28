@@ -80,6 +80,8 @@ public class Character {
 		if(ownedCreatures.size() == 0){
 			Creature constructed = creatureManager.create(creatureManager.getCreatureTemplateNames().get(0));
 			constructed.setActive(0);
+			constructed.setExperience(ExperienceManager.getExperience(5));
+			constructed.heal();
 			ownedCreatures.add(constructed);
 		}
 		return new Character(name, cash, ownedCreatures);

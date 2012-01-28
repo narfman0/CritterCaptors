@@ -3,7 +3,6 @@ package com.blastedstudios.crittercaptors.ui.battle;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.ClickListener;
@@ -48,8 +47,8 @@ public class FightMenu extends Window {
 		//row();
 		add(cancelButton);
 		pack();
-		x = Gdx.graphics.getWidth() / 2 - width / 2;
-		y = Gdx.graphics.getHeight() / 2 - height / 2;
+		x = 8;
+		y = 8;
 	}
 
 }

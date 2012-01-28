@@ -32,7 +32,6 @@ public class Creature {
 			HashMap<Ability,Integer> abilities, int active){
 		this.name = name;
 		this.hpMax = hpMax;
-		this.hpCurrent = hpMax;
 		this.attack = attack;
 		this.defense = defense;
 		this.specialAttack = specialAttack;
@@ -42,6 +41,7 @@ public class Creature {
 		this.affinities = affinities;
 		this.abilities = abilities;
 		this.active = active;
+		this.hpCurrent = getHPMax();
 		activeAbilities = new ArrayList<Ability>();
 		for(Ability ability : abilities.keySet())
 			if(abilities.get(ability) <= ExperienceManager.getLevel(experience) && activeAbilities.size() <= 4)
@@ -75,26 +75,27 @@ public class Creature {
 	}
 	
 	public int getAttack(){
-		return attack + ExperienceManager.getLevel(experience) / 50;
+		return attack + ExperienceManager.getLevel(experience) / 5;
 	}
 	
 	public int getSpecialAttack(){
-		return specialAttack + ExperienceManager.getLevel(experience) / 50;
+		return specialAttack + ExperienceManager.getLevel(experience) / 5;
 	}
 
 	public int getDefense(){
-		return defense + ExperienceManager.getLevel(experience) / 50;
+		return defense + ExperienceManager.getLevel(experience) / 5;
 	}
 	
 	public int getSpecialDefense(){
-		return specialDefense + ExperienceManager.getLevel(experience) / 50;
+		return specialDefense + ExperienceManager.getLevel(experience) / 5;
 	}
 	
 	public int getHPMax(){
-		return hpMax + ExperienceManager.getLevel(experience) / 50;
+		return (((/*hpiv +*/ (2 * hpMax) /*+ (hpev / 4)*/ + 100) * getLevel()) / 100) + 10;
 	}
+	
 	public int getHPCurrent(){
-		return Math.max(0, hpCurrent + ExperienceManager.getLevel(experience) / 50);
+		return hpCurrent;
 	}
 	
 	/**
@@ -102,7 +103,7 @@ public class Creature {
 	 * @return if the creature is dead
 	 */
 	public boolean receiveDamage(int damage){
-		hpCurrent -= damage;
+		hpCurrent = Math.max(0, hpCurrent - damage);
 		return getHPCurrent() <= 0;
 	}
 	
@@ -118,11 +119,11 @@ public class Creature {
 		return ExperienceManager.getLevel(experience);
 	}
 	
-	public float getPercentLevelComplete(){
+	public int getPercentLevelComplete(){
 		int currentLevelXP = ExperienceManager.getExperience(getLevel()+1) - 
 			ExperienceManager.getExperience(getLevel());
 		int amountCompleted = experience - ExperienceManager.getExperience(getLevel());
-		return (float)amountCompleted / (float)currentLevelXP;
+		return amountCompleted * 100 / currentLevelXP;
 	}
 	
 	public int getExperience(){
@@ -135,6 +136,10 @@ public class Creature {
 	
 	public void addExperience(int experience){
 		this.experience += experience;
+	}
+
+	public void heal(){
+		this.hpCurrent = getHPMax();
 	}
 	
 	public Creature clone(){
