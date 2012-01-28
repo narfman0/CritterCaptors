@@ -9,6 +9,7 @@ import org.w3c.dom.Element;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector3;
 import com.blastedstudios.crittercaptors.CritterCaptors;
+import com.blastedstudios.crittercaptors.ExperienceManager;
 import com.blastedstudios.crittercaptors.ui.worldmap.WorldMap;
 import com.blastedstudios.crittercaptors.util.XMLUtil;
 
@@ -18,7 +19,7 @@ public class CreatureManager {
 	private float timeSinceLastSpawn = 0;
 	private static final float TIME_BETWEEN_SPAWNS = 4,
 		TIME_BETWEEN_CREATURE_CHANGE_DIRECTION = 10,
-		SPAWN_DISTANCE_FROM_PLAYER = 10f;//100f;
+		SPAWN_DISTANCE_FROM_PLAYER = 20f;//100f;
 	
 	public CreatureManager(){
 		creatures = new ArrayList<Creature>();
@@ -39,6 +40,8 @@ public class CreatureManager {
 		if(timeSinceLastSpawn > TIME_BETWEEN_SPAWNS){
 			timeSinceLastSpawn = 0;
 			Creature creature = spawn(worldAffinities); 
+			creature.setExperience(ExperienceManager.getExperience(CritterCaptors.random.nextInt(4)+2));
+			creature.heal();
 			float angle = CritterCaptors.random.nextFloat() * 360f;
 			creature.camera.position.x = location.x + (float)Math.cos(angle) * SPAWN_DISTANCE_FROM_PLAYER;
 			creature.camera.position.z = location.z + (float)Math.sin(angle) * SPAWN_DISTANCE_FROM_PLAYER;

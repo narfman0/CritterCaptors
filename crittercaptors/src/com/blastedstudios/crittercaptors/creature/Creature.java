@@ -20,23 +20,20 @@ public class Creature {
 	private String name;
 	private List<AffinityEnum> affinities;
 	private HashMap<Ability,Integer> abilities;
-	private int hpMax, attack, defense, specialAttack, specialDefense, speed,
-		experience, hpCurrent;
+	private int experience, hpCurrent;
+	private Stats baseStats, ivStats, evStats;
 	public Camera camera = new PerspectiveCamera(67, 1.33f, 2f);
 	public float timeSinceDirectionChange = 0;
 	private List<Ability> activeAbilities;
 	private int active;
 	
-	public Creature(String name, int hpMax, int attack, int defense, int specialAttack, 
-			int specialDefense,	int speed, int experience, List<AffinityEnum> affinities, 
+	public Creature(String name, Stats baseStats, Stats ivStats, Stats evStats,
+			int experience, List<AffinityEnum> affinities, 
 			HashMap<Ability,Integer> abilities, int active){
 		this.name = name;
-		this.hpMax = hpMax;
-		this.attack = attack;
-		this.defense = defense;
-		this.specialAttack = specialAttack;
-		this.specialDefense = specialDefense;
-		this.speed = speed;
+		this.baseStats = baseStats;
+		this.ivStats = ivStats;
+		this.evStats = evStats;
 		this.experience = experience;
 		this.affinities = affinities;
 		this.abilities = abilities;
@@ -75,23 +72,27 @@ public class Creature {
 	}
 	
 	public int getAttack(){
-		return attack + ExperienceManager.getLevel(experience) / 5;
+		return ( ((ivStats.attack + (2 * baseStats.attack) + 
+				(evStats.attack / 4)) * getLevel()) / 100) + 5;
 	}
 	
 	public int getSpecialAttack(){
-		return specialAttack + ExperienceManager.getLevel(experience) / 5;
+		return ( ((ivStats.specialAttack + (2 * baseStats.specialAttack) + 
+				(evStats.specialAttack / 4)) * getLevel()) / 100) + 5;
 	}
 
 	public int getDefense(){
-		return defense + ExperienceManager.getLevel(experience) / 5;
+		return ( ((ivStats.defense + (2 * baseStats.defense) + 
+				(evStats.defense / 4)) * getLevel()) / 100) + 5;
 	}
 	
 	public int getSpecialDefense(){
-		return specialDefense + ExperienceManager.getLevel(experience) / 5;
+		return ( ((ivStats.specialDefense + (2 * baseStats.specialDefense) + 
+				(evStats.specialDefense / 4)) * getLevel()) / 100) + 5;
 	}
 	
 	public int getHPMax(){
-		return (((/*hpiv +*/ (2 * hpMax) /*+ (hpev / 4)*/ + 100) * getLevel()) / 100) + 10;
+		return (((ivStats.hpMax + (2 * baseStats.hpMax) + (evStats.hpMax / 4) + 100) * getLevel()) / 100) + 10;
 	}
 	
 	public int getHPCurrent(){
@@ -143,8 +144,8 @@ public class Creature {
 	}
 	
 	public Creature clone(){
-		return new Creature(name, hpMax, attack, defense, specialAttack, 
-				specialDefense, speed, experience, affinities, abilities, active);
+		return new Creature(name, baseStats, ivStats, evStats, experience, 
+				affinities, abilities, active);
 	}
 	
 	public List<Ability> getActiveAbilities(){
@@ -168,10 +169,15 @@ public class Creature {
 		HashMap<Ability,Integer> abilities = new HashMap<Ability,Integer>();
 		for(Element abilityEle : XMLUtil.iterableElementList(ele.getElementsByTagName("ability")))
 			abilities.put(Ability.abilities.get(abilityEle.getAttribute("name")), Integer.parseInt(abilityEle.getAttribute("level")));
-		return new Creature(ele.getAttribute("name"), Integer.parseInt(ele.getAttribute("hpMax")), 
-				Integer.parseInt(ele.getAttribute("attack")), Integer.parseInt(ele.getAttribute("defense")), 
-				Integer.parseInt(ele.getAttribute("specialAttack")), Integer.parseInt(ele.getAttribute("specialDefense")),
-				Integer.parseInt(ele.getAttribute("speed")), Integer.parseInt(ele.getAttribute("experience")), 
+		Stats baseStats = new Stats(), ivStats = new Stats(), evStats = new Stats();
+		if(ele.getElementsByTagName("baseStats").getLength() > 0)
+			baseStats = Stats.fromXML((Element)ele.getElementsByTagName("baseStats").item(0));
+		if(ele.getElementsByTagName("ivStats").getLength() > 0)
+			ivStats = Stats.fromXML((Element)ele.getElementsByTagName("ivStats").item(0));
+		if(ele.getElementsByTagName("evStats").getLength() > 0)
+			evStats = Stats.fromXML((Element)ele.getElementsByTagName("evStats").item(0));
+		return new Creature(ele.getAttribute("name"), baseStats, ivStats, 
+				evStats, Integer.parseInt(ele.getAttribute("experience")), 
 				affinities, abilities, active);
 	}
 

@@ -1,26 +1,26 @@
 <creatures>
-	<creature name="Armadillo" hpMax="39" attack="52" defense="43" specialAttack="60" 
-			specialDefense="50" speed="65" experience="0" >
+	<creature name="Armadillo" experience="0" >
+		<baseStats hpMax="39" attack="52" defense="43" specialAttack="60" specialDefense="50" speed="65"/>
 		<affinity>rural</affinity>
 		<affinity>restricted</affinity>
 		<affinity>road</affinity>
 		<ability name="Bite" level="1"/>
 	</creature>
-	<creature name="Gecko" hpMax="45" attack="49" defense="49" specialAttack="65" 
-			specialDefense="65" speed="45" experience="0" >
+	<creature name="Gecko" experience="0" >
+		<baseStats hpMax="45" attack="49" defense="49" specialAttack="65" specialDefense="65" speed="45"/>
 		<affinity>coastal</affinity>
 		<affinity>education</affinity>
 		<affinity>suburban</affinity>
 		<ability name="Bite" level="1"/>
 	</creature>
-	<creature name="Penguin" hpMax="39" attack="52" defense="43" specialAttack="60" 
-			specialDefense="50" speed="65" experience="0" >
+	<creature name="Penguin" experience="0" >
+		<baseStats hpMax="39" attack="52" defense="43" specialAttack="60" specialDefense="50" speed="65"/>
 		<affinity>ocean</affinity>
 		<affinity>park</affinity>
 		<ability name="Bite" level="1"/>
 	</creature>
-	<creature name="Squirrel" hpMax="39" attack="52" defense="43" specialAttack="60" 
-			specialDefense="50" speed="65" experience="0" >
+	<creature name="Squirrel" experience="0" >
+		<baseStats hpMax="39" attack="52" defense="43" specialAttack="60" specialDefense="50" speed="65"/>
 		<affinity>urban</affinity>
 		<ability name="Bite" level="1"/>
 	</creature>
