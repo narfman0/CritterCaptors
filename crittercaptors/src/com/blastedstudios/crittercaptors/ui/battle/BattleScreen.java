@@ -10,7 +10,7 @@ import com.blastedstudios.crittercaptors.ExperienceManager;
 import com.blastedstudios.crittercaptors.creature.Creature;
 import com.blastedstudios.crittercaptors.ui.AbstractScreen;
 import com.blastedstudios.crittercaptors.ui.worldmap.WorldMap;
-import com.blastedstudios.crittercaptors.util.Renderer;
+import com.blastedstudios.crittercaptors.util.RenderUtil;
 
 public class BattleScreen extends AbstractScreen {
 	private Creature enemy;
@@ -34,10 +34,10 @@ public class BattleScreen extends AbstractScreen {
         camera.apply(Gdx.gl10);
 		
 		Gdx.gl10.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
-		Renderer.drawSky(game.getModel("skydome"), game.getTexture("skydome"), camera.position);
-		Renderer.drawModel(game.getModel(enemy.getName()), new Vector3(-3, 0, 10), 
+		RenderUtil.drawSky(game.getModel("skydome"), game.getTexture("skydome"), camera.position);
+		RenderUtil.drawModel(game.getModel(enemy.getName()), new Vector3(-3, 0, 10), 
 				new Vector3(-1,0,-1), new Vector3(100f,100f,100f));
-		Renderer.drawModel(game.getModel(enemy.getName()), new Vector3(1, 0, 3.5f), 
+		RenderUtil.drawModel(game.getModel(enemy.getName()), new Vector3(1, 0, 3.5f), 
 				new Vector3(1,0,1), new Vector3(100f,100f,100f));
 
 		spriteBatch.begin();
@@ -62,6 +62,6 @@ public class BattleScreen extends AbstractScreen {
 	}
 
 	@Override public void resize (int width, int height) {
-        camera = Renderer.resize(width, height);
+        camera = RenderUtil.resize(width, height);
 	}
 }

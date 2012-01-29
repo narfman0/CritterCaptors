@@ -27,6 +27,7 @@ import com.badlogic.gdx.graphics.g3d.loaders.ModelLoaderRegistry;
 import com.badlogic.gdx.graphics.g3d.model.Model;
 import com.blastedstudios.crittercaptors.creature.CreatureManager;
 import com.blastedstudios.crittercaptors.ui.mainscreen.MainMenu;
+import com.blastedstudios.crittercaptors.util.WorldLocationManager;
 
 public class CritterCaptors extends Game {
 	public static Random random = new Random();

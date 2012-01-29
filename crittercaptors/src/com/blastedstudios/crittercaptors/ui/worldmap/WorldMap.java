@@ -13,7 +13,7 @@ import com.blastedstudios.crittercaptors.creature.Creature;
 import com.blastedstudios.crittercaptors.ui.AbstractScreen;
 import com.blastedstudios.crittercaptors.ui.Terrain;
 import com.blastedstudios.crittercaptors.ui.battle.BattleScreen;
-import com.blastedstudios.crittercaptors.util.Renderer;
+import com.blastedstudios.crittercaptors.util.RenderUtil;
 
 public class WorldMap extends AbstractScreen {
 	private SpriteBatch spriteBatch;
@@ -47,9 +47,9 @@ public class WorldMap extends AbstractScreen {
 		
 		Gdx.gl10.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 		processInput();
-		Renderer.drawSky(game.getModel("skydome"), game.getTexture("skydome"), camera.position);
+		RenderUtil.drawSky(game.getModel("skydome"), game.getTexture("skydome"), camera.position);
 		for(Creature creature : game.getCreatureManager().getCreatures())
-			Renderer.drawModel(game.getModel(creature.getName()), creature.camera.position, 
+			RenderUtil.drawModel(game.getModel(creature.getName()), creature.camera.position, 
 					creature.camera.direction, new Vector3(100f,100f,100f));
 		terrain.render();
 		
@@ -93,6 +93,6 @@ public class WorldMap extends AbstractScreen {
 	}
 
 	@Override public void resize (int width, int height) {
-        camera = Renderer.resize(width, height);
+        camera = RenderUtil.resize(width, height);
 	}
 }

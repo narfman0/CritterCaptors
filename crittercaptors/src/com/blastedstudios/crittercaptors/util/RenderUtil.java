@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.model.Model;
 import com.badlogic.gdx.math.Vector3;
 
-public class Renderer {
+public class RenderUtil {
 	public static void drawModel(Model model, Vector3 pos,
 			Vector3 direction, Vector3 scale){
 		Gdx.gl10.glEnable(GL10.GL_DEPTH_TEST);
