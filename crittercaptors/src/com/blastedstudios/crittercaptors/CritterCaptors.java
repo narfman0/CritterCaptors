@@ -21,6 +21,8 @@ import java.util.Random;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.g3d.loaders.ModelLoaderRegistry;
 import com.badlogic.gdx.graphics.g3d.model.Model;
 import com.blastedstudios.crittercaptors.creature.CreatureManager;
@@ -29,6 +31,7 @@ import com.blastedstudios.crittercaptors.ui.mainscreen.MainMenu;
 public class CritterCaptors extends Game {
 	public static Random random = new Random();
 	private HashMap<String,Model> modelMap;
+	private HashMap<String,Texture> textureMap;
 	private CreatureManager creatureManager;
 	private WorldLocationManager worldLocationManager;
 	private Character character;
@@ -36,6 +39,8 @@ public class CritterCaptors extends Game {
 	@Override public void create () {
 		creatureManager = new CreatureManager();
 		worldLocationManager = new WorldLocationManager();
+		textureMap = new HashMap<String, Texture>();
+		textureMap.put("skydome", new Texture(Gdx.files.internal("data/sky/skydome.png"), Format.RGB565, true));
 		modelMap = new HashMap<String, Model>();
 		modelMap.put("skydome", ModelLoaderRegistry.load(Gdx.files.internal("data/sky/skydome.obj")));
 		for(String name : creatureManager.getCreatureTemplateNames()){
@@ -50,6 +55,10 @@ public class CritterCaptors extends Game {
 	
 	public Model getModel(String model){
 		return modelMap.get(model);
+	}
+	
+	public Texture getTexture(String texture){
+		return textureMap.get(texture);
 	}
 	
 	public CreatureManager getCreatureManager(){
