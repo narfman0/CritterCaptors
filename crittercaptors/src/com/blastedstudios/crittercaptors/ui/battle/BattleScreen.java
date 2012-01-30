@@ -86,10 +86,13 @@ public class BattleScreen extends AbstractScreen {
 				actor.getStage().removeActor(failWindow);
 			}
 		});
-		failWindow.add(new TextField("You have failed to catch!", skin));
+		failWindow.add(new TextField("Catch failed! ", skin));
+		failWindow.row();
+		failWindow.add(okButton);
 		failWindow.pack();
 		failWindow.x = Gdx.graphics.getWidth() / 2 - failWindow.width / 2;
 		failWindow.y = Gdx.graphics.getHeight() / 2 - failWindow.height / 2;
+		stage.addActor(failWindow);
 		
 	}
 }
