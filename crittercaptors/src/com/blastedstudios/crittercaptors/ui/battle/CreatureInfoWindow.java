@@ -20,6 +20,7 @@ public class CreatureInfoWindow extends Window {
 		levelLabel = new Label(creature.getLevel()+"", skin);
 		hpRatio = new Label(creature.getHPCurrent() + "/" + creature.getHPMax(), skin);
 		hpSlider = new Slider(0, creature.getHPMax(), 1, skin);
+		hpSlider.setValue(creature.getHPCurrent());
 		hpSlider.touchable = false;
 		add(new Label(creature.getName(), skin));
 		add(new Label("Lvl: ",skin));
@@ -36,8 +37,8 @@ public class CreatureInfoWindow extends Window {
 	public void update(){
 		levelLabel.setText(creature.getLevel()+"");
 		hpRatio.setText(creature.getHPCurrent() + "/" + creature.getHPMax());
+		hpSlider.touchable = true;
 		hpSlider.setValue(creature.getHPCurrent());
-		hpSlider.setRange(0, creature.getHPMax());
-		hpSlider.invalidate();
+		hpSlider.touchable = false;
 	}
 }
