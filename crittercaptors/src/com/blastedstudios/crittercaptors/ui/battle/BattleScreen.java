@@ -5,6 +5,13 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.ui.Window;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.blastedstudios.crittercaptors.CritterCaptors;
 import com.blastedstudios.crittercaptors.ExperienceManager;
 import com.blastedstudios.crittercaptors.creature.Creature;
@@ -63,5 +70,26 @@ public class BattleScreen extends AbstractScreen {
 
 	@Override public void resize (int width, int height) {
         camera = RenderUtil.resize(width, height);
+	}
+
+	public void capture() {
+		if(CritterCaptors.random.nextFloat() <= enemy.getCatchRate()){
+			enemy.setActive(game.getCharacter().getNextEmptyActiveIndex());
+			game.getCharacter().getOwnedCreatures().add(enemy);
+			game.setScreen(new WorldMap(game));
+			return;
+		}
+		final Window failWindow = new Window(skin);
+		final Button okButton = new TextButton("Ok", skin.getStyle(TextButtonStyle.class), "ok");
+		okButton.setClickListener(new ClickListener() {
+			@Override public void click(Actor actor, float arg1, float arg2) {
+				actor.getStage().removeActor(failWindow);
+			}
+		});
+		failWindow.add(new TextField("You have failed to catch!", skin));
+		failWindow.pack();
+		failWindow.x = Gdx.graphics.getWidth() / 2 - failWindow.width / 2;
+		failWindow.y = Gdx.graphics.getHeight() / 2 - failWindow.height / 2;
+		
 	}
 }

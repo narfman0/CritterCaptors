@@ -14,6 +14,7 @@ public class BottomMenu extends Window {
 	public BottomMenu(final CritterCaptors game, final Skin skin, final BattleScreen battleScreen) {
 		super("Actions", skin);
 		final Button fightButton = new TextButton("Fight", skin.getStyle(TextButtonStyle.class), "fight");
+		final Button captureButton = new TextButton("Capture", skin.getStyle(TextButtonStyle.class), "capture");
 		final Button runButton = new TextButton("Run", skin.getStyle(TextButtonStyle.class), "run");
 		//final Button creaturesButton = new TextButton("Creatures", skin.getStyle(TextButtonStyle.class), "creatures");
 		//bag
@@ -23,6 +24,11 @@ public class BottomMenu extends Window {
 				game.setScreen(new WorldMap(game));
 			}
 		});
+		captureButton.setClickListener(new ClickListener() {
+			@Override public void click(Actor actor, float arg1, float arg2) {
+				battleScreen.capture();
+			}
+		});
 		fightButton.setClickListener(new ClickListener() {
 			@Override public void click(Actor actor, float arg1, float arg2) {
 				actor.getStage().addActor(new FightMenu(game, skin, battleScreen));
@@ -30,6 +36,8 @@ public class BottomMenu extends Window {
 			}
 		});
 		add(fightButton);
+		row();
+		add(captureButton);
 		row();
 		//add(creaturesButton);
 		//row();

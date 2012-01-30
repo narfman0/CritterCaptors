@@ -54,6 +54,18 @@ public class Character {
 		return ownedCreatures.get(0);
 	}
 	
+	public int getNextEmptyActiveIndex(){
+		for(int i=0; i<6; i++){
+			boolean used = false;
+			for(int creatureIndex = 0; creatureIndex<ownedCreatures.size(); creatureIndex++)
+				if(ownedCreatures.get(creatureIndex).getActive() == i)
+					used = true;
+			if(!used)
+				return i;
+		}
+		return -1;
+	}
+	
 	public static String[] getSavedCharactersNames(){
 		Document saveFile = XMLUtil.parse(SAVE_PATH);
 		NodeList saveNodes = saveFile.getDocumentElement().getElementsByTagName("save");

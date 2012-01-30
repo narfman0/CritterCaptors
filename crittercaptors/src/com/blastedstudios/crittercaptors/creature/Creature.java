@@ -21,16 +21,16 @@ public class Creature {
 	private String name;
 	private List<AffinityEnum> affinities;
 	private HashMap<Ability,Integer> abilities;
-	private int experience, hpCurrent;
+	private int active, experience, hpCurrent;
 	private Stats baseStats, ivStats, evStats, evYield;
 	public Camera camera = new PerspectiveCamera(67, 1.33f, 2f);
 	public float timeSinceDirectionChange = 0;
+	private float catchRate = 0f;
 	private List<Ability> activeAbilities;
-	private int active;
 	
 	public Creature(String name, Stats baseStats, Stats ivStats, Stats evStats, 
 			Stats evYield, int experience, List<AffinityEnum> affinities, 
-			HashMap<Ability,Integer> abilities, int active){
+			HashMap<Ability,Integer> abilities, int active, float catchRate){
 		this.name = name;
 		this.baseStats = baseStats;
 		this.ivStats = ivStats;
@@ -40,6 +40,7 @@ public class Creature {
 		this.affinities = affinities;
 		this.abilities = abilities;
 		this.active = active;
+		this.catchRate = catchRate;
 		this.hpCurrent = getHPMax();
 		activeAbilities = new ArrayList<Ability>();
 		for(Ability ability : abilities.keySet())
@@ -101,6 +102,10 @@ public class Creature {
 		return hpCurrent;
 	}
 	
+	public float getCatchRate(){
+		return (((3*getHPMax() - 2*getHPCurrent())*catchRate/* *ball bonus*/) / (3*getHPMax()))/* *status bonus*/;
+	}
+	
 	/**
 	 * @param damage received by creature
 	 * @return if the creature is dead
@@ -159,7 +164,7 @@ public class Creature {
 				rand.nextInt(31), rand.nextInt(31), rand.nextInt(31),
 				rand.nextInt(31));
 		Creature creature = new Creature(name, baseStats, ivStats, evStats,
-				evYield, experience, affinities, abilities, active);
+				evYield, experience, affinities, abilities, active, catchRate);
 		return creature;
 	}
 	
@@ -181,6 +186,7 @@ public class Creature {
 		for(Element affinityEle : XMLUtil.iterableElementList(ele.getElementsByTagName("affinity")))
 			affinities.add(AffinityEnum.valueOf(affinityEle.getFirstChild().getNodeValue()));
 		int active = -1;
+		float catchRate = Float.parseFloat(ele.getAttribute("catchRate"));
 		HashMap<Ability,Integer> abilities = new HashMap<Ability,Integer>();
 		for(Element abilityEle : XMLUtil.iterableElementList(ele.getElementsByTagName("ability")))
 			abilities.put(Ability.abilities.get(abilityEle.getAttribute("name")), 
@@ -195,7 +201,7 @@ public class Creature {
 		Stats evYield = Stats.fromXML((Element)ele.getElementsByTagName("evYield").item(0));
 		return new Creature(ele.getAttribute("name"), baseStats, ivStats, 
 				evStats, evYield, Integer.parseInt(ele.getAttribute("experience")), 
-				affinities, abilities, active);
+				affinities, abilities, active, catchRate);
 	}
 
 	public void setActive(int active) {
