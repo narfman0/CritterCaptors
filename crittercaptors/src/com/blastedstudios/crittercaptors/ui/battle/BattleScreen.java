@@ -73,7 +73,9 @@ public class BattleScreen extends AbstractScreen {
 	}
 
 	public void capture() {
-		if(CritterCaptors.random.nextFloat() <= enemy.getCatchRate()){
+		final float catchRoll = CritterCaptors.random.nextFloat(),
+		catchRate = 1-enemy.getCatchRate();
+		if(catchRoll >= catchRate){
 			enemy.setActive(game.getCharacter().getNextEmptyActiveIndex());
 			game.getCharacter().getOwnedCreatures().add(enemy);
 			game.setScreen(new WorldMap(game));
@@ -86,7 +88,11 @@ public class BattleScreen extends AbstractScreen {
 				actor.getStage().removeActor(failWindow);
 			}
 		});
-		failWindow.add(new TextField("Catch failed! ", skin));
+		failWindow.add(new TextField("Catch failed!", skin));
+		failWindow.row();
+		failWindow.add(new TextField("Must roll > " + (int)(100*catchRate), skin));
+		failWindow.row();
+		failWindow.add(new TextField("You rolled " + (int)(100*catchRoll), skin));
 		failWindow.row();
 		failWindow.add(okButton);
 		failWindow.pack();
