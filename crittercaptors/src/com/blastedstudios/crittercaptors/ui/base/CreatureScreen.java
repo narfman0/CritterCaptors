@@ -18,6 +18,13 @@ public class CreatureScreen extends AbstractScreen {
 		super(game);
 		Window window = new Window("Creature", skin);
 		final Button cancelButton = new TextButton("Cancel", skin.getStyle(TextButtonStyle.class), "cancel");
+		final Button sellButton = new TextButton("Sell", skin.getStyle(TextButtonStyle.class), "sell");
+		//TODO store (if active)/make active feature here
+		sellButton.setClickListener(new ClickListener() {
+			@Override public void click(Actor actor, float arg1, float arg2) {
+				game.setScreen(new SellScreen(game, creature));
+			}
+		});
 		cancelButton.setClickListener(new ClickListener() {
 			@Override public void click(Actor actor, float arg1, float arg2) {
 				game.setScreen(new CreaturesScreen(game));
@@ -38,12 +45,13 @@ public class CreatureScreen extends AbstractScreen {
 		String affinities = "";
 		for(AffinityEnum affinity : creature.getAffinities())
 			affinities += affinity.name() + ", ";
-		window.add(new Label("Affinities: " + affinities.substring(0,affinities.lastIndexOf(",")-1), skin)).colspan(2);
+		window.add(new Label("Affinities: " + affinities.substring(0,affinities.lastIndexOf(",")), skin)).colspan(2);
 		window.row();
 		window.add(new Label("IV: " + creature.getIV(), skin)).colspan(2);
 		window.row();
 		window.add(new Label("EV: " + creature.getEV(), skin)).colspan(2);
 		window.row();
+		window.add(sellButton);
 		window.add(cancelButton);
 		window.pack();
 		window.x = Gdx.graphics.getWidth()/2 - window.width/2;

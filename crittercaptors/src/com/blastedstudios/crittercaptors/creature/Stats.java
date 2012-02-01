@@ -57,4 +57,8 @@ public class Stats {
 				"\nSp Attack: " + specialAttack + "  Sp Defense: " + specialDefense +
 				"  Speed: " + speed;
 	}
+	
+	public int sum(){
+		return attack + defense + specialAttack + specialDefense + speed + hpMax;
+	}
 }

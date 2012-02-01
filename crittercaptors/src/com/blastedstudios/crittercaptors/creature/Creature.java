@@ -223,4 +223,8 @@ public class Creature {
 	public Stats getEVYield() {
 		return evYield;
 	}
+	
+	public int getWorth(){
+		return (int)((3*getLevel() + evStats.sum() + ivStats.sum()) / getCatchRate()) / 100;
+	}
 }

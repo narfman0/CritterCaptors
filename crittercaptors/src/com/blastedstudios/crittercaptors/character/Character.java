@@ -48,9 +48,9 @@ public class Character {
 	public int getCash(){
 		return cash;
 	}
-
-	public void setCash(int cash){
-		this.cash = cash;
+	
+	public void addCash(int cash){
+		this.cash += cash;
 	}
 	
 	public List<Base> getBases(){
@@ -124,5 +124,10 @@ public class Character {
 			saveElement.appendChild(base.asXML(saveFile));
 		saveFile.getDocumentElement().appendChild(saveElement);
 		XMLUtil.writeToFile(saveFile, "data/saves.xml");
+	}
+
+	public void sell(Creature creature) {
+		cash += creature.getWorth();
+		ownedCreatures.remove(creature);
 	}
 }

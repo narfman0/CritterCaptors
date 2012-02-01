@@ -127,7 +127,8 @@ public class WorldMapScreen extends AbstractScreen {
 			}
 		});
 		window.add(new Label("You should build a base\nimmediately to take care"+
-			"\nof creature management\nand provide a place for\nyour character to rest", skin));
+			"\nof creature management\nand provide a place for\nyour character to rest.\n\n" +
+			"Press <esc> and choose\n\"Base\" from the menu", skin));
 		window.row();
 		window.add(button);
 		window.pack();

@@ -83,5 +83,6 @@ public class CritterCaptors extends Game {
 
 	public void addBase() {
 		character.getBases().add(new Base(worldLocationManager.getLatitude(), worldLocationManager.getLongitude()));
+		character.addCash(-Base.BASE_COST);
 	}
 }

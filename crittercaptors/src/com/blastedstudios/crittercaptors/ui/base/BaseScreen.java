@@ -19,6 +19,8 @@ public class BaseScreen extends AbstractScreen {
 		final Button cancelButton = new TextButton("Cancel", skin.getStyle(TextButtonStyle.class), "cancel");
 		final Button creaturesButton = new TextButton("Creatures", skin.getStyle(TextButtonStyle.class), "creatures");
 		final Button healButton = new TextButton("Heal All", skin.getStyle(TextButtonStyle.class), "heal");
+		//TODO update button
+		//TODO virtual reality simulator
 		cancelButton.setClickListener(new ClickListener() {
 			@Override public void click(Actor actor, float arg1, float arg2) {
 				game.setScreen(new WorldMapScreen(game));
