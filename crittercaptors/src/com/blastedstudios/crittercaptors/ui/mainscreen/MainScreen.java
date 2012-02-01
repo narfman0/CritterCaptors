@@ -11,21 +11,21 @@ import com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle;
 import com.blastedstudios.crittercaptors.CritterCaptors;
 import com.blastedstudios.crittercaptors.ui.AbstractScreen;
 
-public class MainMenu extends AbstractScreen {
-	public MainMenu(final CritterCaptors game){
+public class MainScreen extends AbstractScreen {
+	public MainScreen(final CritterCaptors game){
 		super(game);
 		final Button newGameButton = new TextButton("New Game", skin.getStyle(TextButtonStyle.class), "new");
 		final Button loadGameButton = new TextButton("Load", skin.getStyle(TextButtonStyle.class), "load");
 		final Button exitButton = new TextButton("Exit", skin.getStyle(TextButtonStyle.class), "exit");
 		newGameButton.setClickListener(new ClickListener() {
 			@Override public void click(Actor arg0, float arg1, float arg2) {
-				game.setScreen(new NewGameMenu(game));
+				game.setScreen(new NewGameScreen(game));
 				dispose();
 			}
 		});
 		loadGameButton.setClickListener(new ClickListener() {
 			@Override public void click(Actor arg0, float arg1, float arg2) {
-				game.setScreen(new LoadMenu(game));
+				game.setScreen(new LoadScreen(game));
 				dispose();
 			}
 		});

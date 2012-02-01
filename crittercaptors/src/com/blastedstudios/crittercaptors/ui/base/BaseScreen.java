@@ -10,7 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.blastedstudios.crittercaptors.CritterCaptors;
 import com.blastedstudios.crittercaptors.creature.Creature;
 import com.blastedstudios.crittercaptors.ui.AbstractScreen;
-import com.blastedstudios.crittercaptors.ui.worldmap.WorldMap;
+import com.blastedstudios.crittercaptors.ui.worldmap.WorldMapScreen;
 
 public class BaseScreen extends AbstractScreen {
 	public BaseScreen(final CritterCaptors game) {
@@ -21,7 +21,7 @@ public class BaseScreen extends AbstractScreen {
 		final Button healButton = new TextButton("Heal All", skin.getStyle(TextButtonStyle.class), "heal");
 		cancelButton.setClickListener(new ClickListener() {
 			@Override public void click(Actor actor, float arg1, float arg2) {
-				game.setScreen(new WorldMap(game));
+				game.setScreen(new WorldMapScreen(game));
 			}
 		});
 		creaturesButton.setClickListener(new ClickListener() {

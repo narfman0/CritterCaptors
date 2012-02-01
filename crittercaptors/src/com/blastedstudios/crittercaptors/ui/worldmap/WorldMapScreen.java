@@ -24,20 +24,20 @@ import com.blastedstudios.crittercaptors.ui.battle.BattleScreen;
 import com.blastedstudios.crittercaptors.util.MercatorUtil;
 import com.blastedstudios.crittercaptors.util.RenderUtil;
 
-public class WorldMap extends AbstractScreen {
+public class WorldMapScreen extends AbstractScreen {
 	private SpriteBatch spriteBatch;
 	private BitmapFont font;
     private Camera camera;
     public static final float MOVE_SPEED = 10f, TURN_RATE = 100f,
 		REMOVE_DISTANCE = 1000000f, FIGHT_DISTANCE = 40f;
-    private SideMenu sideMenu = null;
+    private SideWindow sideMenu = null;
     private Terrain terrain;
     
-    public WorldMap(CritterCaptors game) {
+    public WorldMapScreen(CritterCaptors game) {
     	this(game, false);
     }
 	
-	public WorldMap(CritterCaptors game, boolean isNewCharacter) {
+	public WorldMapScreen(CritterCaptors game, boolean isNewCharacter) {
 		super(game);
 		spriteBatch = new SpriteBatch();
 		font = new BitmapFont(Gdx.files.getFileHandle("data/fonts/arial-15.fnt", FileType.Internal), 
@@ -103,7 +103,7 @@ public class WorldMap extends AbstractScreen {
 			camera.rotate(-TURN_RATE * Gdx.graphics.getDeltaTime(), 0, 1, 0);
 		if (Gdx.input.isKeyPressed(Keys.ESCAPE))
 			if(sideMenu == null || sideMenu.dispose)
-				stage.addActor(sideMenu = new SideMenu(game, skin));
+				stage.addActor(sideMenu = new SideWindow(game, skin));
 		camera.position.add(movement.mul(MOVE_SPEED));
         camera.update();
         camera.apply(Gdx.gl10);

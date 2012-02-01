@@ -28,7 +28,7 @@ import com.badlogic.gdx.graphics.g3d.model.Model;
 import com.blastedstudios.crittercaptors.character.Base;
 import com.blastedstudios.crittercaptors.character.Character;
 import com.blastedstudios.crittercaptors.creature.CreatureManager;
-import com.blastedstudios.crittercaptors.ui.mainscreen.MainMenu;
+import com.blastedstudios.crittercaptors.ui.mainscreen.MainScreen;
 import com.blastedstudios.crittercaptors.util.WorldLocationManager;
 
 public class CritterCaptors extends Game {
@@ -54,7 +54,7 @@ public class CritterCaptors extends Game {
 				modelMap.put(name, ModelLoaderRegistry.load(Gdx.files.internal("data/models/" + name.toLowerCase() + ".g3d")));
 			}
 		}
-		setScreen(new MainMenu(this));
+		setScreen(new MainScreen(this));
 	}
 	
 	public static Model getModel(String model){

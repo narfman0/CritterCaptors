@@ -12,13 +12,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.blastedstudios.crittercaptors.CritterCaptors;
 import com.blastedstudios.crittercaptors.character.Base;
 import com.blastedstudios.crittercaptors.ui.base.BaseScreen;
-import com.blastedstudios.crittercaptors.ui.mainscreen.MainMenu;
+import com.blastedstudios.crittercaptors.ui.mainscreen.MainScreen;
 import com.blastedstudios.crittercaptors.util.MercatorUtil;
 
-public class SideMenu extends Window{
+public class SideWindow extends Window{
 	public boolean dispose = false;
 
-	public SideMenu(final CritterCaptors game, final Skin skin) {
+	public SideWindow(final CritterCaptors game, final Skin skin) {
 		super("Menu", skin);
 		final Button creaturesButton = new TextButton("Creatures", skin.getStyle(TextButtonStyle.class), "creatures");
 		final Button baseButton = new TextButton("Base", skin.getStyle(TextButtonStyle.class), "base");
@@ -26,7 +26,7 @@ public class SideMenu extends Window{
 		final Button exitButton = new TextButton("Exit", skin.getStyle(TextButtonStyle.class), "exit");
 		creaturesButton.setClickListener(new ClickListener() {
 			@Override public void click(Actor actor, float arg1, float arg2) {
-				actor.getStage().addActor(new CreaturesMenu(game, skin));
+				actor.getStage().addActor(new CreaturesWindow(game, skin));
 			}
 		});
 		baseButton.setClickListener(new ClickListener() {
@@ -43,7 +43,7 @@ public class SideMenu extends Window{
 		exitButton.setClickListener(new ClickListener() {
 			@Override public void click(Actor actor, float arg1, float arg2) {
 				game.getCharacter().save();
-				game.setScreen(new MainMenu(game));
+				game.setScreen(new MainScreen(game));
 			}
 		});
 		add(creaturesButton);

@@ -13,9 +13,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.blastedstudios.crittercaptors.CritterCaptors;
 import com.blastedstudios.crittercaptors.creature.Ability;
 
-public class FightMenu extends Window {
-
-	public FightMenu(final CritterCaptors game, final Skin skin, final BattleScreen battleScreen) {
+public class FightWindow extends Window {
+	public FightWindow(final CritterCaptors game, final Skin skin, final BattleScreen battleScreen) {
 		super("Fight", skin);
 		final List<Button> attackButtons = new ArrayList<Button>();
 		for(Ability ability : game.getCharacter().getActiveCreature().getActiveAbilities())
@@ -24,7 +23,7 @@ public class FightMenu extends Window {
 		//final Button creaturesButton = new TextButton("Creatures", skin.getStyle(TextButtonStyle.class), "creatures");
 		cancelButton.setClickListener(new ClickListener() {
 			@Override public void click(Actor actor, float arg1, float arg2) {
-				actor.getStage().addActor(new BottomMenu(game, skin, battleScreen));
+				actor.getStage().addActor(new BottomWindow(game, skin, battleScreen));
 				actor.getStage().removeActor(actor.parent);
 			}
 		});

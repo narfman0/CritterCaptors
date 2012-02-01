@@ -15,13 +15,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle;
 import com.blastedstudios.crittercaptors.CritterCaptors;
 import com.blastedstudios.crittercaptors.character.Character;
 import com.blastedstudios.crittercaptors.ui.AbstractScreen;
-import com.blastedstudios.crittercaptors.ui.worldmap.WorldMap;
+import com.blastedstudios.crittercaptors.ui.worldmap.WorldMapScreen;
 
-public class LoadMenu extends AbstractScreen {
+public class LoadScreen extends AbstractScreen {
 	private static final String LOAD_CHARACTER_LIST = "load list";
 	private final List savedCharacterList;
 
-	public LoadMenu(final CritterCaptors game){
+	public LoadScreen(final CritterCaptors game){
 		super(game);
 		savedCharacterList = new List(Character.getSavedCharactersNames(), skin.getStyle(ListStyle.class), LOAD_CHARACTER_LIST);
 		final Button okButton = new TextButton("Load", skin.getStyle(TextButtonStyle.class), "load ok");
@@ -30,14 +30,14 @@ public class LoadMenu extends AbstractScreen {
 			@Override public void click(Actor arg0, float arg1, float arg2) {
 				if(savedCharacterList.getSelection() != null){
 					game.setCharacter(Character.load(game.getCreatureManager(), savedCharacterList.getSelection()));
-					game.setScreen(new WorldMap(game));
+					game.setScreen(new WorldMapScreen(game));
 					dispose();
 				}
 			}
 		});
 		cancelButton.setClickListener(new ClickListener() {
 			@Override public void click(Actor arg0, float arg1, float arg2) {
-				game.setScreen(new MainMenu(game));
+				game.setScreen(new MainScreen(game));
 				dispose();
 			}
 		});

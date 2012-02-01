@@ -13,9 +13,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.blastedstudios.crittercaptors.CritterCaptors;
 import com.blastedstudios.crittercaptors.creature.Creature;
 
-public class CreaturesMenu extends Window {
-
-	public CreaturesMenu(final CritterCaptors game, final Skin skin) {
+public class CreaturesWindow extends Window {
+	public CreaturesWindow(final CritterCaptors game, final Skin skin) {
 		super("Creatures", skin);
 		HashMap<Integer, Creature> creatures = game.getCharacter().getActiveCreatures();
 		for(int i=0; i<6; i++){
@@ -28,7 +27,7 @@ public class CreaturesMenu extends Window {
 				button = new TextButton(buttonText, skin.getStyle(TextButtonStyle.class), "creature");
 				button.setClickListener(new ClickListener() {
 					@Override public void click(Actor actor, float arg1, float arg2) {
-						actor.getStage().addActor(new CreaturesMenu(game, skin));
+						actor.getStage().addActor(new CreaturesWindow(game, skin));
 					}
 				});
 			}

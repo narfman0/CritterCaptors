@@ -19,13 +19,13 @@ import com.blastedstudios.crittercaptors.CritterCaptors;
 import com.blastedstudios.crittercaptors.ExperienceManager;
 import com.blastedstudios.crittercaptors.creature.Creature;
 import com.blastedstudios.crittercaptors.ui.AbstractScreen;
-import com.blastedstudios.crittercaptors.ui.worldmap.WorldMap;
+import com.blastedstudios.crittercaptors.ui.worldmap.WorldMapScreen;
 
-public class NewGameMenu extends AbstractScreen {
+public class NewGameScreen extends AbstractScreen {
 	private final TextField newGameNameTextfield;
 	private static final int INITIAL_LEVEL = 5, INITIAL_CASH = 1500;
 		
-	public NewGameMenu(final CritterCaptors game){
+	public NewGameScreen(final CritterCaptors game){
 		super(game);
 		newGameNameTextfield = new TextField("", "Enter name here", skin.getStyle(TextFieldStyle.class), "name");
 		final Button newGameButton = new TextButton("Start", skin.getStyle(TextButtonStyle.class), "ok");
@@ -41,13 +41,13 @@ public class NewGameMenu extends AbstractScreen {
 				constructed.heal();
 				ownedCreatures.add(constructed);
 				game.setCharacter(new Character(newGameNameTextfield.getText(), INITIAL_CASH, ownedCreatures, new ArrayList<Base>()));
-				game.setScreen(new WorldMap(game, true));
+				game.setScreen(new WorldMapScreen(game, true));
 				dispose();
 			}
 		});
 		cancelButton.setClickListener(new ClickListener() {
 			@Override public void click(Actor arg0, float arg1, float arg2) {
-				game.setScreen(new MainMenu(game));
+				game.setScreen(new MainScreen(game));
 				dispose();
 			}
 		});

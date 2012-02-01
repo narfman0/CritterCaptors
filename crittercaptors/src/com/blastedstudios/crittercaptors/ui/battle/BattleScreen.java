@@ -16,7 +16,7 @@ import com.blastedstudios.crittercaptors.CritterCaptors;
 import com.blastedstudios.crittercaptors.ExperienceManager;
 import com.blastedstudios.crittercaptors.creature.Creature;
 import com.blastedstudios.crittercaptors.ui.AbstractScreen;
-import com.blastedstudios.crittercaptors.ui.worldmap.WorldMap;
+import com.blastedstudios.crittercaptors.ui.worldmap.WorldMapScreen;
 import com.blastedstudios.crittercaptors.util.RenderUtil;
 
 public class BattleScreen extends AbstractScreen {
@@ -32,7 +32,7 @@ public class BattleScreen extends AbstractScreen {
 		enemyInfoWindow = new CreatureInfoWindow(game, skin, enemy, (int)stage.width()-236, 200);
 		stage.addActor(creatureInfoWindow);
 		stage.addActor(enemyInfoWindow);
-		stage.addActor(new BottomMenu(game, skin, this));
+		stage.addActor(new BottomWindow(game, skin, this));
 		spriteBatch = new SpriteBatch();
 	}
 	
@@ -60,12 +60,12 @@ public class BattleScreen extends AbstractScreen {
 			//show window indicating victory!
 			playerCreature.addExperience(ExperienceManager.getKillExperience(enemy));
 			playerCreature.getEV().add(enemy.getEVYield());
-			game.setScreen(new WorldMap(game));
+			game.setScreen(new WorldMapScreen(game));
 		}else
 			playerCreature.receiveDamage(enemy.attack(playerCreature, enemy.getActiveAbilities().get(enemyChoice).name));
 		creatureInfoWindow.update();
 		enemyInfoWindow.update();
-		stage.addActor(new BottomMenu(game, skin, this));
+		stage.addActor(new BottomWindow(game, skin, this));
 	}
 
 	@Override public void resize (int width, int height) {
@@ -78,7 +78,7 @@ public class BattleScreen extends AbstractScreen {
 		if(catchRoll >= catchRate){
 			enemy.setActive(game.getCharacter().getNextEmptyActiveIndex());
 			game.getCharacter().getOwnedCreatures().add(enemy);
-			game.setScreen(new WorldMap(game));
+			game.setScreen(new WorldMapScreen(game));
 			return;
 		}
 		final Window failWindow = new Window(skin);
