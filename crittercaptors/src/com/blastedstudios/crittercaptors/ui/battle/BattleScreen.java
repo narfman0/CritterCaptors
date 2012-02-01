@@ -62,7 +62,10 @@ public class BattleScreen extends AbstractScreen {
 			playerCreature.getEV().add(enemy.getEVYield());
 			game.setScreen(new WorldMapScreen(game));
 		}else
-			playerCreature.receiveDamage(enemy.attack(playerCreature, enemy.getActiveAbilities().get(enemyChoice).name));
+			if(playerCreature.receiveDamage(enemy.attack(playerCreature, enemy.getActiveAbilities().get(enemyChoice).name))){
+				game.setScreen(new BlackoutScreen(game));
+				return;
+			}
 		creatureInfoWindow.update();
 		enemyInfoWindow.update();
 		stage.addActor(new BottomWindow(game, skin, this));

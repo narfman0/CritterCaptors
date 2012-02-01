@@ -18,10 +18,11 @@ import com.blastedstudios.crittercaptors.util.XMLUtil;
  * Defines creature. Has base stats, rest are calculated
  */
 public class Creature {
+	private static final int BASE_HAPPINESS = 70;
 	private String name;
 	private List<AffinityEnum> affinities;
 	private HashMap<Ability,Integer> abilities;
-	private int active, experience, hpCurrent;
+	private int active, experience, hpCurrent, happiness;
 	private Stats baseStats, ivStats, evStats, evYield;
 	public Camera camera = new PerspectiveCamera(67, 1.33f, 2f);
 	public float timeSinceDirectionChange = 0;
@@ -30,7 +31,8 @@ public class Creature {
 	
 	public Creature(String name, Stats baseStats, Stats ivStats, Stats evStats, 
 			Stats evYield, int experience, List<AffinityEnum> affinities, 
-			HashMap<Ability,Integer> abilities, int active, float catchRate){
+			HashMap<Ability,Integer> abilities, int active, float catchRate,
+			int happiness){
 		this.name = name;
 		this.baseStats = baseStats;
 		this.ivStats = ivStats;
@@ -42,6 +44,7 @@ public class Creature {
 		this.active = active;
 		this.catchRate = catchRate;
 		this.hpCurrent = getHPMax();
+		this.happiness = happiness;
 		activeAbilities = new ArrayList<Ability>();
 		for(Ability ability : abilities.keySet())
 			if(abilities.get(ability) <= ExperienceManager.getLevel(experience) && activeAbilities.size() <= 4)
@@ -106,6 +109,14 @@ public class Creature {
 		return (((3*getHPMax() - 2*getHPCurrent())*catchRate/* *ball bonus*/) / (3*getHPMax()))/* *status bonus*/;
 	}
 	
+	public void addHappiness(int happiness){
+		this.happiness += happiness;
+	}
+
+	public void setHappiness(int happiness) {
+		this.happiness = happiness;
+	}
+	
 	/**
 	 * @param damage received by creature
 	 * @return if the creature is dead
@@ -164,7 +175,8 @@ public class Creature {
 				rand.nextInt(31), rand.nextInt(31), rand.nextInt(31),
 				rand.nextInt(31));
 		Creature creature = new Creature(name, baseStats, ivStats, evStats,
-				evYield, experience, affinities, abilities, active, catchRate);
+				evYield, experience, affinities, abilities, active, catchRate,
+				happiness);
 		return creature;
 	}
 	
@@ -176,6 +188,7 @@ public class Creature {
 		Element node = doc.createElement("creature");
 		node.setAttribute("name", name);
 		node.setAttribute("experience", Integer.toString(experience));
+		node.setAttribute("happiness", Integer.toString(happiness));
 		if(active != -1)
 			node.setAttribute("active", Integer.toString(active));
 		return node;
@@ -199,9 +212,12 @@ public class Creature {
 		if(ele.getElementsByTagName("evStats").getLength() > 0)
 			evStats = Stats.fromXML((Element)ele.getElementsByTagName("evStats").item(0));
 		Stats evYield = Stats.fromXML((Element)ele.getElementsByTagName("evYield").item(0));
+		int happiness = BASE_HAPPINESS;
+		if(ele.hasAttribute("happiness"))
+			happiness = Integer.parseInt(ele.getAttribute("happiness"));
 		return new Creature(ele.getAttribute("name"), baseStats, ivStats, 
 				evStats, evYield, Integer.parseInt(ele.getAttribute("experience")), 
-				affinities, abilities, active, catchRate);
+				affinities, abilities, active, catchRate, happiness);
 	}
 
 	public void setActive(int active) {

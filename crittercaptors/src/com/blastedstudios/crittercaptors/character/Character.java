@@ -95,6 +95,7 @@ public class Character {
 					creature.setExperience(Integer.parseInt(creatureElement.getAttribute("experience")));
 					creature.setIV(Stats.fromXML((Element)creatureElement.getElementsByTagName("ivStats").item(0)));
 					creature.setEV(Stats.fromXML((Element)creatureElement.getElementsByTagName("evStats").item(0)));
+					creature.setHappiness(Integer.parseInt(creatureElement.getAttribute("happiness")));
 					if(creatureElement.hasAttribute("active"))
 						creature.setActive(Integer.parseInt(creatureElement.getAttribute("active")));
 					ownedCreatures.add(creature);
@@ -129,5 +130,15 @@ public class Character {
 	public void sell(Creature creature) {
 		cash += creature.getWorth();
 		ownedCreatures.remove(creature);
+	}
+
+	public int blackout() {
+		int lost = cash/10;
+		cash -= lost;
+		for(Creature creature : getOwnedCreatures()){
+			creature.addHappiness(-1);
+			creature.heal();
+		}
+		return lost;
 	}
 }
