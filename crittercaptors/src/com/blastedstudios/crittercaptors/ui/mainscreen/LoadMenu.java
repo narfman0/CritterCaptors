@@ -12,8 +12,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.List.ListStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane.ScrollPaneStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle;
-import com.blastedstudios.crittercaptors.Character;
 import com.blastedstudios.crittercaptors.CritterCaptors;
+import com.blastedstudios.crittercaptors.character.Character;
 import com.blastedstudios.crittercaptors.ui.AbstractScreen;
 import com.blastedstudios.crittercaptors.ui.worldmap.WorldMap;
 
@@ -30,7 +30,7 @@ public class LoadMenu extends AbstractScreen {
 			@Override public void click(Actor arg0, float arg1, float arg2) {
 				if(savedCharacterList.getSelection() != null){
 					game.setCharacter(Character.load(game.getCreatureManager(), savedCharacterList.getSelection()));
-					game.setScreen(new WorldMap(game));
+					game.setScreen(new WorldMap(game, false));
 					dispose();
 				}
 			}

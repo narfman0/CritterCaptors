@@ -5,7 +5,8 @@ import java.awt.image.BufferedImage;
 import java.util.HashMap;
 
 public class AffinityCalculator {
-	private static final Color SUBURBAN_COLOR = new Color(220,220,220);
+	private static final Color SUBURBAN_COLOR = new Color(220,220,220),
+			OCEAN_COLOR = new Color(181,208,208);
 	
 	/**
 	 * @return hashmap containing percentages of affinities from the @param image.
@@ -18,6 +19,8 @@ public class AffinityCalculator {
 		HashMap<AffinityEnum,Float> affinities = new HashMap<AffinityEnum,Float>();
 		if(map.containsKey(SUBURBAN_COLOR))
 			affinities.put(AffinityEnum.suburban, map.get(SUBURBAN_COLOR)/pixelCount);
+		if(map.containsKey(OCEAN_COLOR))
+			affinities.put(AffinityEnum.ocean, map.get(OCEAN_COLOR)/pixelCount);
 		return affinities;
 	}
 	

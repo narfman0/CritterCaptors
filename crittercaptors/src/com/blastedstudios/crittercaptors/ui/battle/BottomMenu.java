@@ -21,7 +21,7 @@ public class BottomMenu extends Window {
 		runButton.setClickListener(new ClickListener() {
 			@Override public void click(Actor actor, float arg1, float arg2) {
 				actor.getStage().removeActor(actor.parent);
-				game.setScreen(new WorldMap(game));
+				game.setScreen(new WorldMap(game, false));
 			}
 		});
 		captureButton.setClickListener(new ClickListener() {

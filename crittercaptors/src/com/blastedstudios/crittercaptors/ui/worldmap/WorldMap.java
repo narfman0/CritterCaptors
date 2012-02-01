@@ -8,11 +8,20 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.ui.List;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Window;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.blastedstudios.crittercaptors.CritterCaptors;
+import com.blastedstudios.crittercaptors.character.Base;
 import com.blastedstudios.crittercaptors.creature.Creature;
 import com.blastedstudios.crittercaptors.ui.AbstractScreen;
-import com.blastedstudios.crittercaptors.ui.Terrain;
+import com.blastedstudios.crittercaptors.ui.terrain.Terrain;
 import com.blastedstudios.crittercaptors.ui.battle.BattleScreen;
+import com.blastedstudios.crittercaptors.util.MercatorUtil;
 import com.blastedstudios.crittercaptors.util.RenderUtil;
 
 public class WorldMap extends AbstractScreen {
@@ -24,12 +33,14 @@ public class WorldMap extends AbstractScreen {
     private SideMenu sideMenu = null;
     private Terrain terrain;
 	
-	public WorldMap(CritterCaptors game) {
+	public WorldMap(CritterCaptors game, boolean isNewCharacter) {
 		super(game);
 		spriteBatch = new SpriteBatch();
 		font = new BitmapFont(Gdx.files.getFileHandle("data/fonts/arial-15.fnt", FileType.Internal), 
 				Gdx.files.getFileHandle("data/fonts/arial-15.png", FileType.Internal), false);
 		terrain = new Terrain();
+		if(isNewCharacter)
+			showNewCharacterWindow();
 	}
 	
 	@Override public void render (float arg0) {
@@ -47,9 +58,11 @@ public class WorldMap extends AbstractScreen {
 		
 		Gdx.gl10.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 		processInput();
-		RenderUtil.drawSky(game.getModel("skydome"), game.getTexture("skydome"), camera.position);
+		RenderUtil.drawSky(CritterCaptors.getModel("skydome"), game.getTexture("skydome"), camera.position);
+		for(Base base : game.getCharacter().getBases())
+			base.render(terrain);
 		for(Creature creature : game.getCreatureManager().getCreatures())
-			RenderUtil.drawModel(game.getModel(creature.getName()), creature.camera.position, 
+			RenderUtil.drawModel(CritterCaptors.getModel(creature.getName()), creature.camera.position, 
 					creature.camera.direction, new Vector3(100f,100f,100f));
 		terrain.render();
 		
@@ -94,5 +107,30 @@ public class WorldMap extends AbstractScreen {
 
 	@Override public void resize (int width, int height) {
         camera = RenderUtil.resize(width, height);
+        double[] mercator = MercatorUtil.toPixel(
+        		game.getWorldLocationManager().getLongitude(), 
+        		game.getWorldLocationManager().getLatitude());
+        camera.translate((float)mercator[0], 0, (float)mercator[1]);
+        camera.update();
+	}
+	
+	private void showNewCharacterWindow(){
+		final Window window = new Window(skin);
+		String[] lines = {"Welcome to the world,","you should build a","base immediately to take",
+				"care of creature management","and provide a place","for your character to rest"};
+		List newCharWindow = new List(lines,skin);
+		final Button button = new TextButton("Ok", skin.getStyle(TextButtonStyle.class), "ok");
+		button.setClickListener(new ClickListener() {
+			@Override public void click(Actor arg0, float arg1, float arg2) {
+				stage.removeActor(window);
+			}
+		});
+		window.add(newCharWindow);
+		window.row();
+		window.add(button);
+		window.pack();
+		window.x = Gdx.graphics.getWidth() / 2 - window.width / 2;
+		window.y = Gdx.graphics.getHeight() / 2 - window.height / 2;
+		stage.addActor(window);
 	}
 }

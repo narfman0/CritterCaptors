@@ -13,7 +13,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle;
-import com.blastedstudios.crittercaptors.Character;
+import com.blastedstudios.crittercaptors.character.Base;
+import com.blastedstudios.crittercaptors.character.Character;
 import com.blastedstudios.crittercaptors.CritterCaptors;
 import com.blastedstudios.crittercaptors.ExperienceManager;
 import com.blastedstudios.crittercaptors.creature.Creature;
@@ -22,7 +23,7 @@ import com.blastedstudios.crittercaptors.ui.worldmap.WorldMap;
 
 public class NewGameMenu extends AbstractScreen {
 	private final TextField newGameNameTextfield;
-	private static final int INITIAL_LEVEL = 5;
+	private static final int INITIAL_LEVEL = 5, INITIAL_CASH = 1500;
 		
 	public NewGameMenu(final CritterCaptors game){
 		super(game);
@@ -39,8 +40,8 @@ public class NewGameMenu extends AbstractScreen {
 				constructed.setExperience(ExperienceManager.getExperience(INITIAL_LEVEL));
 				constructed.heal();
 				ownedCreatures.add(constructed);
-				game.setCharacter(new Character(newGameNameTextfield.getText(), 0, ownedCreatures));
-				game.setScreen(new WorldMap(game));
+				game.setCharacter(new Character(newGameNameTextfield.getText(), INITIAL_CASH, ownedCreatures, new ArrayList<Base>()));
+				game.setScreen(new WorldMap(game, true));
 				dispose();
 			}
 		});

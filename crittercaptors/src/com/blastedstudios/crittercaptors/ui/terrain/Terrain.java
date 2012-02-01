@@ -1,4 +1,4 @@
-package com.blastedstudios.crittercaptors.ui;
+package com.blastedstudios.crittercaptors.ui.terrain;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -10,7 +10,7 @@ import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 
-public class Terrain {
+public class Terrain implements ITerrain{
 	private TerrainChunk chunk;
 	private Mesh mesh;
 	private Texture grass;
@@ -118,5 +118,9 @@ public class Terrain {
 				i4 = (short)(row + pitch);
 			}
 		}
+	}
+
+	@Override public float getHeight(float x, float z) {
+		return 0;
 	}
 }

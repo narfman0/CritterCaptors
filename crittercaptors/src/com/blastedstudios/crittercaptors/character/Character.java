@@ -1,4 +1,4 @@
-package com.blastedstudios.crittercaptors;
+package com.blastedstudios.crittercaptors.character;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,11 +19,14 @@ public class Character {
 	private String name;
 	private int cash = 0;
 	private List<Creature> ownedCreatures;
+	private List<Base> bases;
 	
-	public Character(String name, int cash, ArrayList<Creature> ownedCreatures){
+	public Character(String name, int cash, List<Creature> ownedCreatures, 
+			List<Base> bases){
 		this.name = name;
 		this.cash = cash;
 		this.ownedCreatures = ownedCreatures;
+		this.bases = bases;
 	}
 	
 	public List<Creature> getOwnedCreatures(){
@@ -48,6 +51,10 @@ public class Character {
 
 	public void setCash(int cash){
 		this.cash = cash;
+	}
+	
+	public List<Base> getBases(){
+		return bases;
 	}
 	
 	public Creature getActiveCreature(){
@@ -92,7 +99,10 @@ public class Character {
 						creature.setActive(Integer.parseInt(creatureElement.getAttribute("active")));
 					ownedCreatures.add(creature);
 				}
-				return new Character(name, cash, ownedCreatures);
+				List<Base> bases = new ArrayList<Base>();
+				for(Element baseElement : XMLUtil.iterableElementList(saveElement.getElementsByTagName("base")))
+					bases.add(Base.fromXML(baseElement));
+				return new Character(name, cash, ownedCreatures, bases);
 			}
 		return null;
 	}
@@ -110,6 +120,8 @@ public class Character {
 			element.appendChild(owned.getIV().asXML(saveFile, "ivStats"));
 			element.appendChild(owned.getEV().asXML(saveFile, "evStats"));
 		}
+		for(Base base : bases)
+			saveElement.appendChild(base.asXML(saveFile));
 		saveFile.getDocumentElement().appendChild(saveElement);
 		XMLUtil.writeToFile(saveFile, "data/saves.xml");
 	}

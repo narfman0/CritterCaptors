@@ -40,12 +40,14 @@ public class CreatureManager {
 		if(timeSinceLastSpawn > TIME_BETWEEN_SPAWNS){
 			timeSinceLastSpawn = 0;
 			Creature creature = spawn(worldAffinities); 
-			creature.setExperience(ExperienceManager.getExperience(CritterCaptors.random.nextInt(4)+2));
-			creature.heal();
-			float angle = CritterCaptors.random.nextFloat() * 360f;
-			creature.camera.position.x = location.x + (float)Math.cos(angle) * SPAWN_DISTANCE_FROM_PLAYER;
-			creature.camera.position.z = location.z + (float)Math.sin(angle) * SPAWN_DISTANCE_FROM_PLAYER;
-			creatures.add(creature);
+			if(creature != null){
+				creature.setExperience(ExperienceManager.getExperience(CritterCaptors.random.nextInt(4)+2));
+				creature.heal();
+				float angle = CritterCaptors.random.nextFloat() * 360f;
+				creature.camera.position.x = location.x + (float)Math.cos(angle) * SPAWN_DISTANCE_FROM_PLAYER;
+				creature.camera.position.z = location.z + (float)Math.sin(angle) * SPAWN_DISTANCE_FROM_PLAYER;
+				creatures.add(creature);
+			}
 		}
 		//move creatures
 		for(Creature creature : creatures){

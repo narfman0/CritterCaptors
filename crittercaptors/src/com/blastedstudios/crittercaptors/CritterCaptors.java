@@ -21,18 +21,20 @@ import java.util.Random;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.loaders.ModelLoaderRegistry;
 import com.badlogic.gdx.graphics.g3d.model.Model;
+import com.blastedstudios.crittercaptors.character.Base;
+import com.blastedstudios.crittercaptors.character.Character;
 import com.blastedstudios.crittercaptors.creature.CreatureManager;
 import com.blastedstudios.crittercaptors.ui.mainscreen.MainMenu;
 import com.blastedstudios.crittercaptors.util.WorldLocationManager;
 
 public class CritterCaptors extends Game {
 	public static Random random = new Random();
-	private HashMap<String,Model> modelMap;
-	private HashMap<String,Texture> textureMap;
+	private static HashMap<String,Model> modelMap;
+	private static HashMap<String,Texture> textureMap;
 	private CreatureManager creatureManager;
 	private WorldLocationManager worldLocationManager;
 	private Character character;
@@ -44,6 +46,7 @@ public class CritterCaptors extends Game {
 		textureMap.put("skydome", new Texture(Gdx.files.internal("data/sky/skydome.png"), Format.RGB565, true));
 		modelMap = new HashMap<String, Model>();
 		modelMap.put("skydome", ModelLoaderRegistry.load(Gdx.files.internal("data/sky/skydome.obj")));
+		modelMap.put("base", ModelLoaderRegistry.load(Gdx.files.internal("data/models/base.g3d")));
 		for(String name : creatureManager.getCreatureTemplateNames()){
 			try{
 				modelMap.put(name, ModelLoaderRegistry.load(Gdx.files.internal("data/models/static/" + name.toLowerCase() + ".obj")));
@@ -54,7 +57,7 @@ public class CritterCaptors extends Game {
 		setScreen(new MainMenu(this));
 	}
 	
-	public Model getModel(String model){
+	public static Model getModel(String model){
 		return modelMap.get(model);
 	}
 	
@@ -76,5 +79,9 @@ public class CritterCaptors extends Game {
 	
 	public WorldLocationManager getWorldLocationManager(){
 		return worldLocationManager;
+	}
+
+	public void addBase() {
+		character.getBases().add(new Base(worldLocationManager.getLatitude(), worldLocationManager.getLongitude()));
 	}
 }

@@ -41,10 +41,10 @@ public class BattleScreen extends AbstractScreen {
         camera.apply(Gdx.gl10);
 		
 		Gdx.gl10.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
-		RenderUtil.drawSky(game.getModel("skydome"), game.getTexture("skydome"), camera.position);
-		RenderUtil.drawModel(game.getModel(enemy.getName()), new Vector3(-3, 0, 10), 
+		RenderUtil.drawSky(CritterCaptors.getModel("skydome"), game.getTexture("skydome"), camera.position);
+		RenderUtil.drawModel(CritterCaptors.getModel(enemy.getName()), new Vector3(-3, 0, 10), 
 				new Vector3(-1,0,-1), new Vector3(100f,100f,100f));
-		RenderUtil.drawModel(game.getModel(enemy.getName()), new Vector3(1, 0, 3.5f), 
+		RenderUtil.drawModel(CritterCaptors.getModel(enemy.getName()), new Vector3(1, 0, 3.5f), 
 				new Vector3(1,0,1), new Vector3(100f,100f,100f));
 
 		spriteBatch.begin();
@@ -60,7 +60,7 @@ public class BattleScreen extends AbstractScreen {
 			//show window indicating victory!
 			playerCreature.addExperience(ExperienceManager.getKillExperience(enemy));
 			playerCreature.getEV().add(enemy.getEVYield());
-			game.setScreen(new WorldMap(game));
+			game.setScreen(new WorldMap(game, false));
 		}else
 			playerCreature.receiveDamage(enemy.attack(playerCreature, enemy.getActiveAbilities().get(enemyChoice).name));
 		creatureInfoWindow.update();
@@ -78,7 +78,7 @@ public class BattleScreen extends AbstractScreen {
 		if(catchRoll >= catchRate){
 			enemy.setActive(game.getCharacter().getNextEmptyActiveIndex());
 			game.getCharacter().getOwnedCreatures().add(enemy);
-			game.setScreen(new WorldMap(game));
+			game.setScreen(new WorldMap(game, false));
 			return;
 		}
 		final Window failWindow = new Window(skin);
