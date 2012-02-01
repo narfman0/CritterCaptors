@@ -51,4 +51,10 @@ public class Stats {
 		specialDefense = Math.min(MAX_EV_SINGLE, specialDefense + evYield.specialDefense);
 		speed = Math.min(MAX_EV_SINGLE, speed + evYield.speed);
 	}
+	
+	@Override public String toString(){
+		return "HP: " + hpMax + "  Attack: " + attack + "  Defense: " + defense +
+				"\nSp Attack: " + specialAttack + "  Sp Defense: " + specialDefense +
+				"  Speed: " + speed;
+	}
 }

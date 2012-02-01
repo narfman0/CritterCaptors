@@ -30,7 +30,7 @@ public class LoadMenu extends AbstractScreen {
 			@Override public void click(Actor arg0, float arg1, float arg2) {
 				if(savedCharacterList.getSelection() != null){
 					game.setCharacter(Character.load(game.getCreatureManager(), savedCharacterList.getSelection()));
-					game.setScreen(new WorldMap(game, false));
+					game.setScreen(new WorldMap(game));
 					dispose();
 				}
 			}

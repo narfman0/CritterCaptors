@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.blastedstudios.crittercaptors.CritterCaptors;
 import com.blastedstudios.crittercaptors.character.Base;
+import com.blastedstudios.crittercaptors.ui.base.BaseScreen;
 import com.blastedstudios.crittercaptors.ui.mainscreen.MainMenu;
 import com.blastedstudios.crittercaptors.util.MercatorUtil;
 
@@ -67,7 +68,7 @@ public class SideMenu extends Window{
 				characterBase.getCachedPosition().dst2(pos) < Base.BASE_DISTANCE)
 				base = characterBase;
 		if(base != null){
-			//TODO game.setScreen(new BaseScreen(game));
+			game.setScreen(new BaseScreen(game));
 		}else
 			if(game.getCharacter().getCash() < Base.BASE_COST)
 				stage.addActor(new BuildBaseBrokeWindow(game, skin));

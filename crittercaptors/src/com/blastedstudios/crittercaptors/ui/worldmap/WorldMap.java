@@ -11,7 +11,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.ui.List;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
@@ -32,6 +32,10 @@ public class WorldMap extends AbstractScreen {
 		REMOVE_DISTANCE = 1000000f, FIGHT_DISTANCE = 40f;
     private SideMenu sideMenu = null;
     private Terrain terrain;
+    
+    public WorldMap(CritterCaptors game) {
+    	this(game, false);
+    }
 	
 	public WorldMap(CritterCaptors game, boolean isNewCharacter) {
 		super(game);
@@ -115,17 +119,15 @@ public class WorldMap extends AbstractScreen {
 	}
 	
 	private void showNewCharacterWindow(){
-		final Window window = new Window(skin);
-		String[] lines = {"Welcome to the world,","you should build a","base immediately to take",
-				"care of creature management","and provide a place","for your character to rest"};
-		List newCharWindow = new List(lines,skin);
+		final Window window = new Window("Welcome!", skin);
 		final Button button = new TextButton("Ok", skin.getStyle(TextButtonStyle.class), "ok");
 		button.setClickListener(new ClickListener() {
 			@Override public void click(Actor arg0, float arg1, float arg2) {
 				stage.removeActor(window);
 			}
 		});
-		window.add(newCharWindow);
+		window.add(new Label("You should build a base\nimmediately to take care"+
+			"\nof creature management\nand provide a place for\nyour character to rest", skin));
 		window.row();
 		window.add(button);
 		window.pack();
