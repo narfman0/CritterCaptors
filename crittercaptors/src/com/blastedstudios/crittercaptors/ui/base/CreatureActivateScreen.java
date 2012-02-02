@@ -25,7 +25,7 @@ public class CreatureActivateScreen extends AbstractScreen implements Screen {
 				game.setScreen(new CreaturesScreen(game));
 			}
 		});
-		window.add(new Label("At what position would you like the creature?", skin));
+		window.add(new Label("At what position would you like the creature?", skin)).colspan(2);
 		window.row();
 		HashMap<Integer, Creature> creatures = game.getCharacter().getActiveCreatures();
 		for(int i=0; i<6; i++){

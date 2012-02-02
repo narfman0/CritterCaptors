@@ -20,7 +20,7 @@ public class CreaturesInactiveScreen extends AbstractScreen implements Screen {
 		int inactiveCount = 0;
 		for(int i = 0; i < game.getCharacter().getOwnedCreatures().size() && currentWindowCreatureCount != 6; i++){
 			if(game.getCharacter().getOwnedCreatures().get(i).getActive() == -1){
-				if(inactiveCount > screenIndex*6){
+				if(inactiveCount >= screenIndex*6){
 					final Creature creature = game.getCharacter().getOwnedCreatures().get(i);
 					String buttonText = creature.getName() + "    Level: " + creature.getLevel() + "\n";
 					buttonText += creature.getHPCurrent() + " / " + creature.getHPMax();
@@ -53,6 +53,7 @@ public class CreaturesInactiveScreen extends AbstractScreen implements Screen {
 			}
 		});
 
+		window.row();
 		window.add(previousButton);
 		window.add(cancelButton);		
 		if(inactiveCount == 6){
