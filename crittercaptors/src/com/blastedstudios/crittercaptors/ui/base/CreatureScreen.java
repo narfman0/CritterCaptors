@@ -17,9 +17,11 @@ public class CreatureScreen extends AbstractScreen {
 	public CreatureScreen(final CritterCaptors game, final Creature creature) {
 		super(game);
 		Window window = new Window("Creature", skin);
+		final boolean active = creature.getActive() != -1;
+		String activeString = active ? "Deactivate" : "Activate";
 		final Button cancelButton = new TextButton("Cancel", skin.getStyle(TextButtonStyle.class), "cancel");
 		final Button sellButton = new TextButton("Sell", skin.getStyle(TextButtonStyle.class), "sell");
-		//TODO store (if active)/make active feature here
+		final Button activeButton = new TextButton(activeString, skin.getStyle(TextButtonStyle.class), "active");
 		sellButton.setClickListener(new ClickListener() {
 			@Override public void click(Actor actor, float arg1, float arg2) {
 				game.setScreen(new SellScreen(game, creature));
@@ -28,6 +30,15 @@ public class CreatureScreen extends AbstractScreen {
 		cancelButton.setClickListener(new ClickListener() {
 			@Override public void click(Actor actor, float arg1, float arg2) {
 				game.setScreen(new CreaturesScreen(game));
+			}
+		});
+		activeButton.setClickListener(new ClickListener() {
+			@Override public void click(Actor actor, float arg1, float arg2) {
+				if(active){
+					creature.setActive(-1);
+					game.setScreen(new CreaturesScreen(game));
+				}else
+					game.setScreen(new CreatureActivateScreen(game, creature));
 			}
 		});
 		window.add(new Label(creature.getName(), skin));
@@ -52,6 +63,8 @@ public class CreatureScreen extends AbstractScreen {
 		window.add(new Label("EV: " + creature.getEV(), skin)).colspan(2);
 		window.row();
 		window.add(sellButton);
+		window.add(activeButton);
+		window.row();
 		window.add(cancelButton);
 		window.pack();
 		window.x = Gdx.graphics.getWidth()/2 - window.width/2;

@@ -47,7 +47,14 @@ public class CreaturesScreen extends AbstractScreen implements Screen {
 				game.setScreen(new BaseScreen(game));
 			}
 		});
-		window.add(cancelButton).colspan(2);
+		final Button nextButton = new TextButton("Next", skin.getStyle(TextButtonStyle.class), "next");
+		nextButton.setClickListener(new ClickListener() {
+			@Override public void click(Actor actor, float arg1, float arg2) {
+				game.setScreen(new CreaturesInactiveScreen(game, 0));
+			}
+		});
+		window.add(cancelButton);
+		window.add(nextButton);
 		window.pack();
 		window.x = Gdx.graphics.getWidth() / 2 - window.width / 2;
 		window.y = Gdx.graphics.getHeight() / 2 - window.height / 2;
