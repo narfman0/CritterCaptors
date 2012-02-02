@@ -33,15 +33,15 @@ public class WorldLocationManager {
 	private HashMap<AffinityEnum, Float> currentWorldAffinities;
 	
 	public WorldLocationManager(){
-		latInitial = 0.0;//TODOGdx.input.getGPSLatitude();
-		lonInitial = 0.0;//TODOGdx.input.getGPSLongitude();
+		latInitial = Gdx.input.getGPSLatitude();
+		lonInitial = Gdx.input.getGPSLongitude();
 	}
 
 	public void update(){
 		timeSinceLastUpdate += Gdx.graphics.getDeltaTime();
 		if(timeSinceLastUpdate > TIME_TO_UPDATE){
-			//TODOlat = Gdx.input.getGPSLatitude();
-			//TODOlon = Gdx.input.getGPSLongitude();
+			lat = Gdx.input.getGPSLatitude();
+			lon = Gdx.input.getGPSLongitude();
 			timeSinceLastUpdate = 0;
 			try {
 				worldLocationLastImage = ImageIO.read(
