@@ -40,10 +40,15 @@ public class CritterCaptors extends Game {
 	private Character character;
 
 	@Override public void create () {
+		//com.badlogic.gdx.graphics.g3d.model.still.StillModel model = 
+		//	ModelLoaderRegistry.loadStillModel(Gdx.files.internal("data/models/base.g3dt"));
+		//com.badlogic.gdx.graphics.g3d.loaders.g3d.chunks.G3dExporter.export(model, Gdx.files.absolute("data/models/base.g3d"));
+		
 		creatureManager = new CreatureManager();
 		worldLocationManager = new WorldLocationManager();
 		textureMap = new HashMap<String, Texture>();
 		textureMap.put("skydome", new Texture(Gdx.files.internal("data/sky/skydome.png"), Format.RGB565, true));
+		textureMap.put("base", new Texture(Gdx.files.internal("data/textures/base.png"), Format.RGB565, true));
 		modelMap = new HashMap<String, Model>();
 		modelMap.put("skydome", ModelLoaderRegistry.load(Gdx.files.internal("data/sky/skydome.obj")));
 		modelMap.put("base", ModelLoaderRegistry.load(Gdx.files.internal("data/models/base.g3d")));
@@ -61,7 +66,7 @@ public class CritterCaptors extends Game {
 		return modelMap.get(model);
 	}
 	
-	public Texture getTexture(String texture){
+	public static Texture getTexture(String texture){
 		return textureMap.get(texture);
 	}
 	

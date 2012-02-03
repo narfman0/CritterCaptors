@@ -9,12 +9,14 @@ import com.badlogic.gdx.graphics.g3d.model.Model;
 import com.badlogic.gdx.math.Vector3;
 
 public class RenderUtil {
-	public static void drawModel(Model model, Vector3 pos,
+	public static void drawModel(Model model, Texture texture, Vector3 pos,
 			Vector3 direction, Vector3 scale){
 		Gdx.gl10.glEnable(GL10.GL_DEPTH_TEST);
 		Gdx.gl10.glFrontFace(GL10.GL_CW);
-		Gdx.gl10.glDisable(GL10.GL_TEXTURE_2D);
-		Gdx.gl10.glEnable(GL10.GL_COLOR_MATERIAL);
+		if(texture != null){
+			Gdx.gl10.glEnable(GL10.GL_TEXTURE_2D);
+			texture.bind();
+		}
 		Gdx.gl10.glPushMatrix();
 		Gdx.gl10.glTranslatef(pos.x, pos.y, pos.z);
 		Gdx.gl10.glRotatef((float)Math.toDegrees(Math.atan2(direction.x, direction.z)), 0, 1, 0);

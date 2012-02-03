@@ -62,11 +62,11 @@ public class WorldMapScreen extends AbstractScreen {
 		
 		Gdx.gl10.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 		processInput();
-		RenderUtil.drawSky(CritterCaptors.getModel("skydome"), game.getTexture("skydome"), camera.position);
+		RenderUtil.drawSky(CritterCaptors.getModel("skydome"), CritterCaptors.getTexture("skydome"), camera.position);
 		for(Base base : game.getCharacter().getBases())
 			base.render(terrain);
 		for(Creature creature : game.getCreatureManager().getCreatures())
-			RenderUtil.drawModel(CritterCaptors.getModel(creature.getName()), creature.camera.position, 
+			RenderUtil.drawModel(CritterCaptors.getModel(creature.getName()), null, creature.camera.position, 
 					creature.camera.direction, new Vector3(100f,100f,100f));
 		terrain.render();
 		

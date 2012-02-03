@@ -29,9 +29,10 @@ public class Base {
 			double[] mercator = MercatorUtil.toPixel(lon, lat);
 			float x = (float)mercator[0], z = (float)mercator[1];
 			//TODO use initial lat/lon
-			cachedPosition = new Vector3(x, terrain.getHeight(x,z), z);
+			cachedPosition = new Vector3(x, 2, z);
 		}
-		RenderUtil.drawModel(CritterCaptors.getModel("base"), cachedPosition, new Vector3(), new Vector3(1,1,1));
+		RenderUtil.drawModel(CritterCaptors.getModel("base"), CritterCaptors.getTexture("base"),
+				cachedPosition, new Vector3(), new Vector3(2,2,2));
 	}
 
 	public static Base fromXML(Element baseElement) {
