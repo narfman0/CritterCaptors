@@ -16,7 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle;
 import com.blastedstudios.crittercaptors.character.Base;
 import com.blastedstudios.crittercaptors.character.Character;
 import com.blastedstudios.crittercaptors.CritterCaptors;
-import com.blastedstudios.crittercaptors.ExperienceManager;
+import com.blastedstudios.crittercaptors.util.ExperienceManager;
 import com.blastedstudios.crittercaptors.creature.Creature;
 import com.blastedstudios.crittercaptors.ui.AbstractScreen;
 import com.blastedstudios.crittercaptors.ui.worldmap.WorldMapScreen;

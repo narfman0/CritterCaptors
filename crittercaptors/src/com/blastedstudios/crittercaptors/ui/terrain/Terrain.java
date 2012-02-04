@@ -11,12 +11,13 @@ import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 
 public class Terrain implements ITerrain{
+	public static final int DEFAULT_WIDTH = 128;
 	private TerrainChunk chunk;
 	private Mesh mesh;
 	private Texture grass;
 
-	public Terrain () {
-		chunk = new TerrainChunk(128, 128, 4);
+	public Terrain (final byte[] heightMap) {
+		chunk = new TerrainChunk(DEFAULT_WIDTH, DEFAULT_WIDTH, heightMap, 4);
 		grass = new Texture(Gdx.files.internal("data/textures/grass1.jpg"), Format.RGB565, true);
 
 		int len = chunk.vertices.length;
@@ -52,11 +53,11 @@ public class Terrain implements ITerrain{
 		public final short[] indices;
 		public final int vertexSize;
 
-		public TerrainChunk (int width, int height, int vertexSize) {
+		public TerrainChunk (final int width, final int height, final byte[] heightMap, int vertexSize) {
 			if ((width + 1) * (height + 1) > Short.MAX_VALUE)
 				throw new IllegalArgumentException("Chunk size too big, (width + 1)*(height+1) must be <= 32767");
 
-			this.heightMap = new byte[(width + 1) * (height + 1)];
+			this.heightMap = heightMap;
 			this.width = (short)width;
 			this.height = (short)height;
 			this.vertices = new float[heightMap.length * vertexSize];

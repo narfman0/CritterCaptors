@@ -9,7 +9,7 @@ import org.w3c.dom.Element;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector3;
 import com.blastedstudios.crittercaptors.CritterCaptors;
-import com.blastedstudios.crittercaptors.ExperienceManager;
+import com.blastedstudios.crittercaptors.util.ExperienceManager;
 import com.blastedstudios.crittercaptors.ui.worldmap.WorldMapScreen;
 import com.blastedstudios.crittercaptors.util.XMLUtil;
 

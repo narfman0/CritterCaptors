@@ -1,4 +1,4 @@
-package com.blastedstudios.crittercaptors;
+package com.blastedstudios.crittercaptors.util;
 
 import com.blastedstudios.crittercaptors.creature.Creature;
 

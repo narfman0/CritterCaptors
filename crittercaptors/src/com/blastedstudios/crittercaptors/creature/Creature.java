@@ -11,7 +11,7 @@ import org.w3c.dom.Element;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.blastedstudios.crittercaptors.CritterCaptors;
-import com.blastedstudios.crittercaptors.ExperienceManager;
+import com.blastedstudios.crittercaptors.util.ExperienceManager;
 import com.blastedstudios.crittercaptors.util.XMLUtil;
 
 /**
