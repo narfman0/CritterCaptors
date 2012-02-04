@@ -10,7 +10,7 @@ import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 
-public class Terrain implements ITerrain{
+public class Terrain {
 	public static final int DEFAULT_WIDTH = 128;
 	private TerrainChunk chunk;
 	private Mesh mesh;
@@ -119,9 +119,5 @@ public class Terrain implements ITerrain{
 				i4 = (short)(row + pitch);
 			}
 		}
-	}
-
-	@Override public float getHeight(float x, float z) {
-		return 0;
 	}
 }

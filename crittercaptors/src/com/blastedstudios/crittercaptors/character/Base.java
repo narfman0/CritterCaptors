@@ -5,7 +5,7 @@ import org.w3c.dom.Element;
 
 import com.badlogic.gdx.math.Vector3;
 import com.blastedstudios.crittercaptors.CritterCaptors;
-import com.blastedstudios.crittercaptors.ui.terrain.ITerrain;
+import com.blastedstudios.crittercaptors.ui.terrain.Terrain;
 import com.blastedstudios.crittercaptors.util.MercatorUtil;
 import com.blastedstudios.crittercaptors.util.RenderUtil;
 
@@ -24,7 +24,7 @@ public class Base {
 		return cachedPosition;
 	}
 	
-	public void render(ITerrain terrain){
+	public void render(Terrain terrain){
 		if(cachedPosition == null){
 			double[] mercator = MercatorUtil.toPixel(lon, lat);
 			float x = (float)mercator[0], z = (float)mercator[1];
