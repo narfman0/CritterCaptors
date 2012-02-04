@@ -9,7 +9,7 @@ import com.blastedstudios.crittercaptors.util.MercatorUtil;
 import com.blastedstudios.crittercaptors.util.RenderUtil;
 
 public class Base {
-	public static final float BASE_DISTANCE = 1000f;
+	public static final float BASE_DISTANCE = 100f;
 	public static final int BASE_COST = 1500;
 	private final double lat, lon;
 	private Vector3 cachedPosition;//used to skip mercator proj every frame

@@ -11,7 +11,7 @@ public class TerrainManager {
 	private final List<Terrain> terrains = new ArrayList<Terrain>();
 	
 	public TerrainManager(WorldLocationManager locationManager){
-		terrains.add(new Terrain(new float[(Terrain.DEFAULT_WIDTH + 1) * (Terrain.DEFAULT_WIDTH + 1)], new Vector3()));
+		terrains.add(new Terrain(locationManager.getHeightmap(new Vector3()), new Vector3()));
 	}
 
 	public void render(Vector3 playerLocation) {

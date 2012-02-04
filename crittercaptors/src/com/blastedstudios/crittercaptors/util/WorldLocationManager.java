@@ -18,15 +18,18 @@ import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Vector3;
 import com.blastedstudios.crittercaptors.creature.AffinityCalculator;
 import com.blastedstudios.crittercaptors.creature.AffinityEnum;
+import com.blastedstudios.crittercaptors.ui.terrain.Terrain;
 
 /**
  * Keep world location up to date. Since floats are too inaccurate, using doubles
  * up to render, and setting initial lat so as to shrink the error when converting
  */
 public class WorldLocationManager {
-	private double lat = 0.0, latInitial,lon = 0.0,lonInitial;
+	private double lat = 0.0, lon = 0.0;
+	private final double latInitial, lonInitial;
 	private BufferedImage worldLocationLastImage;
 	private float timeSinceLastUpdate = TIME_TO_UPDATE;
 	private static final float TIME_TO_UPDATE = 60;
@@ -55,13 +58,27 @@ public class WorldLocationManager {
 	}
 	
 	public double getLatitude(){
-		return lat - latInitial;
+		return lat;
 	}
 	
 	public double getLongitude(){
-		return lon - lonInitial;
+		return lon;
 	}
-	
+
+	public float[] getHeightmap(Vector3 location){
+		float[] heightMap = new float[(Terrain.DEFAULT_WIDTH + 1) * (Terrain.DEFAULT_WIDTH + 1)];
+		for(int x=0; x<Terrain.DEFAULT_WIDTH + 1; x++)
+			for(int z=0; z<Terrain.DEFAULT_WIDTH + 1; z++){
+				double geoCoordX = x-(Terrain.DEFAULT_WIDTH + 1)/2+location.x;
+				double geoCoordZ = z-(Terrain.DEFAULT_WIDTH + 1)/2+location.z;
+				double[] latlon = MercatorUtil.toGeoCoord(geoCoordX, geoCoordZ);
+				latlon[0] += lonInitial;
+				latlon[1] += latInitial;
+				heightMap[x*(Terrain.DEFAULT_WIDTH+1)+z] = (float)getAltitude(latlon[0], latlon[1]);
+			}
+		return heightMap;
+	}
+
 	public HashMap<AffinityEnum, Float> getWorldAffinities(){
 		return currentWorldAffinities;
 	}
