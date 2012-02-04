@@ -1,7 +1,6 @@
 package com.blastedstudios.crittercaptors.ui.terrain;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Pixmap.Format;
@@ -12,7 +11,7 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector3;
 
 public class Terrain {
-	public static final int DEFAULT_WIDTH = 16, 
+	public static final int DEFAULT_WIDTH = 8,
 			DEFAULT_WIDTH_DIV2 = DEFAULT_WIDTH/2,
 			DEFAULT_WIDTH_TIM2 = DEFAULT_WIDTH*2;
 	public final Vector3 location;
@@ -22,22 +21,22 @@ public class Terrain {
 
 	public Terrain (final float[] heightMap, final Vector3 location) {
 		this.location = location;
-		chunk = new TerrainChunk(DEFAULT_WIDTH, DEFAULT_WIDTH, heightMap, 4);
+		chunk = new TerrainChunk(DEFAULT_WIDTH, DEFAULT_WIDTH, heightMap, 5);
 		grass = new Texture(Gdx.files.internal("data/textures/grass1.jpg"), Format.RGB565, true);
 
-		int len = chunk.vertices.length;
-		for (int i = 3; i < len; i += 4)
-			chunk.vertices[i] = Color.toFloatBits(0, 255, 0, 255);
+		//colorpacked - vertex size + 1
+		//for (int i = 3; i < chunk.vertices.length; i += 4)
+		//	chunk.vertices[i] = Color.toFloatBits(0, 255, 0, 255);
+		
+		//texcoords - vertex size + 2
+		for (int i = 3, iteration = 0; i < chunk.vertices.length; i += 5, iteration++){
+			chunk.vertices[i] = iteration%4>1 ? 0 : 1;
+			chunk.vertices[i+1] = iteration%4==1 || iteration%4==2 ? 0 : 1;
+		}
 
 		mesh = new Mesh(true, chunk.vertices.length / 3, chunk.indices.length, 
 				new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE), 
-				new VertexAttribute(Usage.ColorPacked, 4, ShaderProgram.COLOR_ATTRIBUTE));
-		/*
-				new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE), 
-				new VertexAttribute(Usage.Normal, 3, ShaderProgram.NORMAL_ATTRIBUTE),
 				new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE + "0"));
-		 */
-
 		mesh.setVertices(chunk.vertices);
 		mesh.setIndices(chunk.indices);
 	}
