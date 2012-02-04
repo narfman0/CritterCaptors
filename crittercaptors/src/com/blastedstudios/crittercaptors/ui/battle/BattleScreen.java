@@ -13,7 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.blastedstudios.crittercaptors.CritterCaptors;
-import com.blastedstudios.crittercaptors.util.ExperienceManager;
+import com.blastedstudios.crittercaptors.util.ExperienceUtil;
 import com.blastedstudios.crittercaptors.creature.Creature;
 import com.blastedstudios.crittercaptors.ui.AbstractScreen;
 import com.blastedstudios.crittercaptors.ui.terrain.Terrain;
@@ -68,7 +68,7 @@ public class BattleScreen extends AbstractScreen {
 		Creature playerCreature = game.getCharacter().getActiveCreature(); 
 		if(enemy.receiveDamage(playerCreature.attack(enemy, name))){//enemy is dead
 			//show window indicating victory!
-			playerCreature.addExperience(ExperienceManager.getKillExperience(enemy));
+			playerCreature.addExperience(ExperienceUtil.getKillExperience(enemy));
 			playerCreature.getEV().add(enemy.getEVYield());
 			game.setScreen(new WorldMapScreen(game));
 		}else

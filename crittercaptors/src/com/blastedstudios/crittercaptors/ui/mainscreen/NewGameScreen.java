@@ -16,7 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle;
 import com.blastedstudios.crittercaptors.character.Base;
 import com.blastedstudios.crittercaptors.character.Character;
 import com.blastedstudios.crittercaptors.CritterCaptors;
-import com.blastedstudios.crittercaptors.util.ExperienceManager;
+import com.blastedstudios.crittercaptors.util.ExperienceUtil;
 import com.blastedstudios.crittercaptors.creature.Creature;
 import com.blastedstudios.crittercaptors.ui.AbstractScreen;
 import com.blastedstudios.crittercaptors.ui.worldmap.WorldMapScreen;
@@ -37,7 +37,7 @@ public class NewGameScreen extends AbstractScreen {
 				ArrayList<Creature> ownedCreatures = new ArrayList<Creature>();
 				Creature constructed = game.getCreatureManager().create(initialCreatureList.getSelection());
 				constructed.setActive(0);
-				constructed.setExperience(ExperienceManager.getExperience(INITIAL_LEVEL));
+				constructed.setExperience(ExperienceUtil.getExperience(INITIAL_LEVEL));
 				constructed.heal();
 				ownedCreatures.add(constructed);
 				game.setCharacter(new Character(newGameNameTextfield.getText(), INITIAL_CASH, ownedCreatures, new ArrayList<Base>()));

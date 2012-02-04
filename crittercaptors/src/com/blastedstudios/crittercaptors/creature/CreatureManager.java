@@ -9,7 +9,7 @@ import org.w3c.dom.Element;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector3;
 import com.blastedstudios.crittercaptors.CritterCaptors;
-import com.blastedstudios.crittercaptors.util.ExperienceManager;
+import com.blastedstudios.crittercaptors.util.ExperienceUtil;
 import com.blastedstudios.crittercaptors.ui.worldmap.WorldMapScreen;
 import com.blastedstudios.crittercaptors.util.XMLUtil;
 
@@ -41,7 +41,7 @@ public class CreatureManager {
 			timeSinceLastSpawn = 0;
 			Creature creature = spawn(worldAffinities); 
 			if(creature != null){
-				creature.setExperience(ExperienceManager.getExperience(CritterCaptors.random.nextInt(4)+2));
+				creature.setExperience(ExperienceUtil.getExperience(CritterCaptors.random.nextInt(4)+2));
 				creature.heal();
 				float angle = CritterCaptors.random.nextFloat() * 360f;
 				creature.camera.position.x = location.x + (float)Math.cos(angle) * SPAWN_DISTANCE_FROM_PLAYER;

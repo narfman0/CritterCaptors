@@ -11,7 +11,7 @@ import org.w3c.dom.Element;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.blastedstudios.crittercaptors.CritterCaptors;
-import com.blastedstudios.crittercaptors.util.ExperienceManager;
+import com.blastedstudios.crittercaptors.util.ExperienceUtil;
 import com.blastedstudios.crittercaptors.util.XMLUtil;
 
 /**
@@ -47,20 +47,20 @@ public class Creature {
 		this.happiness = happiness;
 		activeAbilities = new ArrayList<Ability>();
 		for(Ability ability : abilities.keySet())
-			if(abilities.get(ability) <= ExperienceManager.getLevel(experience) && activeAbilities.size() <= 4)
+			if(abilities.get(ability) <= ExperienceUtil.getLevel(experience) && activeAbilities.size() <= 4)
 				activeAbilities.add(ability);
 	}
 
 	private int attackPhysical(Creature enemy, Ability ability){
 		float dmgMultiplier = AffinityDamage.getDamageMultiplier(affinities, enemy.affinities);
-		return (int) ((((((( (ExperienceManager.getLevel(experience) * 2f / 5f) + 2f) * 
+		return (int) ((((((( (ExperienceUtil.getLevel(experience) * 2f / 5f) + 2f) * 
 				getAttack() * ability.power / enemy.getDefense())) / 50f) + 2) * 
                 /*CH ×*/ getR() / 100f) * dmgMultiplier);
 	}
 	
 	private int attackSpecial(Creature enemy, Ability ability){
 		float dmgMultiplier = AffinityDamage.getDamageMultiplier(affinities, enemy.affinities);
-		return (int) ((((((((ExperienceManager.getLevel(experience) * 2f / 5f) + 2f) * 
+		return (int) ((((((((ExperienceUtil.getLevel(experience) * 2f / 5f) + 2f) * 
 				ability.power * getSpecialAttack() / 50f) / enemy.getSpecialDefense())) / 2f) * 
                 /*CH ×*/ getR() / 100f) * dmgMultiplier);
 	}
@@ -137,7 +137,7 @@ public class Creature {
 	}
 	
 	public int getLevel(){
-		return ExperienceManager.getLevel(experience);
+		return ExperienceUtil.getLevel(experience);
 	}
 	
 	public void setIV(Stats iv){
@@ -149,9 +149,9 @@ public class Creature {
 	}
 	
 	public int getPercentLevelComplete(){
-		int currentLevelXP = ExperienceManager.getExperience(getLevel()+1) - 
-			ExperienceManager.getExperience(getLevel());
-		int amountCompleted = experience - ExperienceManager.getExperience(getLevel());
+		int currentLevelXP = ExperienceUtil.getExperience(getLevel()+1) - 
+			ExperienceUtil.getExperience(getLevel());
+		int amountCompleted = experience - ExperienceUtil.getExperience(getLevel());
 		return amountCompleted * 100 / currentLevelXP;
 	}
 	

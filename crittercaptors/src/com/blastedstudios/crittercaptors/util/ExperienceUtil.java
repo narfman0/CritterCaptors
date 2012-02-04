@@ -2,7 +2,7 @@ package com.blastedstudios.crittercaptors.util;
 
 import com.blastedstudios.crittercaptors.creature.Creature;
 
-public class ExperienceManager {
+public class ExperienceUtil {
 	public static final int MAX_LEVEL = 100;
 	private static int[] levelToExperience = new int[MAX_LEVEL];
 	static{

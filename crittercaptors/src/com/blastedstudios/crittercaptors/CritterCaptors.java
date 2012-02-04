@@ -29,14 +29,14 @@ import com.blastedstudios.crittercaptors.character.Base;
 import com.blastedstudios.crittercaptors.character.Character;
 import com.blastedstudios.crittercaptors.creature.CreatureManager;
 import com.blastedstudios.crittercaptors.ui.mainscreen.MainScreen;
-import com.blastedstudios.crittercaptors.util.WorldLocationManager;
+import com.blastedstudios.crittercaptors.util.WorldLocationUtil;
 
 public class CritterCaptors extends Game {
 	public static Random random = new Random();
 	private static HashMap<String,Model> modelMap;
 	private static HashMap<String,Texture> textureMap;
 	private CreatureManager creatureManager;
-	private WorldLocationManager worldLocationManager;
+	private WorldLocationUtil worldLocationManager;
 	private Character character;
 
 	@Override public void create () {
@@ -45,7 +45,7 @@ public class CritterCaptors extends Game {
 		//com.badlogic.gdx.graphics.g3d.loaders.g3d.chunks.G3dExporter.export(model, Gdx.files.absolute("data/models/base.g3d"));
 		
 		creatureManager = new CreatureManager();
-		worldLocationManager = new WorldLocationManager();
+		worldLocationManager = new WorldLocationUtil();
 		textureMap = new HashMap<String, Texture>();
 		textureMap.put("skydome", new Texture(Gdx.files.internal("data/sky/skydome.png"), Format.RGB565, true));
 		textureMap.put("base", new Texture(Gdx.files.internal("data/textures/base.png"), Format.RGB565, true));
@@ -82,7 +82,7 @@ public class CritterCaptors extends Game {
 		this.character = character;
 	}
 	
-	public WorldLocationManager getWorldLocationManager(){
+	public WorldLocationUtil getWorldLocationManager(){
 		return worldLocationManager;
 	}
 

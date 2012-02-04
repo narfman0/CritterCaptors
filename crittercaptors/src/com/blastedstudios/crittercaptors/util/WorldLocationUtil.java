@@ -16,7 +16,7 @@ import com.blastedstudios.crittercaptors.ui.terrain.Terrain;
  * Keep world location up to date. Since floats are too inaccurate, using doubles
  * up to render, and setting initial lat so as to shrink the error when converting
  */
-public class WorldLocationManager {
+public class WorldLocationUtil {
 	private double lat = 0.0, lon = 0.0;
 	private final double latInitial, lonInitial;
 	private BufferedImage worldLocationLastImage;
@@ -24,7 +24,7 @@ public class WorldLocationManager {
 	private static final float TIME_TO_UPDATE = 60;
 	private HashMap<AffinityEnum, Float> currentWorldAffinities;
 	
-	public WorldLocationManager(){
+	public WorldLocationUtil(){
 		latInitial = Gdx.input.getGPSLatitude();
 		lonInitial = Gdx.input.getGPSLongitude();
 	}
