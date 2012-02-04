@@ -20,9 +20,9 @@ import com.blastedstudios.crittercaptors.character.Base;
 import com.blastedstudios.crittercaptors.creature.Creature;
 import com.blastedstudios.crittercaptors.ui.AbstractScreen;
 import com.blastedstudios.crittercaptors.ui.battle.BattleScreen;
+import com.blastedstudios.crittercaptors.ui.terrain.TerrainManager;
 import com.blastedstudios.crittercaptors.util.MercatorUtil;
 import com.blastedstudios.crittercaptors.util.RenderUtil;
-import com.blastedstudios.crittercaptors.util.TerrainManager;
 
 public class WorldMapScreen extends AbstractScreen {
 	private SpriteBatch spriteBatch;
