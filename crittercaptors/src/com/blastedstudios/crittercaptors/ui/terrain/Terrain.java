@@ -12,8 +12,8 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector3;
 
 public class Terrain {
-	public static final int DEFAULT_WIDTH = 32;
-	private final Vector3 location;
+	public static final int DEFAULT_WIDTH = 16;
+	public final Vector3 location;
 	private TerrainChunk chunk;
 	private Mesh mesh;
 	private Texture grass;
@@ -44,7 +44,7 @@ public class Terrain {
 		Gdx.gl10.glEnable(GL10.GL_DEPTH_TEST);
 		Gdx.gl10.glEnable(GL10.GL_TEXTURE_2D);
 		grass.bind();
-		Gdx.gl10.glTranslatef(location.x, location.y, location.z);
+		Gdx.gl10.glTranslatef(location.x-DEFAULT_WIDTH/2, location.y, location.z-DEFAULT_WIDTH/2);
 		mesh.render(GL10.GL_TRIANGLES);
 	}
 

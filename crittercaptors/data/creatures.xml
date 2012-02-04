@@ -18,8 +18,14 @@
 		<ability name="Tackle" level="1"/>
 	</creature>
 	<creature name="Squirrel" experience="0" catchRate=".333" >
-		<baseStats hpMax="39" attack="52" defense="43" specialAttack="60" specialDefense="50" speed="65"/>
-		<evYield hpMax="0" attack="0" defense="1" specialAttack="0" specialDefense="0" speed="0"/>
+		<baseStats hpMax="39" attack="52" defense="43" specialAttack="60" specialDefense="50" speed="67"/>
+		<evYield hpMax="0" attack="0" defense="0" specialAttack="0" specialDefense="0" speed="1"/>
+		<affinity>suburban</affinity>
+		<ability name="Tackle" level="1"/>
+	</creature>
+	<creature name="Chipmunk" experience="0" catchRate=".333" >
+		<baseStats hpMax="37" attack="50" defense="41" specialAttack="62" specialDefense="50" speed="69"/>
+		<evYield hpMax="0" attack="0" defense="0" specialAttack="0" specialDefense="0" speed="1"/>
 		<affinity>urban</affinity>
 		<ability name="Tackle" level="1"/>
 	</creature>

@@ -60,8 +60,9 @@ public class SideWindow extends Window{
 
 	protected void baseButtonHit(CritterCaptors game, Skin skin) {
 		Base base = null;
-		double[] pixels = MercatorUtil.toPixel(game.getWorldLocationManager().getLongitude(), 
-				game.getWorldLocationManager().getLatitude());
+		double[] pixels = MercatorUtil.toPixel(
+				game.getWorldLocationManager().getRelativeLongitude(), 
+				game.getWorldLocationManager().getRelativeLatitude());
 		Vector3 pos = new Vector3((float)pixels[0],0,(float)pixels[1]);
 		for(Base characterBase : game.getCharacter().getBases())
 			if(characterBase.getCachedPosition() != null && 

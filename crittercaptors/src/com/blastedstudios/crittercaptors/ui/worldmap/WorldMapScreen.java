@@ -112,8 +112,8 @@ public class WorldMapScreen extends AbstractScreen {
 	@Override public void resize (int width, int height) {
         camera = RenderUtil.resize(width, height);
         double[] mercator = MercatorUtil.toPixel(
-        		game.getWorldLocationManager().getLongitude(), 
-        		game.getWorldLocationManager().getLatitude());
+        		game.getWorldLocationManager().getRelativeLongitude(),
+        		game.getWorldLocationManager().getRelativeLatitude());
         camera.translate((float)mercator[0], 0, (float)mercator[1]);
         camera.update();
 	}

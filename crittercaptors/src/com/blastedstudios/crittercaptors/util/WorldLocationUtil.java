@@ -17,23 +17,24 @@ import com.blastedstudios.crittercaptors.ui.terrain.Terrain;
  * up to render, and setting initial lat so as to shrink the error when converting
  */
 public class WorldLocationUtil {
-	private double lat = 0.0, lon = 0.0;
-	private final double latInitial, lonInitial;
+	private double lat = 36.878705, lon = -76.260400;
+	public final double latInitial, lonInitial;
 	private BufferedImage worldLocationLastImage;
 	private float timeSinceLastUpdate = TIME_TO_UPDATE;
 	private static final float TIME_TO_UPDATE = 60;
 	private HashMap<AffinityEnum, Float> currentWorldAffinities;
 	
 	public WorldLocationUtil(){
-		latInitial = Gdx.input.getGPSLatitude();
-		lonInitial = Gdx.input.getGPSLongitude();
+		latInitial = 36.878705;//Gdx.input.getGPSLatitude();
+		lonInitial = -76.260400;//Gdx.input.getGPSLongitude();
 	}
 
 	public void update(){
 		timeSinceLastUpdate += Gdx.graphics.getDeltaTime();
 		if(timeSinceLastUpdate > TIME_TO_UPDATE){
-			lat = Gdx.input.getGPSLatitude();
-			lon = Gdx.input.getGPSLongitude();
+			//TODO add back in updates
+			//lat = Gdx.input.getGPSLatitude();
+			//lon = Gdx.input.getGPSLongitude();
 			timeSinceLastUpdate = 0;
 			try {
 				worldLocationLastImage = ImageIO.read(
@@ -49,9 +50,17 @@ public class WorldLocationUtil {
 	public double getLatitude(){
 		return lat;
 	}
-	
+
 	public double getLongitude(){
 		return lon;
+	}
+
+	public double getRelativeLongitude(){
+		return lonInitial - lon;
+	}
+
+	public double getRelativeLatitude(){
+		return latInitial - lat;
 	}
 
 	public float[] getHeightmap(Vector3 location){
@@ -61,8 +70,8 @@ public class WorldLocationUtil {
 				double geoCoordX = x-(Terrain.DEFAULT_WIDTH + 1)/2+location.x;
 				double geoCoordZ = z-(Terrain.DEFAULT_WIDTH + 1)/2+location.z;
 				double[] latlon = MercatorUtil.toGeoCoord(geoCoordX, geoCoordZ);
-				latlon[0] += lonInitial;
-				latlon[1] += latInitial;
+				latlon[0] += lon;
+				latlon[1] += lat;
 				heightMap[x*(Terrain.DEFAULT_WIDTH+1)+z] = (float)getAltitude(latlon[0], latlon[1]);
 			}
 		return heightMap;
@@ -75,7 +84,7 @@ public class WorldLocationUtil {
 	/**
 	 * Found at http://stackoverflow.com/questions/1995998/android-get-altitude-by-longitude-and-latitude
 	 * Note alternative: http://www.earthtools.org/webservices.htm#height
-	 * @return altitude in meters
+	 * @return altitude in meters, clamped to -10 minimum
 	 */
 	public static double getAltitude(Double longitude, Double latitude) {
 		double result = Double.NaN;
@@ -92,6 +101,6 @@ public class WorldLocationUtil {
 			String value = html.substring(start, end);
 			result = Double.parseDouble(value);
 		}
-		return result;
+		return Math.max(-10, result);
 	}
 }
