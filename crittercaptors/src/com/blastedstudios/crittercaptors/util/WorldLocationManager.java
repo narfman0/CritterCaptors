@@ -1,21 +1,10 @@
 package com.blastedstudios.crittercaptors.util;
 
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
 import java.util.HashMap;
 
 import javax.imageio.ImageIO;
-
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.protocol.BasicHttpContext;
-import org.apache.http.protocol.HttpContext;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector3;
@@ -86,38 +75,23 @@ public class WorldLocationManager {
 	/**
 	 * Found at http://stackoverflow.com/questions/1995998/android-get-altitude-by-longitude-and-latitude
 	 * Note alternative: http://www.earthtools.org/webservices.htm#height
+	 * @return altitude in meters
 	 */
 	public static double getAltitude(Double longitude, Double latitude) {
-	    double result = Double.NaN;
-	    HttpClient httpClient = new DefaultHttpClient();
-	    HttpContext localContext = new BasicHttpContext();
-	    String url = "http://gisdata.usgs.gov/"
-	            + "xmlwebservices2/elevation_service.asmx/"
-	            + "getElevation?X_Value=" + String.valueOf(longitude)
-	            + "&Y_Value=" + String.valueOf(latitude)
-	            + "&Elevation_Units=METERS&Source_Layer=-1&Elevation_Only=true";
-	    HttpGet httpGet = new HttpGet(url);
-	    try {
-	        HttpResponse response = httpClient.execute(httpGet, localContext);
-	        HttpEntity entity = response.getEntity();
-	        if (entity != null) {
-	            InputStream instream = entity.getContent();
-	            int r = -1;
-	            StringBuffer respStr = new StringBuffer();
-	            while ((r = instream.read()) != -1)
-	                respStr.append((char) r);
-	            String tagOpen = "<double>";
-	            String tagClose = "</double>";
-	            if (respStr.indexOf(tagOpen) != -1) {
-	                int start = respStr.indexOf(tagOpen) + tagOpen.length();
-	                int end = respStr.indexOf(tagClose);
-	                String value = respStr.substring(start, end);
-	                result = Double.parseDouble(value);
-	            }
-	            instream.close();
-	        }
-	    } catch (ClientProtocolException e) {} 
-	    catch (IOException e) {}
-	    return result;
+		double result = Double.NaN;
+		String html = HTMLUtil.getHTML("http://gisdata.usgs.gov/"
+				+ "xmlwebservices2/elevation_service.asmx/"
+				+ "getElevation?X_Value=" + String.valueOf(longitude)
+				+ "&Y_Value=" + String.valueOf(latitude)
+				+ "&Elevation_Units=METERS&Source_Layer=-1&Elevation_Only=true");
+		String tagOpen = "<double>";
+		String tagClose = "</double>";
+		if (html.indexOf(tagOpen) != -1) {
+			int start = html.indexOf(tagOpen) + tagOpen.length();
+			int end = html.indexOf(tagClose);
+			String value = html.substring(start, end);
+			result = Double.parseDouble(value);
+		}
+		return result;
 	}
 }

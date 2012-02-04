@@ -12,7 +12,7 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector3;
 
 public class Terrain {
-	public static final int DEFAULT_WIDTH = 64;
+	public static final int DEFAULT_WIDTH = 32;
 	private final Vector3 location;
 	private TerrainChunk chunk;
 	private Mesh mesh;
