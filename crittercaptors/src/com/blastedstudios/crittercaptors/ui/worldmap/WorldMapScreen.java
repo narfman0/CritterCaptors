@@ -3,8 +3,10 @@ package com.blastedstudios.crittercaptors.ui.worldmap;
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.Input.Peripheral;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
@@ -63,12 +65,18 @@ public class WorldMapScreen extends AbstractScreen {
 		Gdx.gl10.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 		processInput();
 		RenderUtil.drawSky(CritterCaptors.getModel("skydome"), CritterCaptors.getTexture("skydome"), camera.position);
-		for(Base base : game.getCharacter().getBases())
-			base.render();
-		for(Creature creature : game.getCreatureManager().getCreatures())
-			RenderUtil.drawModel(CritterCaptors.getModel(creature.getName()), CritterCaptors.getTexture(creature.getName()), 
-					creature.camera.position, creature.camera.direction, new Vector3(1f,1f,1f));
+		for(Creature creature : game.getCreatureManager().getCreatures()){
+			Vector3 position = creature.camera.position.tmp();
+			position.y += terrainManager.getHeight(position.x, position.z);
+			Texture texture = CritterCaptors.getTexture(creature.getName());
+			RenderUtil.drawModel(CritterCaptors.getModel(creature.getName()), texture, 
+					position, creature.camera.direction, new Vector3(1f,1f,1f));
+		}
 		terrainManager.render(camera.position);
+		
+		//render base after terrain to cache location (need terrain to get height of base)
+		for(Base base : game.getCharacter().getBases())
+			base.render(terrainManager, game.getWorldLocationManager());
 		
 		spriteBatch.begin();
 		font.drawMultiLine(spriteBatch, "acc x=" + Gdx.input.getAccelerometerX() + 
@@ -77,10 +85,10 @@ public class WorldMapScreen extends AbstractScreen {
 				"\nazimuth=" + Gdx.input.getAzimuth() + 
 				"\npitch=" + Gdx.input.getPitch() + 
 				"\nroll=" + Gdx.input.getRoll(), 4, 256);
-		font.drawMultiLine(spriteBatch, /*"gpsIsAvailable=" + Gdx.input.isPeripheralAvailable(Peripheral.GPS) +
+		font.drawMultiLine(spriteBatch, "gpsIsAvailable=" + Gdx.input.isPeripheralAvailable(Peripheral.GPS) +
 				"\nlat=" + Gdx.input.getGPSLatitude() + 
 				"\nlon=" + Gdx.input.getGPSLongitude() + 
-				"\nalt=" + Gdx.input.getGPSAltitude() +*/
+				"\nalt=" + Gdx.input.getGPSAltitude() +
 				"\nnumCharacterCreatures=" + game.getCharacter().getOwnedCreatures().size() +
 				"\nnumCreatures=" + game.getCreatureManager().getCreatures().size() +
 				"\ncurrentLocation=" + camera.position.x + "," + camera.position.z + 
@@ -105,6 +113,7 @@ public class WorldMapScreen extends AbstractScreen {
 			if(sideMenu == null || sideMenu.dispose)
 				stage.addActor(sideMenu = new SideWindow(game, skin));
 		camera.position.add(movement.mul(MOVE_SPEED));
+		camera.position.y = terrainManager.getHeight(camera.position.x, camera.position.z)+1;
         camera.update();
         camera.apply(Gdx.gl10);
 	}

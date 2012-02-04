@@ -5,8 +5,10 @@ import org.w3c.dom.Element;
 
 import com.badlogic.gdx.math.Vector3;
 import com.blastedstudios.crittercaptors.CritterCaptors;
+import com.blastedstudios.crittercaptors.ui.terrain.TerrainManager;
 import com.blastedstudios.crittercaptors.util.MercatorUtil;
 import com.blastedstudios.crittercaptors.util.RenderUtil;
+import com.blastedstudios.crittercaptors.util.WorldLocationUtil;
 
 public class Base {
 	public static final float BASE_DISTANCE = 100f;
@@ -23,12 +25,11 @@ public class Base {
 		return cachedPosition;
 	}
 	
-	public void render(){
+	public void render(TerrainManager terrainManager, WorldLocationUtil worldLocationUtil){
 		if(cachedPosition == null){
-			double[] mercator = MercatorUtil.toPixel(lon, lat);
-			float x = (float)mercator[0], z = (float)mercator[1];
-			//TODO use initial lat/lon
-			cachedPosition = new Vector3(x, 2, z);
+			double[] mercator = MercatorUtil.toPixel(worldLocationUtil.lonInitial - lon, worldLocationUtil.latInitial - lat);
+			float x = (float)mercator[0], z = (float)mercator[1], y = terrainManager.getHeight(x, z) + 2;
+			cachedPosition = new Vector3(x, y, z);
 		}
 		RenderUtil.drawModel(CritterCaptors.getModel("base"), CritterCaptors.getTexture("base"),
 				cachedPosition, new Vector3(), new Vector3(2,2,2));
