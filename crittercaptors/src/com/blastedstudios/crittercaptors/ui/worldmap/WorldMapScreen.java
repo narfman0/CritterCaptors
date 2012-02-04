@@ -19,10 +19,10 @@ import com.blastedstudios.crittercaptors.CritterCaptors;
 import com.blastedstudios.crittercaptors.character.Base;
 import com.blastedstudios.crittercaptors.creature.Creature;
 import com.blastedstudios.crittercaptors.ui.AbstractScreen;
-import com.blastedstudios.crittercaptors.ui.terrain.Terrain;
 import com.blastedstudios.crittercaptors.ui.battle.BattleScreen;
 import com.blastedstudios.crittercaptors.util.MercatorUtil;
 import com.blastedstudios.crittercaptors.util.RenderUtil;
+import com.blastedstudios.crittercaptors.util.TerrainManager;
 
 public class WorldMapScreen extends AbstractScreen {
 	private SpriteBatch spriteBatch;
@@ -31,7 +31,7 @@ public class WorldMapScreen extends AbstractScreen {
     public static final float MOVE_SPEED = 10f, TURN_RATE = 100f,
 		REMOVE_DISTANCE = 1000000f, FIGHT_DISTANCE = 20f;
     private SideWindow sideMenu = null;
-    private Terrain terrain;
+    private TerrainManager terrainManager;
     
     public WorldMapScreen(CritterCaptors game) {
     	this(game, false);
@@ -42,7 +42,7 @@ public class WorldMapScreen extends AbstractScreen {
 		spriteBatch = new SpriteBatch();
 		font = new BitmapFont(Gdx.files.getFileHandle("data/fonts/arial-15.fnt", FileType.Internal), 
 				Gdx.files.getFileHandle("data/fonts/arial-15.png", FileType.Internal), false);
-		terrain = new Terrain(new byte[(Terrain.DEFAULT_WIDTH + 1) * (Terrain.DEFAULT_WIDTH + 1)]);
+		terrainManager = new TerrainManager(game.getWorldLocationManager());
 		if(isNewCharacter)
 			showNewCharacterWindow();
 	}
@@ -64,11 +64,11 @@ public class WorldMapScreen extends AbstractScreen {
 		processInput();
 		RenderUtil.drawSky(CritterCaptors.getModel("skydome"), CritterCaptors.getTexture("skydome"), camera.position);
 		for(Base base : game.getCharacter().getBases())
-			base.render(terrain);
+			base.render();
 		for(Creature creature : game.getCreatureManager().getCreatures())
 			RenderUtil.drawModel(CritterCaptors.getModel(creature.getName()), CritterCaptors.getTexture(creature.getName()), 
 					creature.camera.position, creature.camera.direction, new Vector3(1f,1f,1f));
-		terrain.render();
+		terrainManager.render(camera.position);
 		
 		spriteBatch.begin();
 		font.drawMultiLine(spriteBatch, "acc x=" + Gdx.input.getAccelerometerX() + 

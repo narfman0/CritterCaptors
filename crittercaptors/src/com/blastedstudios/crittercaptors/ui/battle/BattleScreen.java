@@ -16,14 +16,23 @@ import com.blastedstudios.crittercaptors.CritterCaptors;
 import com.blastedstudios.crittercaptors.util.ExperienceManager;
 import com.blastedstudios.crittercaptors.creature.Creature;
 import com.blastedstudios.crittercaptors.ui.AbstractScreen;
+import com.blastedstudios.crittercaptors.ui.terrain.Terrain;
 import com.blastedstudios.crittercaptors.ui.worldmap.WorldMapScreen;
 import com.blastedstudios.crittercaptors.util.RenderUtil;
 
 public class BattleScreen extends AbstractScreen {
+    private static final Terrain terrain;
 	private Creature enemy;
     private Camera camera;
     private CreatureInfoWindow creatureInfoWindow, enemyInfoWindow;
     private SpriteBatch spriteBatch;
+    static{
+    	float[] heightMap = new float[(Terrain.DEFAULT_WIDTH + 1) * (Terrain.DEFAULT_WIDTH + 1)];
+		for(int x=0; x<Terrain.DEFAULT_WIDTH; x++){
+			heightMap[Terrain.DEFAULT_WIDTH*Terrain.DEFAULT_WIDTH + x] = 5f + (float)Math.sin(x/4);
+		}
+		terrain = new Terrain(heightMap, new Vector3(-Terrain.DEFAULT_WIDTH/2,0,-Terrain.DEFAULT_WIDTH/2));
+    }
 
 	public BattleScreen(CritterCaptors game, Creature enemy) {
 		super(game);
@@ -42,10 +51,11 @@ public class BattleScreen extends AbstractScreen {
 		
 		Gdx.gl10.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 		RenderUtil.drawSky(CritterCaptors.getModel("skydome"), CritterCaptors.getTexture("skydome"), camera.position);
+		terrain.render();
 		RenderUtil.drawModel(CritterCaptors.getModel(enemy.getName()), CritterCaptors.getTexture(enemy.getName()),
-				new Vector3(-3, 0, 10), new Vector3(-1,0,-1), new Vector3(100f,100f,100f));
+				new Vector3(-3, 0, 10), new Vector3(-1,0,-1), new Vector3(1,1,1));
 		RenderUtil.drawModel(CritterCaptors.getModel(game.getCharacter().getActiveCreature().getName()), 
-				CritterCaptors.getTexture(enemy.getName()), new Vector3(1, 0, 3.5f), new Vector3(1,0,1), new Vector3(100f,100f,100f));
+				CritterCaptors.getTexture(enemy.getName()), new Vector3(1, 0, 3.5f), new Vector3(1,0,1), new Vector3(1,1,1));
 
 		spriteBatch.begin();
 		spriteBatch.end();

@@ -9,14 +9,17 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.math.Vector3;
 
 public class Terrain {
-	public static final int DEFAULT_WIDTH = 128;
+	public static final int DEFAULT_WIDTH = 64;
+	private final Vector3 location;
 	private TerrainChunk chunk;
 	private Mesh mesh;
 	private Texture grass;
 
-	public Terrain (final byte[] heightMap) {
+	public Terrain (final float[] heightMap, final Vector3 location) {
+		this.location = location;
 		chunk = new TerrainChunk(DEFAULT_WIDTH, DEFAULT_WIDTH, heightMap, 4);
 		grass = new Texture(Gdx.files.internal("data/textures/grass1.jpg"), Format.RGB565, true);
 
@@ -39,21 +42,21 @@ public class Terrain {
 
 	public void render () {
 		Gdx.gl10.glEnable(GL10.GL_DEPTH_TEST);
-		//Gdx.gl10.glColor4f(1, 1, 1, 1);
 		Gdx.gl10.glEnable(GL10.GL_TEXTURE_2D);
 		grass.bind();
+		Gdx.gl10.glTranslatef(location.x, location.y, location.z);
 		mesh.render(GL10.GL_TRIANGLES);
 	}
 
 	final static class TerrainChunk {
-		public final byte[] heightMap;
+		public final float[] heightMap;
 		public final short width;
 		public final short height;
 		public final float[] vertices;
 		public final short[] indices;
 		public final int vertexSize;
 
-		public TerrainChunk (final int width, final int height, final byte[] heightMap, int vertexSize) {
+		public TerrainChunk (final int width, final int height, final float[] heightMap, int vertexSize) {
 			if ((width + 1) * (height + 1) > Short.MAX_VALUE)
 				throw new IllegalArgumentException("Chunk size too big, (width + 1)*(height+1) must be <= 32767");
 
