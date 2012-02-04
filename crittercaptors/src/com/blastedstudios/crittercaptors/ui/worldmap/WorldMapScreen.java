@@ -29,7 +29,7 @@ public class WorldMapScreen extends AbstractScreen {
 	private BitmapFont font;
     private Camera camera;
     public static final float MOVE_SPEED = 10f, TURN_RATE = 100f,
-		REMOVE_DISTANCE = 1000000f, FIGHT_DISTANCE = 40f;
+		REMOVE_DISTANCE = 1000000f, FIGHT_DISTANCE = 20f;
     private SideWindow sideMenu = null;
     private Terrain terrain;
     
@@ -66,8 +66,8 @@ public class WorldMapScreen extends AbstractScreen {
 		for(Base base : game.getCharacter().getBases())
 			base.render(terrain);
 		for(Creature creature : game.getCreatureManager().getCreatures())
-			RenderUtil.drawModel(CritterCaptors.getModel(creature.getName()), null, creature.camera.position, 
-					creature.camera.direction, new Vector3(100f,100f,100f));
+			RenderUtil.drawModel(CritterCaptors.getModel(creature.getName()), CritterCaptors.getTexture(creature.getName()), 
+					creature.camera.position, creature.camera.direction, new Vector3(1f,1f,1f));
 		terrain.render();
 		
 		spriteBatch.begin();

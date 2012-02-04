@@ -42,10 +42,10 @@ public class BattleScreen extends AbstractScreen {
 		
 		Gdx.gl10.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 		RenderUtil.drawSky(CritterCaptors.getModel("skydome"), CritterCaptors.getTexture("skydome"), camera.position);
-		RenderUtil.drawModel(CritterCaptors.getModel(enemy.getName()), null, new Vector3(-3, 0, 10), 
-				new Vector3(-1,0,-1), new Vector3(100f,100f,100f));
-		RenderUtil.drawModel(CritterCaptors.getModel(enemy.getName()), null, new Vector3(1, 0, 3.5f), 
-				new Vector3(1,0,1), new Vector3(100f,100f,100f));
+		RenderUtil.drawModel(CritterCaptors.getModel(enemy.getName()), CritterCaptors.getTexture(enemy.getName()),
+				new Vector3(-3, 0, 10), new Vector3(-1,0,-1), new Vector3(100f,100f,100f));
+		RenderUtil.drawModel(CritterCaptors.getModel(game.getCharacter().getActiveCreature().getName()), 
+				CritterCaptors.getTexture(enemy.getName()), new Vector3(1, 0, 3.5f), new Vector3(1,0,1), new Vector3(100f,100f,100f));
 
 		spriteBatch.begin();
 		spriteBatch.end();
