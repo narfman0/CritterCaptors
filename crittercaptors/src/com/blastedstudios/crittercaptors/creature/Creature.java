@@ -52,15 +52,17 @@ public class Creature {
 	}
 
 	private int attackPhysical(Creature enemy, Ability ability){
-		return (int) (((((( (ExperienceManager.getLevel(experience) * 2f / 5f) + 2f) * 
-				getAttack() * ability.power / enemy.getDefense())) / 50f) * 
-                /*CH ×*/ getR() / 100f) * AffinityDamage.getDamageMultiplier(affinities, enemy.affinities));
+		float dmgMultiplier = AffinityDamage.getDamageMultiplier(affinities, enemy.affinities);
+		return (int) ((((((( (ExperienceManager.getLevel(experience) * 2f / 5f) + 2f) * 
+				getAttack() * ability.power / enemy.getDefense())) / 50f) + 2) * 
+                /*CH ×*/ getR() / 100f) * dmgMultiplier);
 	}
 	
 	private int attackSpecial(Creature enemy, Ability ability){
+		float dmgMultiplier = AffinityDamage.getDamageMultiplier(affinities, enemy.affinities);
 		return (int) ((((((((ExperienceManager.getLevel(experience) * 2f / 5f) + 2f) * 
 				ability.power * getSpecialAttack() / 50f) / enemy.getSpecialDefense())) / 2f) * 
-                /*CH ×*/ getR() / 100f) * AffinityDamage.getDamageMultiplier(ability.affinity, enemy.affinities));
+                /*CH ×*/ getR() / 100f) * dmgMultiplier);
 	}
 	
 	public int attack(Creature enemy, String abilityName){

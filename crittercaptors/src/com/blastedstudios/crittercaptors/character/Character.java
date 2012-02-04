@@ -96,6 +96,7 @@ public class Character {
 					creature.setIV(Stats.fromXML((Element)creatureElement.getElementsByTagName("ivStats").item(0)));
 					creature.setEV(Stats.fromXML((Element)creatureElement.getElementsByTagName("evStats").item(0)));
 					creature.setHappiness(Integer.parseInt(creatureElement.getAttribute("happiness")));
+					creature.heal();
 					if(creatureElement.hasAttribute("active"))
 						creature.setActive(Integer.parseInt(creatureElement.getAttribute("active")));
 					ownedCreatures.add(creature);
