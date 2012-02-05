@@ -3,6 +3,7 @@ package com.blastedstudios.crittercaptors.ui.battle;
 import java.util.HashMap;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.ClickListener;
@@ -34,6 +35,10 @@ public class CreatureSelectWindow extends Window {
 				});
 				if(battleScreen.getActiveCreature() == creature || creature.getHPCurrent() == 0)
 					button.touchable = false;
+				if(battleScreen.getActiveCreature() == creature)
+					button.color.set(Color.DARK_GRAY);
+				if(creature.getHPCurrent() == 0)
+					button.color.set(Color.RED);
 			}
 			else
 				button = new TextButton("", skin.getStyle(TextButtonStyle.class), "creature");

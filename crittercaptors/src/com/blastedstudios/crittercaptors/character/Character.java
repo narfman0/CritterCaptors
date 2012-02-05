@@ -57,8 +57,12 @@ public class Character {
 		return bases;
 	}
 	
-	public Creature getActiveCreature(){
-		return ownedCreatures.get(0);
+	public Creature getNextActiveCreature(){
+		HashMap<Integer, Creature> creatures = getActiveCreatures();
+		for(int i : creatures.keySet())
+			if(creatures.containsKey(i) && creatures.get(i).getHPCurrent() > 0)
+				return creatures.get(i);
+		return null;
 	}
 	
 	public int getNextEmptyActiveIndex(){
@@ -131,14 +135,6 @@ public class Character {
 	public void sell(Creature creature) {
 		cash += creature.getWorth();
 		ownedCreatures.remove(creature);
-	}
-	
-	public boolean isAnyCreatureAlive(){
-		HashMap<Integer,Creature> active = getActiveCreatures();
-		for(int i : active.keySet())
-			if(active.get(i).getHPCurrent() > 0)
-				return true;
-		return false;
 	}
 
 	public int blackout() {

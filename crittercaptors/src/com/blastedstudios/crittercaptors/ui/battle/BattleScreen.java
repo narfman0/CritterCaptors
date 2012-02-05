@@ -3,7 +3,6 @@ package com.blastedstudios.crittercaptors.ui.battle;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
@@ -25,7 +24,6 @@ public class BattleScreen extends AbstractScreen {
 	private Creature enemy, activeCreature;
     private Camera camera;
     private CreatureInfoWindow creatureInfoWindow, enemyInfoWindow;
-    private SpriteBatch spriteBatch;
     static{
     	float[] heightMap = new float[(Terrain.DEFAULT_WIDTH + 1) * (Terrain.DEFAULT_WIDTH + 1)];
 		for(int x=0; x<Terrain.DEFAULT_WIDTH; x++){
@@ -37,13 +35,14 @@ public class BattleScreen extends AbstractScreen {
 	public BattleScreen(CritterCaptors game, Creature enemy) {
 		super(game);
 		this.enemy = enemy;
-		activeCreature = game.getCharacter().getActiveCreature();
+		activeCreature = game.getCharacter().getNextActiveCreature();
+		if(activeCreature == null)
+			game.setScreen(new BlackoutScreen(game));
 		creatureInfoWindow = new CreatureInfoWindow(game, skin, activeCreature, 0, (int)stage.height()-200);
 		enemyInfoWindow = new CreatureInfoWindow(game, skin, enemy, (int)stage.width()-236, 200);
 		stage.addActor(creatureInfoWindow);
 		stage.addActor(enemyInfoWindow);
 		stage.addActor(new BottomWindow(game, skin, this));
-		spriteBatch = new SpriteBatch();
 	}
 	
 	@Override public void render(float arg0){
@@ -58,8 +57,6 @@ public class BattleScreen extends AbstractScreen {
 		RenderUtil.drawModel(CritterCaptors.getModel(activeCreature.getName()), 
 				CritterCaptors.getTexture(activeCreature.getName()), new Vector3(1, 0, 3.5f), new Vector3(1,0,1), new Vector3(1,1,1));
 
-		spriteBatch.begin();
-		spriteBatch.end();
 		stage.act(arg0);
 		stage.draw();
 	}
@@ -73,7 +70,7 @@ public class BattleScreen extends AbstractScreen {
 			game.setScreen(new WorldMapScreen(game));
 		}else
 			if(activeCreature.receiveDamage(enemy.attack(activeCreature, enemy.getActiveAbilities().get(enemyChoice).name))){
-				if(game.getCharacter().isAnyCreatureAlive())
+				if(game.getCharacter().getNextActiveCreature() != null)
 					stage.addActor(new CreatureSelectWindow(game, skin, this));
 				else
 					game.setScreen(new BlackoutScreen(game));
