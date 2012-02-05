@@ -17,10 +17,9 @@ public class FightWindow extends Window {
 	public FightWindow(final CritterCaptors game, final Skin skin, final BattleScreen battleScreen) {
 		super("Fight", skin);
 		final List<Button> attackButtons = new ArrayList<Button>();
-		for(Ability ability : game.getCharacter().getActiveCreature().getActiveAbilities())
+		for(Ability ability : battleScreen.getActiveCreature().getActiveAbilities())
 			attackButtons.add(new TextButton(ability.name, skin.getStyle(TextButtonStyle.class), ability.name));
 		final Button cancelButton = new TextButton("Cancel", skin.getStyle(TextButtonStyle.class), "cancel");
-		//final Button creaturesButton = new TextButton("Creatures", skin.getStyle(TextButtonStyle.class), "creatures");
 		cancelButton.setClickListener(new ClickListener() {
 			@Override public void click(Actor actor, float arg1, float arg2) {
 				actor.getStage().addActor(new BottomWindow(game, skin, battleScreen));
@@ -42,8 +41,6 @@ public class FightWindow extends Window {
 			add(attackButtons.get(1));
 		if(attackButtons.size()>3)
 			add(attackButtons.get(3));
-		//add(creaturesButton);
-		//row();
 		add(cancelButton);
 		pack();
 		x = 8;

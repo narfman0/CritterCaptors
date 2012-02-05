@@ -16,8 +16,14 @@ public class BottomWindow extends Window {
 		final Button fightButton = new TextButton("Fight", skin.getStyle(TextButtonStyle.class), "fight");
 		final Button captureButton = new TextButton("Capture", skin.getStyle(TextButtonStyle.class), "capture");
 		final Button runButton = new TextButton("Run", skin.getStyle(TextButtonStyle.class), "run");
-		//final Button creaturesButton = new TextButton("Creatures", skin.getStyle(TextButtonStyle.class), "creatures");
-		//bag
+		final Button creaturesButton = new TextButton("Creatures", skin.getStyle(TextButtonStyle.class), "creatures");
+		//bag?
+		creaturesButton.setClickListener(new ClickListener() {
+			@Override public void click(Actor actor, float arg1, float arg2) {
+				actor.getStage().addActor(new CreatureSelectWindow(game, skin, battleScreen));
+				actor.getStage().removeActor(actor.parent);
+			}
+		});
 		runButton.setClickListener(new ClickListener() {
 			@Override public void click(Actor actor, float arg1, float arg2) {
 				actor.getStage().removeActor(actor.parent);
@@ -39,8 +45,8 @@ public class BottomWindow extends Window {
 		row();
 		add(captureButton);
 		row();
-		//add(creaturesButton);
-		//row();
+		add(creaturesButton);
+		row();
 		add(runButton);
 		pack();
 		x = 8;

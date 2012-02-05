@@ -132,6 +132,14 @@ public class Character {
 		cash += creature.getWorth();
 		ownedCreatures.remove(creature);
 	}
+	
+	public boolean isAnyCreatureAlive(){
+		HashMap<Integer,Creature> active = getActiveCreatures();
+		for(int i : active.keySet())
+			if(active.get(i).getHPCurrent() > 0)
+				return true;
+		return false;
+	}
 
 	public int blackout() {
 		int lost = cash/10;

@@ -22,7 +22,7 @@ import com.blastedstudios.crittercaptors.util.RenderUtil;
 
 public class BattleScreen extends AbstractScreen {
     private static final Terrain terrain;
-	private Creature enemy;
+	private Creature enemy, activeCreature;
     private Camera camera;
     private CreatureInfoWindow creatureInfoWindow, enemyInfoWindow;
     private SpriteBatch spriteBatch;
@@ -37,7 +37,8 @@ public class BattleScreen extends AbstractScreen {
 	public BattleScreen(CritterCaptors game, Creature enemy) {
 		super(game);
 		this.enemy = enemy;
-		creatureInfoWindow = new CreatureInfoWindow(game, skin, game.getCharacter().getActiveCreature(), 0, (int)stage.height()-200);
+		activeCreature = game.getCharacter().getActiveCreature();
+		creatureInfoWindow = new CreatureInfoWindow(game, skin, activeCreature, 0, (int)stage.height()-200);
 		enemyInfoWindow = new CreatureInfoWindow(game, skin, enemy, (int)stage.width()-236, 200);
 		stage.addActor(creatureInfoWindow);
 		stage.addActor(enemyInfoWindow);
@@ -54,8 +55,8 @@ public class BattleScreen extends AbstractScreen {
 		terrain.render();
 		RenderUtil.drawModel(CritterCaptors.getModel(enemy.getName()), CritterCaptors.getTexture(enemy.getName()),
 				new Vector3(-3, 0, 10), new Vector3(-1,0,-1), new Vector3(1,1,1));
-		RenderUtil.drawModel(CritterCaptors.getModel(game.getCharacter().getActiveCreature().getName()), 
-				CritterCaptors.getTexture(enemy.getName()), new Vector3(1, 0, 3.5f), new Vector3(1,0,1), new Vector3(1,1,1));
+		RenderUtil.drawModel(CritterCaptors.getModel(activeCreature.getName()), 
+				CritterCaptors.getTexture(activeCreature.getName()), new Vector3(1, 0, 3.5f), new Vector3(1,0,1), new Vector3(1,1,1));
 
 		spriteBatch.begin();
 		spriteBatch.end();
@@ -65,15 +66,17 @@ public class BattleScreen extends AbstractScreen {
 
 	public void fight(String name) {
 		int enemyChoice = CritterCaptors.random.nextInt(enemy.getActiveAbilities().size());
-		Creature playerCreature = game.getCharacter().getActiveCreature(); 
-		if(enemy.receiveDamage(playerCreature.attack(enemy, name))){//enemy is dead
+		if(enemy.receiveDamage(activeCreature.attack(enemy, name))){//enemy is dead
 			//show window indicating victory!
-			playerCreature.addExperience(ExperienceUtil.getKillExperience(enemy));
-			playerCreature.getEV().add(enemy.getEVYield());
+			activeCreature.addExperience(ExperienceUtil.getKillExperience(enemy));
+			activeCreature.getEV().add(enemy.getEVYield());
 			game.setScreen(new WorldMapScreen(game));
 		}else
-			if(playerCreature.receiveDamage(enemy.attack(playerCreature, enemy.getActiveAbilities().get(enemyChoice).name))){
-				game.setScreen(new BlackoutScreen(game));
+			if(activeCreature.receiveDamage(enemy.attack(activeCreature, enemy.getActiveAbilities().get(enemyChoice).name))){
+				if(game.getCharacter().isAnyCreatureAlive())
+					stage.addActor(new CreatureSelectWindow(game, skin, this));
+				else
+					game.setScreen(new BlackoutScreen(game));
 				return;
 			}
 		creatureInfoWindow.update();
@@ -93,7 +96,8 @@ public class BattleScreen extends AbstractScreen {
 			game.getCharacter().getOwnedCreatures().add(enemy);
 			game.setScreen(new WorldMapScreen(game));
 			return;
-		}
+		}else
+			fight(null);
 		final Window failWindow = new Window(skin);
 		final Button okButton = new TextButton("Ok", skin.getStyle(TextButtonStyle.class), "ok");
 		okButton.setClickListener(new ClickListener() {
@@ -113,5 +117,16 @@ public class BattleScreen extends AbstractScreen {
 		failWindow.y = Gdx.graphics.getHeight() / 2 - failWindow.height / 2;
 		stage.addActor(failWindow);
 		
+	}
+
+	public Creature getActiveCreature() {
+		return activeCreature;
+	}
+
+	public void setActiveCreature(Creature activeCreature) {
+		this.activeCreature = activeCreature;
+		stage.removeActor(creatureInfoWindow);
+		creatureInfoWindow = new CreatureInfoWindow(game, skin, activeCreature, 0, (int)stage.height()-200);
+		stage.addActor(creatureInfoWindow);
 	}
 }
