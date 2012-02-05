@@ -11,7 +11,7 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector3;
 
 public class Terrain {
-	public static final int DEFAULT_WIDTH = 8,
+	public static final int DEFAULT_WIDTH = 16,
 			DEFAULT_WIDTH_DIV2 = DEFAULT_WIDTH/2,
 			DEFAULT_WIDTH_TIM2 = DEFAULT_WIDTH*2;
 	public final Vector3 location;

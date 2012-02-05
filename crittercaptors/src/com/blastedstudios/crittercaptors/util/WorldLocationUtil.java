@@ -3,6 +3,9 @@ package com.blastedstudios.crittercaptors.util;
 import java.awt.image.BufferedImage;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import javax.imageio.ImageIO;
 
@@ -23,10 +26,12 @@ public class WorldLocationUtil {
 	private float timeSinceLastUpdate = TIME_TO_UPDATE;
 	private static final float TIME_TO_UPDATE = 60;
 	private HashMap<AffinityEnum, Float> currentWorldAffinities;
+	private final ExecutorService heightmapThreadExecuterService;
 	
 	public WorldLocationUtil(){
 		latInitial = 36.878705;//Gdx.input.getGPSLatitude();
 		lonInitial = -76.260400;//Gdx.input.getGPSLongitude();
+		heightmapThreadExecuterService = Executors.newCachedThreadPool();
 	}
 
 	public void update(){
@@ -36,10 +41,10 @@ public class WorldLocationUtil {
 			//lat = Gdx.input.getGPSLatitude();
 			//lon = Gdx.input.getGPSLongitude();
 			timeSinceLastUpdate = 0;
+			String url = "http://ojw.dev.openstreetmap.org/StaticMap/?lat="+
+					lat+"&lon="+lon+"&z=18&w=64&h=64&mode=Export&show=1";
 			try {
-				worldLocationLastImage = ImageIO.read(
-						new URL("http://ojw.dev.openstreetmap.org/StaticMap/?lat="+
-								lat+"&lon="+lon+"&z=18&w=64&h=64&mode=Export&show=1"));
+				worldLocationLastImage = ImageIO.read(new URL(url));
 				currentWorldAffinities = AffinityCalculator.getAffinitiesFromTexture(worldLocationLastImage);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -72,8 +77,13 @@ public class WorldLocationUtil {
 				double[] latlon = MercatorUtil.toGeoCoord(geoCoordX, geoCoordZ);
 				latlon[0] += lon;
 				latlon[1] += lat;
-				heightMap[x*(Terrain.DEFAULT_WIDTH+1)+z] = (float)getAltitude(latlon[0], latlon[1]);
+				heightmapThreadExecuterService.execute(new AltitudeThread(heightMap, x*(Terrain.DEFAULT_WIDTH+1)+z, latlon[0], latlon[1]));
 			}
+		try {
+			heightmapThreadExecuterService.awaitTermination(60, TimeUnit.SECONDS);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 		return heightMap;
 	}
 
@@ -102,5 +112,23 @@ public class WorldLocationUtil {
 			result = Double.parseDouble(value);
 		}
 		return Math.max(-10, result);
+	}
+
+	private class AltitudeThread implements Runnable {
+		private final float[] heightMap;
+		private final int index;
+		private final double lat, lon;
+		
+		public AltitudeThread(final float[] heightMap, final int index, 
+				final double lon, final double lat){
+			this.heightMap = heightMap;
+			this.index = index;
+			this.lat = lat;
+			this.lon = lon;
+		}
+		
+		public void run() {
+			heightMap[index] = (float)getAltitude(lon, lat);
+		}
 	}
 }
