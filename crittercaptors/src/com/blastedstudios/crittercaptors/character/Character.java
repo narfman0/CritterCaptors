@@ -12,6 +12,7 @@ import org.w3c.dom.NodeList;
 import com.blastedstudios.crittercaptors.creature.Creature;
 import com.blastedstudios.crittercaptors.creature.CreatureManager;
 import com.blastedstudios.crittercaptors.creature.Stats;
+import com.blastedstudios.crittercaptors.creature.StatusEffectEnum;
 import com.blastedstudios.crittercaptors.util.XMLUtil;
 
 public class Character {
@@ -100,6 +101,7 @@ public class Character {
 					creature.setIV(Stats.fromXML((Element)creatureElement.getElementsByTagName("ivStats").item(0)));
 					creature.setEV(Stats.fromXML((Element)creatureElement.getElementsByTagName("evStats").item(0)));
 					creature.setHappiness(Integer.parseInt(creatureElement.getAttribute("happiness")));
+					creature.setStatus(StatusEffectEnum.valueOf(creatureElement.getAttribute("status")));
 					creature.heal();
 					if(creatureElement.hasAttribute("active"))
 						creature.setActive(Integer.parseInt(creatureElement.getAttribute("active")));

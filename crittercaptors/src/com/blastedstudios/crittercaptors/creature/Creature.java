@@ -28,6 +28,7 @@ public class Creature {
 	public float timeSinceDirectionChange = 0;
 	private float catchRate = 0f;
 	private List<Ability> activeAbilities;
+	private StatusEffectEnum status = StatusEffectEnum.None;
 	
 	public Creature(String name, Stats baseStats, Stats ivStats, Stats evStats, 
 			Stats evYield, int experience, List<AffinityEnum> affinities, 
@@ -53,25 +54,42 @@ public class Creature {
 
 	private int attackPhysical(Creature enemy, Ability ability){
 		float dmgMultiplier = AffinityDamage.getDamageMultiplier(affinities, enemy.affinities);
+		int attack = status == StatusEffectEnum.Burn ? getAttack() / 2 : getAttack();
 		return (int) ((((((( (ExperienceUtil.getLevel(experience) * 2f / 5f) + 2f) * 
-				getAttack() * ability.power / enemy.getDefense())) / 50f) + 2) * 
+				attack * ability.power / enemy.getDefense())) / 50f) + 2) * 
                 /*CH ×*/ getR() / 100f) * dmgMultiplier);
 	}
 	
 	private int attackSpecial(Creature enemy, Ability ability){
 		float dmgMultiplier = AffinityDamage.getDamageMultiplier(affinities, enemy.affinities);
+		if(ability.affinity == AffinityEnum.suburban/*fire?*/ && enemy.getStatus() == StatusEffectEnum.Freeze)
+			enemy.setStatus(StatusEffectEnum.None);
 		return (int) ((((((((ExperienceUtil.getLevel(experience) * 2f / 5f) + 2f) * 
 				ability.power * getSpecialAttack() / 50f) / enemy.getSpecialDefense())) / 2f) * 
                 /*CH ×*/ getR() / 100f) * dmgMultiplier);
 	}
 	
 	public int attack(Creature enemy, String abilityName){
+		if(status == StatusEffectEnum.Paralyze)
+			if(CritterCaptors.random.nextInt(4) == 0)
+				return 0;
+		if(status == StatusEffectEnum.Sleep)
+			return 0;
+		if(status == StatusEffectEnum.Confusion && CritterCaptors.random.nextInt(2) == 0){
+			receiveDamage(getAbilityDamage(this, abilityName));
+			return 0;
+		}
+		return getAbilityDamage(enemy, abilityName);
+	}
+	
+	private int getAbilityDamage(Creature enemy, String abilityName){
 		for(Ability activeAbility : activeAbilities)
-			if(activeAbility.name.equals(abilityName))
+			if(activeAbility.name.equals(abilityName)){
 				if(activeAbility.affinity == AffinityEnum.physical)
 					return attackPhysical(enemy, activeAbility);
 				else
 					return attackSpecial(enemy, activeAbility);
+			}
 		return 0;
 	}
 	
@@ -105,6 +123,12 @@ public class Creature {
 	
 	public int getHPCurrent(){
 		return hpCurrent;
+	}
+
+	public int getSpeed() {
+		int speed = ( ((ivStats.speed + (2 * baseStats.speed) + (evStats.speed / 4))
+				* getLevel()) / 100) + 5;
+		return status == StatusEffectEnum.Paralyze ? speed/4 : speed;
 	}
 	
 	public float getCatchRate(){
@@ -191,6 +215,7 @@ public class Creature {
 		node.setAttribute("name", name);
 		node.setAttribute("experience", Integer.toString(experience));
 		node.setAttribute("happiness", Integer.toString(happiness));
+		node.setAttribute("status", status.name());
 		if(active != -1)
 			node.setAttribute("active", Integer.toString(active));
 		return node;
@@ -244,5 +269,35 @@ public class Creature {
 	
 	public int getWorth(){
 		return (int)((3*getLevel() + evStats.sum() + ivStats.sum()) / getCatchRate()) / 100;
+	}
+
+	public StatusEffectEnum getStatus() {
+		return status;
+	}
+
+	public void setStatus(StatusEffectEnum status) {
+		this.status = status;
+	}
+	
+	/**
+	 * perform status updates/damages
+	 * @return if creature dies as a result of status updates (burn etc)
+	 */
+	public boolean statusUpdate(){
+		switch(status){
+		case Sleep:
+			if(CritterCaptors.random.nextInt(7) == 0)
+				status = StatusEffectEnum.None;
+			break;
+		case Burn:
+		case Poison:
+			receiveDamage(getHPMax()/8);
+			break;
+		case Freeze:
+			if(CritterCaptors.random.nextInt(10)==0)
+				status = StatusEffectEnum.None;
+			break;
+		}
+		return getHPCurrent() <= 0;
 	}
 }

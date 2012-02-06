@@ -62,23 +62,41 @@ public class BattleScreen extends AbstractScreen {
 	}
 
 	public void fight(String name) {
-		int enemyChoice = CritterCaptors.random.nextInt(enemy.getActiveAbilities().size());
-		if(enemy.receiveDamage(activeCreature.attack(enemy, name))){//enemy is dead
+		String enemyAttack = enemy.getActiveAbilities().get(CritterCaptors.random.nextInt(
+				enemy.getActiveAbilities().size())).name;
+		
+		//figure out first attacker from speed
+		boolean playerFirst = enemy.getSpeed() <= activeCreature.getSpeed();
+		Creature first = playerFirst ? activeCreature : enemy, 
+				second = playerFirst ? enemy : activeCreature;
+		String firstAttack = playerFirst ? name : enemyAttack, 
+				secondAttack = playerFirst ? enemyAttack : name;
+		
+		if(second.receiveDamage(first.attack(enemy, firstAttack)) || 
+				first.receiveDamage(second.attack(activeCreature, secondAttack)) ||
+				second.statusUpdate() || first.statusUpdate())
+			death();
+		
+		creatureInfoWindow.update();
+		enemyInfoWindow.update();
+		stage.addActor(new BottomWindow(game, skin, this));
+	}
+	
+	/**
+	 * check who died and act appropriately
+	 */
+	private void death(){
+		if(activeCreature.getHPCurrent() == 0){ 
+			if(game.getCharacter().getNextActiveCreature() != null)
+				stage.addActor(new CreatureSelectWindow(game, skin, this));
+			else
+				game.setScreen(new BlackoutScreen(game));
+		}else{ 
 			//show window indicating victory!
 			activeCreature.addExperience(ExperienceUtil.getKillExperience(enemy));
 			activeCreature.getEV().add(enemy.getEVYield());
 			game.setScreen(new WorldMapScreen(game));
-		}else
-			if(activeCreature.receiveDamage(enemy.attack(activeCreature, enemy.getActiveAbilities().get(enemyChoice).name))){
-				if(game.getCharacter().getNextActiveCreature() != null)
-					stage.addActor(new CreatureSelectWindow(game, skin, this));
-				else
-					game.setScreen(new BlackoutScreen(game));
-				return;
-			}
-		creatureInfoWindow.update();
-		enemyInfoWindow.update();
-		stage.addActor(new BottomWindow(game, skin, this));
+		}
 	}
 
 	@Override public void resize (int width, int height) {
