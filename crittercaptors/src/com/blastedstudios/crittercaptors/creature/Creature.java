@@ -23,7 +23,7 @@ public class Creature {
 	private List<AffinityEnum> affinities;
 	private HashMap<Ability,Integer> abilities;
 	private int active, experience, hpCurrent, happiness;
-	private Stats baseStats, ivStats, evStats, evYield;
+	private Stats baseStats, ivStats, evStats, evYield, battleStats;
 	public Camera camera = new PerspectiveCamera(67, 1.33f, 2f);
 	public float timeSinceDirectionChange = 0;
 	private float catchRate = 0f;
@@ -46,6 +46,7 @@ public class Creature {
 		this.catchRate = catchRate;
 		this.hpCurrent = getHPMax();
 		this.happiness = happiness;
+		battleStats = new Stats();
 		activeAbilities = new ArrayList<Ability>();
 		for(Ability ability : abilities.keySet())
 			if(abilities.get(ability) <= ExperienceUtil.getLevel(experience) && activeAbilities.size() <= 4)
@@ -99,22 +100,22 @@ public class Creature {
 	
 	public int getAttack(){
 		return ( ((ivStats.attack + (2 * baseStats.attack) + 
-				(evStats.attack / 4)) * getLevel()) / 100) + 5;
+				(evStats.attack / 4)) * getLevel()) / 100) + 5 + battleStats.attack;
 	}
 	
 	public int getSpecialAttack(){
 		return ( ((ivStats.specialAttack + (2 * baseStats.specialAttack) + 
-				(evStats.specialAttack / 4)) * getLevel()) / 100) + 5;
+				(evStats.specialAttack / 4)) * getLevel()) / 100) + 5 + battleStats.specialAttack;
 	}
 
 	public int getDefense(){
 		return ( ((ivStats.defense + (2 * baseStats.defense) + 
-				(evStats.defense / 4)) * getLevel()) / 100) + 5;
+				(evStats.defense / 4)) * getLevel()) / 100) + 5+ + battleStats.defense;
 	}
 	
 	public int getSpecialDefense(){
 		return ( ((ivStats.specialDefense + (2 * baseStats.specialDefense) + 
-				(evStats.specialDefense / 4)) * getLevel()) / 100) + 5;
+				(evStats.specialDefense / 4)) * getLevel()) / 100) + 5 + battleStats.specialDefense;
 	}
 	
 	public int getHPMax(){
@@ -127,7 +128,7 @@ public class Creature {
 
 	public int getSpeed() {
 		int speed = ( ((ivStats.speed + (2 * baseStats.speed) + (evStats.speed / 4))
-				* getLevel()) / 100) + 5;
+				* getLevel()) / 100) + 5 +  + battleStats.speed;
 		return status == StatusEffectEnum.Paralyze ? speed/4 : speed;
 	}
 	
@@ -303,5 +304,10 @@ public class Creature {
 			break;
 		}
 		return getHPCurrent() <= 0;
+	}
+	
+	public void endBattle(){
+		battleStats = new Stats();
+		statusUpdate(false);
 	}
 }

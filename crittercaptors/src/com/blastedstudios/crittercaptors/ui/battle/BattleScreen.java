@@ -102,7 +102,7 @@ public class BattleScreen extends AbstractScreen {
 	public void endBattle(){
 		game.setScreen(new WorldMapScreen(game));
 		for(Creature creature : game.getCharacter().getOwnedCreatures())
-			creature.statusUpdate(false);
+			creature.endBattle();
 	}
 
 	@Override public void resize (int width, int height) {
