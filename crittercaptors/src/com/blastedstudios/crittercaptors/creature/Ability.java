@@ -20,16 +20,38 @@ public class Ability {
 	final public int power;
 	final public AffinityEnum affinity;
 	final public String name;
+	final public StatusEffectEnum status;
+	final public float hitRate;
+	final public Stats buff;
+	final public boolean buffSelf;
 	
-	public Ability(String name, int power, AffinityEnum affinity){
+	public Ability(String name, int power, AffinityEnum affinity, float hitRate,
+			StatusEffectEnum status, Stats buff, boolean buffSelf){
 		this.name = name;
 		this.power = power;
 		this.affinity = affinity;
+		this.hitRate = hitRate;
+		this.status = status;
+		this.buff = buff;
+		this.buffSelf = buffSelf;
 	}
 	
 	public static Ability fromXML(Element abilityElement){
+		StatusEffectEnum status =StatusEffectEnum.None;
+		if(abilityElement.hasAttribute("status"))
+			status = StatusEffectEnum.valueOf(abilityElement.getAttribute("status"));
+		Stats buff = null;
+		if(abilityElement.getElementsByTagName("buff").getLength() > 0)
+			buff = Stats.fromXML((Element) abilityElement.getElementsByTagName("buff").item(0));
+		boolean buffSelf = false;
+		if(abilityElement.hasAttribute("buffSelf"))
+			buffSelf = Boolean.parseBoolean(abilityElement.getAttribute("buffSelf"));
+		float hitRate = 1f;
+		if(abilityElement.hasAttribute("hitRate"))
+			hitRate = Float.parseFloat(abilityElement.getAttribute("hitRate"));
 		return new Ability(abilityElement.getAttribute("name"), 
 				Integer.parseInt(abilityElement.getAttribute("power")),
-				AffinityEnum.valueOf(abilityElement.getAttribute("affinity")));
+				AffinityEnum.valueOf(abilityElement.getAttribute("affinity")), 
+				hitRate, status, buff, buffSelf);
 	}
 }

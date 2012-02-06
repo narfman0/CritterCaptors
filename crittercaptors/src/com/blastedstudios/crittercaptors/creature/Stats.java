@@ -40,9 +40,6 @@ public class Stats {
 		return statsElement;
 	}
 	
-	/**
-	 * When enemy is killed, add ev stats
-	 */
 	public void add(Stats evYield){
 		hpMax = Math.min(MAX_EV_SINGLE, hpMax + evYield.hpMax);
 		attack = Math.min(MAX_EV_SINGLE, attack + evYield.attack);

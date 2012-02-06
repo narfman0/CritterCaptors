@@ -71,27 +71,35 @@ public class Creature {
 	}
 	
 	public int attack(Creature enemy, String abilityName){
-		if(status == StatusEffectEnum.Paralyze)
-			if(CritterCaptors.random.nextInt(4) == 0)
-				return 0;
-		if(status == StatusEffectEnum.Sleep)
-			return 0;
+		Ability ability = null;
+		for(Ability activeAbility : activeAbilities)
+			if(activeAbility.name.equals(abilityName))
+				ability = activeAbility;
+		
+		//do nothing statuses
 		if(status == StatusEffectEnum.Confusion && CritterCaptors.random.nextInt(2) == 0){
-			receiveDamage(getAbilityDamage(this, abilityName));
+			receiveDamage(getAbilityDamage(this, ability));
 			return 0;
 		}
-		return getAbilityDamage(enemy, abilityName);
+		if( ability == null || ability.hitRate >= CritterCaptors.random.nextFloat() ||
+			(status == StatusEffectEnum.Paralyze && CritterCaptors.random.nextInt(4) == 0) ||
+			status == StatusEffectEnum.Sleep)
+			return 0;
+		
+		if(ability.status != StatusEffectEnum.None)
+			enemy.status = ability.status;
+		if(ability.buff != null)
+			(ability.buffSelf ? battleStats : enemy.battleStats).add(ability.buff);
+		return getAbilityDamage(enemy, ability);
 	}
 	
-	private int getAbilityDamage(Creature enemy, String abilityName){
-		for(Ability activeAbility : activeAbilities)
-			if(activeAbility.name.equals(abilityName)){
-				if(activeAbility.affinity == AffinityEnum.physical)
-					return attackPhysical(enemy, activeAbility);
-				else
-					return attackSpecial(enemy, activeAbility);
-			}
-		return 0;
+	private int getAbilityDamage(Creature enemy, Ability ability){
+		if(ability == null)
+			return 0;
+		if(ability.affinity == AffinityEnum.physical)
+			return attackPhysical(enemy, ability);
+		else
+			return attackSpecial(enemy, ability);
 	}
 	
 	private static int getR(){
