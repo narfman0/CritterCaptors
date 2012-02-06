@@ -37,7 +37,7 @@ public class BattleScreen extends AbstractScreen {
 		this.enemy = enemy;
 		activeCreature = game.getCharacter().getNextActiveCreature();
 		if(activeCreature == null)
-			game.setScreen(new BlackoutScreen(game));
+			game.setScreen(new BlackoutScreen(game, this));
 		creatureInfoWindow = new CreatureInfoWindow(game, skin, activeCreature, 0, (int)stage.height()-200);
 		enemyInfoWindow = new CreatureInfoWindow(game, skin, enemy, (int)stage.width()-236, 200);
 		stage.addActor(creatureInfoWindow);
@@ -74,7 +74,7 @@ public class BattleScreen extends AbstractScreen {
 		
 		if(second.receiveDamage(first.attack(enemy, firstAttack)) || 
 				first.receiveDamage(second.attack(activeCreature, secondAttack)) ||
-				second.statusUpdate() || first.statusUpdate())
+				second.statusUpdate(true) || first.statusUpdate(true))
 			death();
 		
 		creatureInfoWindow.update();
@@ -90,13 +90,19 @@ public class BattleScreen extends AbstractScreen {
 			if(game.getCharacter().getNextActiveCreature() != null)
 				stage.addActor(new CreatureSelectWindow(game, skin, this));
 			else
-				game.setScreen(new BlackoutScreen(game));
+				game.setScreen(new BlackoutScreen(game, this));
 		}else{ 
 			//show window indicating victory!
 			activeCreature.addExperience(ExperienceUtil.getKillExperience(enemy));
 			activeCreature.getEV().add(enemy.getEVYield());
-			game.setScreen(new WorldMapScreen(game));
+			endBattle();
 		}
+	}
+	
+	public void endBattle(){
+		game.setScreen(new WorldMapScreen(game));
+		for(Creature creature : game.getCharacter().getOwnedCreatures())
+			creature.statusUpdate(false);
 	}
 
 	@Override public void resize (int width, int height) {
@@ -109,7 +115,7 @@ public class BattleScreen extends AbstractScreen {
 		if(catchRoll >= catchRate){
 			enemy.setActive(game.getCharacter().getNextEmptyActiveIndex());
 			game.getCharacter().getOwnedCreatures().add(enemy);
-			game.setScreen(new WorldMapScreen(game));
+			endBattle();
 			return;
 		}else
 			fight(null);
@@ -139,6 +145,7 @@ public class BattleScreen extends AbstractScreen {
 	}
 
 	public void setActiveCreature(Creature activeCreature) {
+		this.activeCreature.statusUpdate(false);
 		this.activeCreature = activeCreature;
 		stage.removeActor(creatureInfoWindow);
 		creatureInfoWindow = new CreatureInfoWindow(game, skin, activeCreature, 0, (int)stage.height()-200);

@@ -11,10 +11,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.blastedstudios.crittercaptors.CritterCaptors;
 import com.blastedstudios.crittercaptors.creature.Creature;
 import com.blastedstudios.crittercaptors.ui.AbstractScreen;
-import com.blastedstudios.crittercaptors.ui.worldmap.WorldMapScreen;
 
 public class BlackoutScreen extends AbstractScreen {
-	public BlackoutScreen(final CritterCaptors game) {
+	public BlackoutScreen(final CritterCaptors game, final BattleScreen battleScreen) {
 		super(game);
 		final int lostCash = game.getCharacter().blackout();
 		final Button okButton = new TextButton("Ok", skin.getStyle(TextButtonStyle.class), "ok");
@@ -22,7 +21,7 @@ public class BlackoutScreen extends AbstractScreen {
 			@Override public void click(Actor actor, float arg1, float arg2) {
 				for(Creature creature : game.getCharacter().getOwnedCreatures())
 					creature.heal();
-				game.setScreen(new WorldMapScreen(game));
+				battleScreen.endBattle();
 			}
 		});
 		Window window = new Window("Blackout", skin);

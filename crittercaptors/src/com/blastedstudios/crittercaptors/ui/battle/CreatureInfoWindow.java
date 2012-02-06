@@ -9,7 +9,7 @@ import com.blastedstudios.crittercaptors.creature.Creature;
 
 public class CreatureInfoWindow extends Window {
 	private final Creature creature;
-	private final Label levelLabel, hpRatio;
+	private final Label levelLabel, hpRatio, statusLabel;
 	private final Slider hpSlider;
 	
 	public CreatureInfoWindow(final CritterCaptors game, final Skin skin, 
@@ -18,16 +18,19 @@ public class CreatureInfoWindow extends Window {
 		this.touchable = false;
 		this.creature = creature;
 		levelLabel = new Label(creature.getLevel()+"", skin);
+		statusLabel = new Label(creature.getStatus().name(), skin);
 		hpRatio = new Label(creature.getHPCurrent() + "/" + creature.getHPMax(), skin);
 		hpSlider = new Slider(0, creature.getHPMax(), 1, skin);
 		hpSlider.setValue(creature.getHPCurrent());
 		hpSlider.touchable = false;
 		add(new Label(creature.getName(), skin));
-		add(new Label("Lvl: ",skin));
+		add(new Label(" Lvl: ",skin));
 		add(levelLabel);
+		add(new Label(" Status: ",skin));
+		add(statusLabel);
 		row();
 		add(new Label("HP: ",skin));
-		add(hpSlider);
+		add(hpSlider).colspan(3);
 		add(hpRatio);
 		pack();
 		this.x = x;
@@ -36,6 +39,7 @@ public class CreatureInfoWindow extends Window {
 	
 	public void update(){
 		levelLabel.setText(creature.getLevel()+"");
+		statusLabel.setText(creature.getStatus().name());
 		hpRatio.setText(creature.getHPCurrent() + "/" + creature.getHPMax());
 		hpSlider.touchable = true;
 		hpSlider.setValue(creature.getHPCurrent());

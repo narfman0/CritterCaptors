@@ -283,7 +283,7 @@ public class Creature {
 	 * perform status updates/damages
 	 * @return if creature dies as a result of status updates (burn etc)
 	 */
-	public boolean statusUpdate(){
+	public boolean statusUpdate(boolean isInCombat){
 		switch(status){
 		case Sleep:
 			if(CritterCaptors.random.nextInt(7) == 0)
@@ -295,6 +295,10 @@ public class Creature {
 			break;
 		case Freeze:
 			if(CritterCaptors.random.nextInt(10)==0)
+				status = StatusEffectEnum.None;
+			break;
+		case Confusion:
+			if(!isInCombat)
 				status = StatusEffectEnum.None;
 			break;
 		}
