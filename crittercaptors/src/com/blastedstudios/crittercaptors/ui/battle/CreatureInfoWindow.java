@@ -26,12 +26,13 @@ public class CreatureInfoWindow extends Window {
 		add(new Label(creature.getName(), skin));
 		add(new Label(" Lvl: ",skin));
 		add(levelLabel);
-		add(new Label(" Status: ",skin));
-		add(statusLabel);
 		row();
 		add(new Label("HP: ",skin));
 		add(hpSlider).colspan(3);
 		add(hpRatio);
+		row();
+		add(new Label(" Status: ",skin));
+		add(statusLabel);
 		pack();
 		this.x = x;
 		this.y = y;
