@@ -9,19 +9,20 @@ public class AffinityCalculator {
 			OCEAN_COLOR = new Color(181,208,208);
 	
 	/**
+	 * @param affinities 
 	 * @return hashmap containing percentages of affinities from the @param image.
 	 * One may use this to derive the actual affinity, for instance, .85 suburban will
 	 * be defined as suburban area and will spawn only creatures from that affinity.
 	 */
-	public static HashMap<AffinityEnum,Float> getAffinitiesFromTexture(BufferedImage image){
+	public static void getAffinitiesFromTexture(BufferedImage image, 
+			HashMap<AffinityEnum, Float> affinities){
+		affinities.clear();
 		float pixelCount = image.getWidth() * image.getHeight();
 		HashMap<Color,Float> map = getColorMap(image);
-		HashMap<AffinityEnum,Float> affinities = new HashMap<AffinityEnum,Float>();
 		if(map.containsKey(SUBURBAN_COLOR))
 			affinities.put(AffinityEnum.suburban, map.get(SUBURBAN_COLOR)/pixelCount);
 		if(map.containsKey(OCEAN_COLOR))
 			affinities.put(AffinityEnum.ocean, map.get(OCEAN_COLOR)/pixelCount);
-		return affinities;
 	}
 	
 	/**

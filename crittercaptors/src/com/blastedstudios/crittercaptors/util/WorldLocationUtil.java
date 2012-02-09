@@ -22,16 +22,15 @@ import com.blastedstudios.crittercaptors.ui.terrain.Terrain;
 public class WorldLocationUtil {
 	private double lat = 36.878705, lon = -76.260400;
 	public final double latInitial, lonInitial;
-	private BufferedImage worldLocationLastImage;
 	private float timeSinceLastUpdate = TIME_TO_UPDATE;
 	private static final float TIME_TO_UPDATE = 60;
-	private HashMap<AffinityEnum, Float> currentWorldAffinities;
-	private final ExecutorService heightmapThreadExecuterService;
+	private HashMap<AffinityEnum, Float> currentWorldAffinities = new HashMap<AffinityEnum, Float>();
+	private final ExecutorService executerService;
 	
 	public WorldLocationUtil(){
 		latInitial = 36.878705;//Gdx.input.getGPSLatitude();
 		lonInitial = -76.260400;//Gdx.input.getGPSLongitude();
-		heightmapThreadExecuterService = Executors.newCachedThreadPool();
+		executerService = Executors.newCachedThreadPool();
 	}
 
 	public void update(){
@@ -41,13 +40,12 @@ public class WorldLocationUtil {
 			//lat = Gdx.input.getGPSLatitude();
 			//lon = Gdx.input.getGPSLongitude();
 			timeSinceLastUpdate = 0;
-			String url = "http://ojw.dev.openstreetmap.org/StaticMap/?lat="+
-					lat+"&lon="+lon+"&z=18&w=64&h=64&mode=Export&show=1";
+			executerService.execute(new AffinitiesThread());
 			try {
-				worldLocationLastImage = ImageIO.read(new URL(url));
-				currentWorldAffinities = AffinityCalculator.getAffinitiesFromTexture(worldLocationLastImage);
-			} catch (Exception e) {
-				e.printStackTrace();
+				executerService.awaitTermination(500, TimeUnit.MILLISECONDS);
+			} catch (InterruptedException e1) {
+				currentWorldAffinities.clear();
+				currentWorldAffinities.put(AffinityEnum.suburban, 1f);
 			}
 		}
 	}
@@ -77,11 +75,12 @@ public class WorldLocationUtil {
 				double[] latlon = MercatorUtil.toGeoCoord(geoCoordX, geoCoordZ);
 				latlon[0] += lon;
 				latlon[1] += lat;
-				heightmapThreadExecuterService.execute(new AltitudeThread(heightMap, x*(Terrain.DEFAULT_WIDTH+1)+z, latlon[0], latlon[1]));
+				executerService.execute(new AltitudeThread(heightMap, x*(Terrain.DEFAULT_WIDTH+1)+z, latlon[0], latlon[1]));
 			}
 		try {
-			Gdx.app.log("Heightmap time","Changed heightmap time to 5 seconds for debugging, make longer for release");
-			heightmapThreadExecuterService.awaitTermination(5, TimeUnit.SECONDS);
+			Gdx.app.log("WorldLocationUtil:getHeightmap","Changed heightmap time to 5 seconds for debugging, make longer for release");
+			//TODO change back to 60 or something else
+			executerService.awaitTermination(5, TimeUnit.SECONDS);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -130,6 +129,17 @@ public class WorldLocationUtil {
 		
 		public void run() {
 			heightMap[index] = (float)getAltitude(lon, lat);
+		}
+	}
+
+	private class AffinitiesThread implements Runnable {
+		public void run() {
+			String url = "http://ojw.dev.openstreetmap.org/StaticMap/?lat="+
+				lat+"&lon="+lon+"&z=18&w=64&h=64&mode=Export&show=1";
+			try {
+				BufferedImage worldLocationLastImage = ImageIO.read(new URL(url));
+				AffinityCalculator.getAffinitiesFromTexture(worldLocationLastImage, currentWorldAffinities);
+			} catch (Exception e) {	}
 		}
 	}
 }
