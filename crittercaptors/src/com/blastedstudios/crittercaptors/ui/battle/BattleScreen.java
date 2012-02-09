@@ -4,19 +4,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-import com.badlogic.gdx.scenes.scene2d.ui.Window;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.blastedstudios.crittercaptors.CritterCaptors;
-import com.blastedstudios.crittercaptors.util.ExperienceUtil;
 import com.blastedstudios.crittercaptors.creature.Creature;
 import com.blastedstudios.crittercaptors.ui.AbstractScreen;
 import com.blastedstudios.crittercaptors.ui.terrain.Terrain;
 import com.blastedstudios.crittercaptors.ui.worldmap.WorldMapScreen;
+import com.blastedstudios.crittercaptors.util.ExperienceUtil;
 import com.blastedstudios.crittercaptors.util.RenderUtil;
 
 public class BattleScreen extends AbstractScreen {
@@ -79,7 +72,6 @@ public class BattleScreen extends AbstractScreen {
 		
 		creatureInfoWindow.update();
 		enemyInfoWindow.update();
-		stage.addActor(new BottomWindow(game, skin, this));
 	}
 	
 	/**
@@ -119,25 +111,8 @@ public class BattleScreen extends AbstractScreen {
 			return;
 		}else
 			fight(null);
-		final Window failWindow = new Window(skin);
-		final Button okButton = new TextButton("Ok", skin.getStyle(TextButtonStyle.class), "ok");
-		okButton.setClickListener(new ClickListener() {
-			@Override public void click(Actor actor, float arg1, float arg2) {
-				actor.getStage().removeActor(failWindow);
-			}
-		});
-		failWindow.add(new TextField("Catch failed!", skin));
-		failWindow.row();
-		failWindow.add(new TextField("Must roll > " + (int)(100*catchRate), skin));
-		failWindow.row();
-		failWindow.add(new TextField("You rolled " + (int)(100*catchRoll), skin));
-		failWindow.row();
-		failWindow.add(okButton);
-		failWindow.pack();
-		failWindow.x = Gdx.graphics.getWidth() / 2 - failWindow.width / 2;
-		failWindow.y = Gdx.graphics.getHeight() / 2 - failWindow.height / 2;
-		stage.addActor(failWindow);
-		
+		stage.addActor(new CaptureFailWindow(game, skin, this, 
+				(int)(100*catchRate), (int)(100*catchRoll) ));
 	}
 
 	public Creature getActiveCreature() {

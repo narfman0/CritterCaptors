@@ -31,6 +31,7 @@ public class BottomWindow extends Window {
 		});
 		captureButton.setClickListener(new ClickListener() {
 			@Override public void click(Actor actor, float arg1, float arg2) {
+				actor.getStage().removeActor(actor.parent);
 				battleScreen.capture();
 			}
 		});

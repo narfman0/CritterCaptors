@@ -80,7 +80,8 @@ public class WorldLocationUtil {
 				heightmapThreadExecuterService.execute(new AltitudeThread(heightMap, x*(Terrain.DEFAULT_WIDTH+1)+z, latlon[0], latlon[1]));
 			}
 		try {
-			heightmapThreadExecuterService.awaitTermination(60, TimeUnit.SECONDS);
+			Gdx.app.log("Heightmap time","Changed heightmap time to 5 seconds for debugging, make longer for release");
+			heightmapThreadExecuterService.awaitTermination(5, TimeUnit.SECONDS);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}

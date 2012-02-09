@@ -81,7 +81,7 @@ public class Creature {
 			receiveDamage(getAbilityDamage(this, ability));
 			return 0;
 		}
-		if( ability == null || ability.hitRate >= CritterCaptors.random.nextFloat() ||
+		if( ability == null || ability.hitRate <= CritterCaptors.random.nextFloat() ||
 			(status == StatusEffectEnum.Paralyze && CritterCaptors.random.nextInt(4) == 0) ||
 			status == StatusEffectEnum.Sleep)
 			return 0;

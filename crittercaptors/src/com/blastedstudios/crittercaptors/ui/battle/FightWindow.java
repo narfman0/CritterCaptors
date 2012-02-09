@@ -30,6 +30,7 @@ public class FightWindow extends Window {
 			attackButton.setClickListener(new ClickListener() {
 				@Override public void click(Actor actor, float arg1, float arg2) {
 					battleScreen.fight(actor.name);
+					stage.addActor(new BottomWindow(game, skin, battleScreen));
 					actor.getStage().removeActor(actor.parent);
 				}
 			});
