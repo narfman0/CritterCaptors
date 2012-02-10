@@ -113,7 +113,7 @@ public class WorldMapScreen extends AbstractScreen {
 			if(sideMenu == null || sideMenu.dispose)
 				stage.addActor(sideMenu = new SideWindow(game, skin));
 		camera.position.add(movement.mul(MOVE_SPEED));
-		camera.position.y = terrainManager.getHeight(camera.position.x, camera.position.z)+1;
+		camera.position.y = terrainManager.getHeight(camera.position.x, camera.position.z)+1.9f;
         camera.update();
         camera.apply(Gdx.gl10);
 	}

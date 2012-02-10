@@ -9,19 +9,24 @@ import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector3;
+import com.blastedstudios.crittercaptors.util.MathUtil;
 
 public class Terrain {
 	public static final int DEFAULT_WIDTH = 16,
 			DEFAULT_WIDTH_DIV2 = DEFAULT_WIDTH/2,
 			DEFAULT_WIDTH_TIM2 = DEFAULT_WIDTH*2;
 	public final Vector3 location;
+	public final int scaleX, scaleZ;
+	private final Texture grass;
 	private TerrainChunk chunk;
 	private Mesh mesh;
-	private Texture grass;
 
-	public Terrain (final float[] heightMap, final Vector3 location) {
+	public Terrain (final float[] heightMap, final Vector3 location, 
+			int scaleX, int scaleZ) {
 		this.location = location;
-		chunk = new TerrainChunk(DEFAULT_WIDTH, DEFAULT_WIDTH, heightMap, 5);
+		this.scaleX = scaleX;
+		this.scaleZ = scaleZ;
+		chunk = new TerrainChunk(DEFAULT_WIDTH, DEFAULT_WIDTH, heightMap, 5, scaleX, scaleZ);
 		grass = new Texture(Gdx.files.internal("data/textures/grass1.jpg"), Format.RGB565, true);
 
 		//colorpacked - vertex size + 1
@@ -45,87 +50,111 @@ public class Terrain {
 		Gdx.gl10.glEnable(GL10.GL_DEPTH_TEST);
 		Gdx.gl10.glEnable(GL10.GL_TEXTURE_2D);
 		grass.bind();
-		Gdx.gl10.glTranslatef(location.x-DEFAULT_WIDTH/2, location.y, location.z-DEFAULT_WIDTH/2);
+		Gdx.gl10.glTranslatef(location.x-DEFAULT_WIDTH_DIV2*scaleX, location.y, location.z-DEFAULT_WIDTH_DIV2*scaleZ);
 		mesh.render(GL10.GL_TRIANGLES);
 	}
 
-	public float getHeight(int x, int z) {
-		return chunk.heightMap[x*chunk.width + z];
+	public float getHeight(float x, float z) {
+		int left, top;
+		left = (int)x / (int)scaleX;
+		top = (int)z / (int)scaleZ;
+		float cZ = 0f;
+        float rightDiagDifference = chunk.heightMap[left + top*chunk.width] - chunk.heightMap[left + 1 +(top + 1)*chunk.width];
+        float leftDiagDifference = chunk.heightMap[left + 1+ top*chunk.width] - chunk.heightMap[left+ (top + 1)*chunk.width];
+
+        if (Math.abs(rightDiagDifference) >= Math.abs(leftDiagDifference))
+        {
+            if (-((x % scaleX) / scaleX) + 1 > (z % scaleZ) / scaleZ)
+            {
+                float xNormalized = (x % scaleX) / scaleX;
+                float zNormalized = (z % scaleZ) / scaleZ;
+
+                float topHeight = MathUtil.lerp(
+                  chunk.heightMap[left+ top*chunk.width],
+                  chunk.heightMap[left + 1 + top*chunk.width],
+                  xNormalized);
+
+                float bottomHeight = MathUtil.lerp(
+                  chunk.heightMap[left+ (top + 1)*chunk.width],
+                  chunk.heightMap[left+ (top + 1)*chunk.width] - (chunk.heightMap[left+ top*chunk.width] - chunk.heightMap[left + 1+ top*chunk.width]),
+                  xNormalized);
+
+                cZ = MathUtil.lerp(topHeight, bottomHeight, zNormalized);
+            }
+            else
+            {
+                float xNormalized = (x % scaleX) / scaleX;
+                float zNormalized = (z % scaleZ) / scaleZ;
+
+                float topHeight = MathUtil.lerp(
+                  chunk.heightMap[left+ (top + 1)*chunk.width],
+                  chunk.heightMap[left + 1+ (top + 1)*chunk.width],
+                  xNormalized);
+
+                float bottomHeight = MathUtil.lerp(
+                  chunk.heightMap[left + 1 + top*chunk.width] + (chunk.heightMap[left+ (top + 1)*chunk.width] - chunk.heightMap[left + 1+ (top + 1)*chunk.width]),
+                  chunk.heightMap[left + 1 + top*chunk.width],
+                  xNormalized);
+
+                cZ = MathUtil.lerp(bottomHeight, topHeight, zNormalized);
+            }
+        }
+        else
+        {
+            if (((x % scaleX) / scaleX) > (z % scaleZ) / scaleZ)
+            {
+
+                float xNormalized = (x % scaleX) / scaleX;
+                float zNormalized = (z % scaleZ) / scaleZ;
+
+                float topHeight = MathUtil.lerp(
+                  chunk.heightMap[left+ top*chunk.width],
+                  chunk.heightMap[left + 1+ top*chunk.width],
+                  xNormalized);
+
+                float bottomHeight = MathUtil.lerp(
+                  chunk.heightMap[left + 1+ (top + 1)*chunk.width] + (chunk.heightMap[left+ top*chunk.width] - chunk.heightMap[left + 1+ top*chunk.width]),
+                  chunk.heightMap[left + 1+ (top + 1)*chunk.width],
+                  xNormalized);
+
+                cZ = MathUtil.lerp(topHeight, bottomHeight, zNormalized);
+            }
+            else
+            {
+                float xNormalized = (x % scaleX) / scaleX;
+                float zNormalized = (z % scaleZ) / scaleZ;
+
+                float topHeight = MathUtil.lerp(
+                  chunk.heightMap[left+ (top + 1)*chunk.width],
+                  chunk.heightMap[left + 1+ (top + 1)*chunk.width],
+                  xNormalized);
+
+                float bottomHeight = MathUtil.lerp(
+                  chunk.heightMap[left+ top*chunk.width],
+                  chunk.heightMap[left+ top*chunk.width] - (chunk.heightMap[left+ (top + 1)*chunk.width] - chunk.heightMap[left + 1+ (top + 1)*chunk.width]),
+                  xNormalized);
+
+                cZ = MathUtil.lerp(bottomHeight, topHeight, zNormalized);
+            }
+        }
+		return cZ;
 	}
 
-	final static class TerrainChunk {
-		public final float[] heightMap;
-		public final short width;
-		public final short height;
-		public final float[] vertices;
-		public final short[] indices;
-		public final int vertexSize;
+	public float getHeightFast(float x, float z) {
+		int left = (int)x / (int)scaleX,
+		top = (int)z / (int)scaleZ;
 
-		public TerrainChunk (final int width, final int height, final float[] heightMap, int vertexSize) {
-			if ((width + 1) * (height + 1) > Short.MAX_VALUE)
-				throw new IllegalArgumentException("Chunk size too big, (width + 1)*(height+1) must be <= 32767");
+		float xNormalized = (x % scaleX) / (float)scaleX;
+		float zNormalized = (z % scaleZ) / (float)scaleZ;
 
-			this.heightMap = heightMap;
-			this.width = (short)width;
-			this.height = (short)height;
-			this.vertices = new float[heightMap.length * vertexSize];
-			this.indices = new short[width * height * 6];
-			this.vertexSize = vertexSize;
+		float topHeight = MathUtil.lerp(
+				chunk.heightMap[left + top*chunk.width ],
+				chunk.heightMap[left + 1 + top*chunk.width ], xNormalized);
 
-			buildIndices();
-			buildVertices();
-		}
+		float bottomHeight = MathUtil.lerp(
+				chunk.heightMap[left + (top+1)*chunk.width ],
+				chunk.heightMap[left + 1 + (top+1)*chunk.width ], xNormalized);
 
-		public void buildVertices () {
-			int heightPitch = height + 1;
-			int widthPitch = width + 1;
-
-			int idx = 0;
-			int hIdx = 0;
-			int inc = vertexSize - 3;
-
-			for (int z = 0; z < heightPitch; z++) {
-				for (int x = 0; x < widthPitch; x++) {
-					vertices[idx++] = x;
-					vertices[idx++] = heightMap[hIdx++];
-					vertices[idx++] = z;
-					idx += inc;
-				}
-			}
-		}
-
-		private void buildIndices () {
-			int idx = 0;
-			short pitch = (short)(width + 1);
-			short i1 = 0;
-			short i2 = 1;
-			short i3 = (short)(1 + pitch);
-			short i4 = pitch;
-
-			short row = 0;
-
-			for (int z = 0; z < height; z++) {
-				for (int x = 0; x < width; x++) {
-					indices[idx++] = i1;
-					indices[idx++] = i2;
-					indices[idx++] = i3;
-
-					indices[idx++] = i3;
-					indices[idx++] = i4;
-					indices[idx++] = i1;
-
-					i1++;
-					i2++;
-					i3++;
-					i4++;
-				}
-
-				row += pitch;
-				i1 = row;
-				i2 = (short)(row + 1);
-				i3 = (short)(i2 + pitch);
-				i4 = (short)(row + pitch);
-			}
-		}
+		return MathUtil.lerp(topHeight, bottomHeight, zNormalized);
 	}
 }

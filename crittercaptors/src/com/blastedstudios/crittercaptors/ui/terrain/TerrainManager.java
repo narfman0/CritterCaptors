@@ -23,17 +23,17 @@ public class TerrainManager {
 			if(terrain.location.dst(location) < 10)
 				found = true;
 		if(!found)
-			cachedTerrains.add(new Terrain(locationManager.getHeightmap(location), location));
+			cachedTerrains.add(new Terrain(locationManager.getHeightmap(location), location, 5, 5));
 	}
 
 	public void render(Vector3 playerLocation) {
 		//stupid terrain management, fix this sometime. works for now i guess
 		activeTerrains.clear();
 		for(Terrain terrain : cachedTerrains)
-			if(terrain.location.x + Terrain.DEFAULT_WIDTH_TIM2 >= playerLocation.x &&
-				terrain.location.x - Terrain.DEFAULT_WIDTH_TIM2 <= playerLocation.x &&
-				terrain.location.z + Terrain.DEFAULT_WIDTH_TIM2 >= playerLocation.z &&
-				terrain.location.z - Terrain.DEFAULT_WIDTH_TIM2 <= playerLocation.z )
+			if(terrain.location.x + Terrain.DEFAULT_WIDTH_TIM2*terrain.scaleX >= playerLocation.x &&
+				terrain.location.x - Terrain.DEFAULT_WIDTH_TIM2*terrain.scaleX <= playerLocation.x &&
+				terrain.location.z + Terrain.DEFAULT_WIDTH_TIM2*terrain.scaleZ >= playerLocation.z &&
+				terrain.location.z - Terrain.DEFAULT_WIDTH_TIM2*terrain.scaleZ <= playerLocation.z )
 				activeTerrains.add(terrain);
 		
 		for(Terrain terrain : activeTerrains)
@@ -47,13 +47,13 @@ public class TerrainManager {
 	 */
 	public float getHeight(float x, float z){
 		for(Terrain terrain : activeTerrains)
-			if(terrain.location.x + Terrain.DEFAULT_WIDTH_DIV2 >= x &&
-				terrain.location.x - Terrain.DEFAULT_WIDTH_DIV2 <= x &&
-				terrain.location.z + Terrain.DEFAULT_WIDTH_DIV2 >= z &&
-				terrain.location.z - Terrain.DEFAULT_WIDTH_DIV2 <= z )
+			if(terrain.location.x + Terrain.DEFAULT_WIDTH_DIV2*terrain.scaleX >= x &&
+				terrain.location.x - Terrain.DEFAULT_WIDTH_DIV2*terrain.scaleX <= x &&
+				terrain.location.z + Terrain.DEFAULT_WIDTH_DIV2*terrain.scaleZ >= z &&
+				terrain.location.z - Terrain.DEFAULT_WIDTH_DIV2*terrain.scaleZ <= z )
 				return terrain.getHeight(
-						(int)(terrain.location.x-x+Terrain.DEFAULT_WIDTH_DIV2), 
-						(int)(terrain.location.z-z+Terrain.DEFAULT_WIDTH_DIV2));
+						x-terrain.location.x+Terrain.DEFAULT_WIDTH_DIV2*terrain.scaleX, 
+						z-terrain.location.z+Terrain.DEFAULT_WIDTH_DIV2*terrain.scaleZ);
 		return 0;
 	}
 	

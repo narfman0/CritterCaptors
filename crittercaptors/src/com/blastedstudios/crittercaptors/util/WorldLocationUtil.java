@@ -80,7 +80,7 @@ public class WorldLocationUtil {
 		try {
 			Gdx.app.log("WorldLocationUtil:getHeightmap","Changed heightmap time to 5 seconds for debugging, make longer for release");
 			//TODO change back to 60 or something else
-			executerService.awaitTermination(5, TimeUnit.SECONDS);
+			executerService.awaitTermination(10, TimeUnit.SECONDS);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
