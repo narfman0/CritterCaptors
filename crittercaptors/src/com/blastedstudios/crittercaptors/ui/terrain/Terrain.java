@@ -133,22 +133,4 @@ public class Terrain {
         }
 		return cZ;
 	}
-
-	public float getHeightFast(float x, float z) {
-		int left = (int)x / (int)scaleX,
-		top = (int)z / (int)scaleZ;
-
-		float xNormalized = (x % scaleX) / (float)scaleX;
-		float zNormalized = (z % scaleZ) / (float)scaleZ;
-
-		float topHeight = MathUtil.lerp(
-				chunk.heightMap[left + top*chunk.width ],
-				chunk.heightMap[left + 1 + top*chunk.width ], xNormalized);
-
-		float bottomHeight = MathUtil.lerp(
-				chunk.heightMap[left + (top+1)*chunk.width ],
-				chunk.heightMap[left + 1 + (top+1)*chunk.width ], xNormalized);
-
-		return MathUtil.lerp(topHeight, bottomHeight, zNormalized);
-	}
 }
