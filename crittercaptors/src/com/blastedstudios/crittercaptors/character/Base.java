@@ -13,6 +13,7 @@ import com.blastedstudios.crittercaptors.util.WorldLocationUtil;
 public class Base {
 	public static final float BASE_DISTANCE = 100f;
 	public static final int BASE_COST = 1500;
+	private static final String BASE_NAME = "base";
 	private final double lat, lon;
 	private Vector3 cachedPosition;//used to skip mercator proj every frame
 	
@@ -28,11 +29,11 @@ public class Base {
 	public void render(TerrainManager terrainManager, WorldLocationUtil worldLocationUtil){
 		if(cachedPosition == null){
 			double[] mercator = MercatorUtil.toPixel(worldLocationUtil.lonInitial - lon, worldLocationUtil.latInitial - lat);
-			float x = (float)mercator[0], z = (float)mercator[1], y = terrainManager.getHeight(x, z) + 2;
+			float x = (float)mercator[0], z = (float)mercator[1], y = terrainManager.getHeight(x, z);
 			cachedPosition = new Vector3(x, y, z);
 		}
-		RenderUtil.drawModel(CritterCaptors.getModel("base"), CritterCaptors.getTexture("base"),
-				cachedPosition, new Vector3(), new Vector3(2,2,2));
+		RenderUtil.drawModel(CritterCaptors.getModel(BASE_NAME), CritterCaptors.getTexture(BASE_NAME),
+				cachedPosition, new Vector3(), new Vector3(1,1,1));
 	}
 
 	public static Base fromXML(Element baseElement) {
