@@ -21,11 +21,8 @@ public class HTMLUtil {
 	}
 	
 	public static String getHTML(String urlToRead) {
-		URL url;
-		HttpURLConnection conn;
 		try {
-			url = new URL(urlToRead);
-			conn = (HttpURLConnection) url.openConnection();
+			HttpURLConnection conn = (HttpURLConnection) new URL(urlToRead).openConnection();
 			conn.setRequestMethod("GET");
 			return getString(conn.getInputStream());
 		} catch (Exception e) {

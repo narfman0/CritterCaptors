@@ -28,17 +28,11 @@ public class Terrain {
 		this.scaleZ = scaleZ;
 		chunk = new TerrainChunk(DEFAULT_WIDTH, DEFAULT_WIDTH, heightMap, 5, scaleX, scaleZ);
 		grass = new Texture(Gdx.files.internal("data/textures/grass1.jpg"), Format.RGB565, true);
-
-		//colorpacked - vertex size + 1
-		//for (int i = 3; i < chunk.vertices.length; i += 4)
-		//	chunk.vertices[i] = Color.toFloatBits(0, 255, 0, 255);
-		
 		//texcoords - vertex size + 2
 		for (int i = 3, iteration = 0; i < chunk.vertices.length; i += 5, iteration++){
 			chunk.vertices[i] = iteration%4>1 ? 0 : 1;
 			chunk.vertices[i+1] = iteration%4==1 || iteration%4==2 ? 0 : 1;
 		}
-
 		mesh = new Mesh(true, chunk.vertices.length / 3, chunk.indices.length, 
 				new VertexAttribute(Usage.Position, 3, ShaderProgram.POSITION_ATTRIBUTE), 
 				new VertexAttribute(Usage.TextureCoordinates, 2, ShaderProgram.TEXCOORD_ATTRIBUTE + "0"));
