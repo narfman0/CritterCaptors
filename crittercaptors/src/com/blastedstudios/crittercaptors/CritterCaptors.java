@@ -49,6 +49,7 @@ public class CritterCaptors extends Game {
 		textureMap = new HashMap<String, Texture>();
 		textureMap.put("skydome", new Texture(Gdx.files.internal("data/sky/skydome.png"), Format.RGB565, true));
 		textureMap.put("base", new Texture(Gdx.files.internal("data/textures/base.png"), Format.RGB565, true));
+		textureMap.put("grass", new Texture(Gdx.files.internal("data/textures/grass1.jpg"), Format.RGB565, true));
 		modelMap = new HashMap<String, Model>();
 		modelMap.put("skydome", ModelLoaderRegistry.load(Gdx.files.internal("data/sky/skydome.obj")));
 		modelMap.put("base", ModelLoaderRegistry.load(Gdx.files.internal("data/models/base.g3d")));

@@ -11,16 +11,16 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector3;
 import com.blastedstudios.crittercaptors.util.MathUtil;
 
-public class Terrain {
-	public static final int DEFAULT_WIDTH = 16,
-			DEFAULT_WIDTH_DIV2 = DEFAULT_WIDTH/2,
-			DEFAULT_WIDTH_TIM2 = DEFAULT_WIDTH*2;
+public class Terrain implements ITerrain{
 	public final Vector3 location;
 	public final int scaleX, scaleZ;
 	private final Texture grass;
 	private TerrainChunk chunk;
 	private Mesh mesh;
 
+	/**
+	 * Simple terrain sing a single terrain chunk
+	 */
 	public Terrain (final float[] heightMap, final Vector3 location, 
 			int scaleX, int scaleZ) {
 		this.location = location;
@@ -44,8 +44,10 @@ public class Terrain {
 		Gdx.gl10.glEnable(GL10.GL_DEPTH_TEST);
 		Gdx.gl10.glEnable(GL10.GL_TEXTURE_2D);
 		grass.bind();
+		Gdx.gl10.glPushMatrix();
 		Gdx.gl10.glTranslatef(location.x-DEFAULT_WIDTH_DIV2*scaleX, location.y, location.z-DEFAULT_WIDTH_DIV2*scaleZ);
 		mesh.render(GL10.GL_TRIANGLES);
+		Gdx.gl10.glPopMatrix();
 	}
 
 	public float getHeight(float x, float z) {
@@ -132,5 +134,9 @@ public class Terrain {
             }
         }
 		return cZ;
+	}
+
+	public Vector3 getLocation() {
+		return location;
 	}
 }

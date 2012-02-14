@@ -7,13 +7,14 @@ import com.badlogic.gdx.math.Vector3;
 import com.blastedstudios.crittercaptors.CritterCaptors;
 import com.blastedstudios.crittercaptors.creature.Creature;
 import com.blastedstudios.crittercaptors.ui.AbstractScreen;
+import com.blastedstudios.crittercaptors.ui.terrain.ITerrain;
 import com.blastedstudios.crittercaptors.ui.terrain.Terrain;
 import com.blastedstudios.crittercaptors.ui.worldmap.WorldMapScreen;
 import com.blastedstudios.crittercaptors.util.ExperienceUtil;
 import com.blastedstudios.crittercaptors.util.RenderUtil;
 
 public class BattleScreen extends AbstractScreen {
-    private static final Terrain terrain;
+    private static final ITerrain terrain;
 	private Creature enemy, activeCreature;
     private Camera camera;
     private CreatureInfoWindow creatureInfoWindow, enemyInfoWindow;
