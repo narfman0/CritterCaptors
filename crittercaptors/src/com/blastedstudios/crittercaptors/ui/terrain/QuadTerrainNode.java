@@ -103,4 +103,12 @@ public class QuadTerrainNode implements ITerrain{
 	public Vector3 getLocation() {
 		return location;
 	}
+
+	public float getScaleX() {
+		return scaleX;
+	}
+
+	public float getScaleZ() {
+		return scaleZ;
+	}
 }

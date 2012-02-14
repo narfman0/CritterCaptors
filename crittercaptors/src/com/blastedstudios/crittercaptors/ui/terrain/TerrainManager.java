@@ -35,14 +35,14 @@ public class TerrainManager {
 	 * @return altitude in meters
 	 */
 	public float getHeight(float x, float z){
-		/*for(QuadTerrainNode terrain : activeTerrains)
-			if(terrain.location.x + Terrain.DEFAULT_WIDTH_DIV2*terrain.scaleX >= x &&
-				terrain.location.x - Terrain.DEFAULT_WIDTH_DIV2*terrain.scaleX <= x &&
-				terrain.location.z + Terrain.DEFAULT_WIDTH_DIV2*terrain.scaleZ >= z &&
-				terrain.location.z - Terrain.DEFAULT_WIDTH_DIV2*terrain.scaleZ <= z )
+		for(ITerrain terrain : terrains)
+			if(terrain.getLocation().x + Terrain.DEFAULT_WIDTH_DIV2*terrain.getScaleX() >= x &&
+				terrain.getLocation().x - Terrain.DEFAULT_WIDTH_DIV2*terrain.getScaleX() <= x &&
+				terrain.getLocation().z + Terrain.DEFAULT_WIDTH_DIV2*terrain.getScaleZ() >= z &&
+				terrain.getLocation().z - Terrain.DEFAULT_WIDTH_DIV2*terrain.getScaleZ() <= z )
 				return terrain.getHeight(
-						x-terrain.location.x+Terrain.DEFAULT_WIDTH_DIV2*terrain.scaleX, 
-						z-terrain.location.z+Terrain.DEFAULT_WIDTH_DIV2*terrain.scaleZ);*/
+						x-terrain.getLocation().x+Terrain.DEFAULT_WIDTH_DIV2*terrain.getScaleX(), 
+						z-terrain.getLocation().z+Terrain.DEFAULT_WIDTH_DIV2*terrain.getScaleZ());
 		return 0;
 	}
 	
