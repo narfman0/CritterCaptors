@@ -20,9 +20,8 @@ public class BattleScreen extends AbstractScreen {
     private CreatureInfoWindow creatureInfoWindow, enemyInfoWindow;
     static{
     	float[] heightMap = new float[(Terrain.DEFAULT_WIDTH + 1) * (Terrain.DEFAULT_WIDTH + 1)];
-		for(int x=0; x<Terrain.DEFAULT_WIDTH; x++){
+		for(int x=0; x<Terrain.DEFAULT_WIDTH; x++)
 			heightMap[Terrain.DEFAULT_WIDTH*Terrain.DEFAULT_WIDTH + x] = 5f + (float)Math.sin(x/4);
-		}
 		terrain = new Terrain(heightMap, new Vector3(), 10, 10);
     }
 
