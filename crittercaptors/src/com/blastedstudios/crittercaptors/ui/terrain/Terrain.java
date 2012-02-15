@@ -26,7 +26,8 @@ public class Terrain implements ITerrain{
 		this.location = location;
 		this.scaleX = scaleX;
 		this.scaleZ = scaleZ;
-		chunk = new TerrainChunk(DEFAULT_WIDTH, DEFAULT_WIDTH, heightMap, 5, scaleX, scaleZ);
+		int width = (int)Math.sqrt(heightMap.length)-1;
+		chunk = new TerrainChunk(width, width, heightMap, 5, scaleX, scaleZ);
 		grass = new Texture(Gdx.files.internal("data/textures/grass1.jpg"), Format.RGB565, true);
 		//texcoords - vertex size + 2
 		for (int i = 3, iteration = 0; i < chunk.vertices.length; i += 5, iteration++){
@@ -45,7 +46,7 @@ public class Terrain implements ITerrain{
 		Gdx.gl10.glEnable(GL10.GL_TEXTURE_2D);
 		grass.bind();
 		Gdx.gl10.glPushMatrix();
-		Gdx.gl10.glTranslatef(location.x-DEFAULT_WIDTH_DIV2*scaleX, location.y, location.z-DEFAULT_WIDTH_DIV2*scaleZ);
+		Gdx.gl10.glTranslatef(location.x-chunk.width*scaleX/2, location.y, location.z-chunk.width*scaleZ/2);
 		mesh.render(GL10.GL_TRIANGLES);
 		Gdx.gl10.glPopMatrix();
 	}
