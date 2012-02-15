@@ -16,12 +16,14 @@ import com.blastedstudios.crittercaptors.util.XMLUtil;
 public class CreatureManager {
 	private final List<Creature> creatures;
 	private final HashMap<AffinityEnum,List<Creature>> creatureTemplates;
+	private final CritterCaptors game;
 	private float timeSinceLastSpawn = 0;
 	private static final float TIME_BETWEEN_SPAWNS = 4,
 		TIME_BETWEEN_CREATURE_CHANGE_DIRECTION = 10,
 		SPAWN_DISTANCE_FROM_PLAYER = 20f;//100f;
 	
-	public CreatureManager(){
+	public CreatureManager(CritterCaptors game){
+		this.game = game;
 		creatures = new ArrayList<Creature>();
 		creatureTemplates = new HashMap<AffinityEnum,List<Creature>>();
 		for(AffinityEnum affinity : AffinityEnum.values())
@@ -41,11 +43,12 @@ public class CreatureManager {
 			timeSinceLastSpawn = 0;
 			Creature creature = spawn(worldAffinities); 
 			if(creature != null){
-				creature.setExperience(ExperienceUtil.getExperience(CritterCaptors.random.nextInt(4)+2));
-				creature.heal();
 				float angle = CritterCaptors.random.nextFloat() * 360f;
 				creature.camera.position.x = location.x + (float)Math.cos(angle) * SPAWN_DISTANCE_FROM_PLAYER;
 				creature.camera.position.z = location.z + (float)Math.sin(angle) * SPAWN_DISTANCE_FROM_PLAYER;
+				float distance = game.getCharacter().getClosestRetardantDistance(creature.camera.position);
+				creature.setExperience(ExperienceUtil.getExperience(getCreatureLevelFromDistance(distance)));
+				creature.heal();
 				creatures.add(creature);
 			}
 		}
@@ -60,6 +63,18 @@ public class CreatureManager {
 				creature.camera.position.add(creature.camera.direction.tmp().mul(Gdx.graphics.getDeltaTime()));
 			creature.camera.update();
 		}
+	}
+
+	/**
+	 * Calculate a new spawned creatures level based on distance to a retardant
+	 * Courtesy wolfram alpha and a little randomless based on distance
+	 * @param distance (note: not distance squared)
+	 * @return level according to how far from nearest retardant exponentially
+	 */
+	private int getCreatureLevelFromDistance(float distance) {
+		int randomMod = CritterCaptors.random.nextInt((int)Math.sqrt(distance)),
+			level = (int)(16.65f*Math.pow(Math.E, .000383f*distance))-12;
+		return level + randomMod;
 	}
 
 	private Creature spawn(HashMap<AffinityEnum, Float> worldAffinities) {

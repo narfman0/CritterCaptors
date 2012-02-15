@@ -46,7 +46,7 @@ public class CritterCaptors extends Game {
 		//	ModelLoaderRegistry.loadStillModel(Gdx.files.internal("data/models/base.g3dt"));
 		//com.badlogic.gdx.graphics.g3d.loaders.g3d.chunks.G3dExporter.export(model, Gdx.files.absolute("data/models/base.g3d"));
 		
-		creatureManager = new CreatureManager();
+		creatureManager = new CreatureManager(this);
 		worldLocationManager = new WorldLocationUtil();
 		textureMap = new HashMap<String, Texture>();
 		textureMap.put("skydome", new Texture(Gdx.files.internal("data/sky/skydome.png"), Format.RGB565, true));

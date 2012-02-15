@@ -82,6 +82,7 @@ public class Base {
 	}
 
 	public boolean isRetardantEnabled(){
-		return getUpgrade(BaseUpgradeEnum.MonsterRetardant) == 1;
+		return hasUpgrade(BaseUpgradeEnum.MonsterRetardant) && 
+			getUpgrade(BaseUpgradeEnum.MonsterRetardant) == 1;
 	}
 }

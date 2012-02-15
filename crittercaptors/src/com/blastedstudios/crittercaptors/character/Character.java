@@ -9,6 +9,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import com.badlogic.gdx.math.Vector3;
 import com.blastedstudios.crittercaptors.creature.Creature;
 import com.blastedstudios.crittercaptors.creature.CreatureManager;
 import com.blastedstudios.crittercaptors.creature.Stats;
@@ -147,5 +148,16 @@ public class Character {
 			creature.heal();
 		}
 		return lost;
+	}
+	
+	public float getClosestRetardantDistance(Vector3 position){
+		float closestDistance = Float.MAX_VALUE;
+		for(Base base : bases)
+			if(base.isRetardantEnabled()){
+				float distance =  base.getCachedPosition().tmp().dst(position);
+				if(distance < closestDistance)
+					closestDistance = distance;
+			}
+		return closestDistance;
 	}
 }
