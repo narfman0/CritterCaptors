@@ -1,3 +1,5 @@
 *.class
 *.log
 *.settings
+/crittercaptors/data/saves.xml
+/crittercaptors/data/options.xml
