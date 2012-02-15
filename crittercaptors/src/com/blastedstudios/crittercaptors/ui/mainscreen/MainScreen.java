@@ -16,17 +16,21 @@ public class MainScreen extends AbstractScreen {
 		super(game);
 		final Button newGameButton = new TextButton("New Game", skin.getStyle(TextButtonStyle.class), "new");
 		final Button loadGameButton = new TextButton("Load", skin.getStyle(TextButtonStyle.class), "load");
+		final Button optionsButton = new TextButton("Options", skin.getStyle(TextButtonStyle.class), "options");
 		final Button exitButton = new TextButton("Exit", skin.getStyle(TextButtonStyle.class), "exit");
 		newGameButton.setClickListener(new ClickListener() {
 			@Override public void click(Actor arg0, float arg1, float arg2) {
 				game.setScreen(new NewGameScreen(game));
-				dispose();
 			}
 		});
 		loadGameButton.setClickListener(new ClickListener() {
 			@Override public void click(Actor arg0, float arg1, float arg2) {
 				game.setScreen(new LoadScreen(game));
-				dispose();
+			}
+		});
+		optionsButton.setClickListener(new ClickListener() {
+			@Override public void click(Actor arg0, float arg1, float arg2) {
+				game.setScreen(new OptionsScreen(game));
 			}
 		});
 		exitButton.setClickListener(new ClickListener() {
@@ -38,6 +42,8 @@ public class MainScreen extends AbstractScreen {
 		window.add(newGameButton);
 		window.row();
 		window.add(loadGameButton);
+		window.row();
+		window.add(optionsButton);
 		window.row();
 		window.add(exitButton);
 		window.pack();

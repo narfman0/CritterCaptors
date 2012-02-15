@@ -44,7 +44,7 @@ public class WorldMapScreen extends AbstractScreen {
 		spriteBatch = new SpriteBatch();
 		font = new BitmapFont(Gdx.files.getFileHandle("data/fonts/arial-15.fnt", FileType.Internal), 
 				Gdx.files.getFileHandle("data/fonts/arial-15.png", FileType.Internal), false);
-		terrainManager = new TerrainManager(game.getWorldLocationManager());
+		terrainManager = new TerrainManager(game);
 		if(isNewCharacter)
 			showNewCharacterWindow();
 	}

@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.badlogic.gdx.math.Vector3;
-import com.blastedstudios.crittercaptors.util.WorldLocationUtil;
+import com.blastedstudios.crittercaptors.CritterCaptors;
+import com.blastedstudios.crittercaptors.util.OptionsUtil;
 
 public class TerrainManager {
 	private static final List<ITerrain> terrains = new ArrayList<ITerrain>();
@@ -13,15 +14,16 @@ public class TerrainManager {
 	 * see less black void of terrain-less worlds
 	 */
 	private final Terrain baseTerrain;
-	private final WorldLocationUtil locationManager;
+	private final CritterCaptors game;
 	private final int SCALE = 5;
 	
-	public TerrainManager(WorldLocationUtil locationManager){
-		this.locationManager = locationManager;
+	public TerrainManager(CritterCaptors game){
+		this.game = game;
 		baseTerrain = new Terrain(
 				new float[(Terrain.DEFAULT_WIDTH + 1) * (Terrain.DEFAULT_WIDTH + 1)], 
 				new Vector3(), SCALE, SCALE);
-		add(new Vector3());
+		if(game.getOptions().getOptionBoolean(OptionsUtil.USE_GPS))
+			add(new Vector3());
 	}
 	
 	public void add(Vector3 location){
@@ -30,7 +32,7 @@ public class TerrainManager {
 			if(terrain.getLocation().dst(location) < 10)
 				found = true;
 		if(!found)
-			terrains.add(new Terrain(locationManager.getHeightmap(location), location, SCALE, SCALE));
+			terrains.add(new Terrain(game.getWorldLocationManager().getHeightmap(location), location, SCALE, SCALE));
 	}
 
 	public void render(Vector3 playerLocation) {
