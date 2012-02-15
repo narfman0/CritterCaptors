@@ -59,7 +59,6 @@ public class SideWindow extends Window{
 	}
 
 	protected void baseButtonHit(CritterCaptors game, Skin skin) {
-		Base base = null;
 		double[] pixels = MercatorUtil.toPixel(
 				game.getWorldLocationManager().getRelativeLongitude(), 
 				game.getWorldLocationManager().getRelativeLatitude());
@@ -67,10 +66,10 @@ public class SideWindow extends Window{
 		for(Base characterBase : game.getCharacter().getBases())
 			if(characterBase.getCachedPosition() != null && 
 				characterBase.getCachedPosition().dst2(pos) < Base.BASE_DISTANCE)
-				base = characterBase;
-		if(base != null){
+				game.activeBase = characterBase;
+		if(game.activeBase != null)
 			game.setScreen(new BaseScreen(game));
-		}else
+		else
 			if(game.getCharacter().getCash() < Base.BASE_COST)
 				stage.addActor(new BuildBaseBrokeWindow(game, skin));
 			else

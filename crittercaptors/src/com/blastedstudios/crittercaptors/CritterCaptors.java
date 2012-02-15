@@ -26,6 +26,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.loaders.ModelLoaderRegistry;
 import com.badlogic.gdx.graphics.g3d.model.Model;
 import com.blastedstudios.crittercaptors.character.Base;
+import com.blastedstudios.crittercaptors.character.BaseUpgradeEnum;
 import com.blastedstudios.crittercaptors.character.Character;
 import com.blastedstudios.crittercaptors.creature.CreatureManager;
 import com.blastedstudios.crittercaptors.ui.mainscreen.MainScreen;
@@ -38,6 +39,7 @@ public class CritterCaptors extends Game {
 	private CreatureManager creatureManager;
 	private WorldLocationUtil worldLocationManager;
 	private Character character;
+	public Base activeBase;
 
 	@Override public void create () {
 		//com.badlogic.gdx.graphics.g3d.model.still.StillModel model = 
@@ -88,7 +90,12 @@ public class CritterCaptors extends Game {
 	}
 
 	public void addBase() {
-		character.getBases().add(new Base(worldLocationManager.getLatitude(), worldLocationManager.getLongitude()));
+		Base newBase = new Base(worldLocationManager.getLatitude(),
+				worldLocationManager.getLongitude(),
+				new HashMap<BaseUpgradeEnum, Integer>());
+		if(character.getBases().size() == 0)
+			newBase.upgrade(BaseUpgradeEnum.MonsterRetardant);
+		character.getBases().add(newBase);
 		character.addCash(-Base.BASE_COST);
 	}
 }

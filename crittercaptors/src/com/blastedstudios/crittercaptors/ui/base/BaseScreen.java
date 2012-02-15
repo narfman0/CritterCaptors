@@ -19,10 +19,11 @@ public class BaseScreen extends AbstractScreen {
 		final Button cancelButton = new TextButton("Cancel", skin.getStyle(TextButtonStyle.class), "cancel");
 		final Button creaturesButton = new TextButton("Creatures", skin.getStyle(TextButtonStyle.class), "creatures");
 		final Button healButton = new TextButton("Heal All", skin.getStyle(TextButtonStyle.class), "heal");
-		//TODO update button
+		final Button upgradeButton = new TextButton("Upgrades", skin.getStyle(TextButtonStyle.class), "upgrade");
 		//TODO virtual reality simulator
 		cancelButton.setClickListener(new ClickListener() {
 			@Override public void click(Actor actor, float arg1, float arg2) {
+				game.activeBase = null;
 				game.setScreen(new WorldMapScreen(game));
 			}
 		});
@@ -38,9 +39,16 @@ public class BaseScreen extends AbstractScreen {
 				game.setScreen(new BaseScreen(game));
 			}
 		});
+		upgradeButton.setClickListener(new ClickListener() {
+			@Override public void click(Actor actor, float arg1, float arg2) {
+				game.setScreen(new UpgradesScreen(game));
+			}
+		});
 		window.add(creaturesButton);
 		window.row();
 		window.add(healButton);
+		window.row();
+		window.add(upgradeButton);
 		window.row();
 		window.add(cancelButton);
 		window.pack();
