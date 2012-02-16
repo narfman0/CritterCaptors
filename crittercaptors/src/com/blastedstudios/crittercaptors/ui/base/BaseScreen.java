@@ -8,8 +8,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.blastedstudios.crittercaptors.CritterCaptors;
+import com.blastedstudios.crittercaptors.character.BaseUpgradeEnum;
 import com.blastedstudios.crittercaptors.creature.Creature;
 import com.blastedstudios.crittercaptors.ui.AbstractScreen;
+import com.blastedstudios.crittercaptors.ui.vr.VRScreen;
 import com.blastedstudios.crittercaptors.ui.worldmap.WorldMapScreen;
 
 public class BaseScreen extends AbstractScreen {
@@ -20,7 +22,7 @@ public class BaseScreen extends AbstractScreen {
 		final Button creaturesButton = new TextButton("Creatures", skin.getStyle(TextButtonStyle.class), "creatures");
 		final Button healButton = new TextButton("Heal All", skin.getStyle(TextButtonStyle.class), "heal");
 		final Button upgradeButton = new TextButton("Upgrades", skin.getStyle(TextButtonStyle.class), "upgrade");
-		//TODO virtual reality simulator
+		final Button vrButton = new TextButton("VR Sim", skin.getStyle(TextButtonStyle.class), "vr");
 		cancelButton.setClickListener(new ClickListener() {
 			@Override public void click(Actor actor, float arg1, float arg2) {
 				game.activeBase = null;
@@ -44,12 +46,21 @@ public class BaseScreen extends AbstractScreen {
 				game.setScreen(new UpgradesScreen(game));
 			}
 		});
+		vrButton.setClickListener(new ClickListener() {
+			@Override public void click(Actor actor, float arg1, float arg2) {
+				game.setScreen(new VRScreen(game));
+			}
+		});
 		window.add(creaturesButton);
 		window.row();
 		window.add(healButton);
 		window.row();
 		window.add(upgradeButton);
 		window.row();
+		if(game.activeBase.hasUpgrade(BaseUpgradeEnum.VirtualReality)){
+			window.add(vrButton);
+			window.row();
+		}
 		window.add(cancelButton);
 		window.pack();
 		window.x = Gdx.graphics.getWidth()/2 - window.width/2;
