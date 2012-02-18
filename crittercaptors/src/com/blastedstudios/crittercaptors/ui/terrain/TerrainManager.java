@@ -15,13 +15,14 @@ public class TerrainManager {
 	 */
 	private final Terrain baseTerrain;
 	private final CritterCaptors game;
-	private final int SCALE = 5;
+	private final int SCALE = 5, BASE_TERRAIN_STRIDE;
 	
 	public TerrainManager(CritterCaptors game){
 		this.game = game;
 		baseTerrain = new Terrain(
 				new float[(Terrain.DEFAULT_WIDTH + 1) * (Terrain.DEFAULT_WIDTH + 1)], 
 				new Vector3(), SCALE, SCALE);
+		BASE_TERRAIN_STRIDE = Terrain.DEFAULT_WIDTH*SCALE;
 		if(game.getOptions().getOptionBoolean(OptionsUtil.USE_GPS))
 			add(new Vector3());
 	}
@@ -36,11 +37,12 @@ public class TerrainManager {
 	}
 
 	public void render(Vector3 playerLocation) {
-		int stride = Terrain.DEFAULT_WIDTH*SCALE;
-		for(int x=-stride; x<=stride; x+=stride)
-			for(int z=-stride; z<=stride; z+=stride){
-				baseTerrain.location.x = ((int)(playerLocation.x/5))*5f+x;
-				baseTerrain.location.z = ((int)(playerLocation.z/5))*5f+z;
+		int addX = ((int)playerLocation.x/BASE_TERRAIN_STRIDE)*BASE_TERRAIN_STRIDE,
+			addZ = ((int)playerLocation.z/BASE_TERRAIN_STRIDE)*BASE_TERRAIN_STRIDE;
+		for(int x=(int)(-1.5*BASE_TERRAIN_STRIDE); x<BASE_TERRAIN_STRIDE*2; x+=BASE_TERRAIN_STRIDE)
+			for(int z=(int)(-1.5*BASE_TERRAIN_STRIDE); z<BASE_TERRAIN_STRIDE*2; z+=BASE_TERRAIN_STRIDE){
+				baseTerrain.location.x = addX+x;
+				baseTerrain.location.z = addZ+z;
 				baseTerrain.render();
 			}
 		for(ITerrain terrain : terrains)

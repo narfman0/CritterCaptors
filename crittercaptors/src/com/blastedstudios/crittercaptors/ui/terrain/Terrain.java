@@ -3,18 +3,16 @@ package com.blastedstudios.crittercaptors.ui.terrain;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
-import com.badlogic.gdx.graphics.Pixmap.Format;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector3;
+import com.blastedstudios.crittercaptors.CritterCaptors;
 import com.blastedstudios.crittercaptors.util.MathUtil;
 
 public class Terrain implements ITerrain{
 	public final Vector3 location;
 	public final int scaleX, scaleZ;
-	private final Texture grass;
 	private TerrainChunk chunk;
 	private Mesh mesh;
 
@@ -28,7 +26,6 @@ public class Terrain implements ITerrain{
 		this.scaleZ = scaleZ;
 		int width = (int)Math.sqrt(heightMap.length)-1;
 		chunk = new TerrainChunk(width, width, heightMap, 5, scaleX, scaleZ);
-		grass = new Texture(Gdx.files.internal("data/textures/grass1.jpg"), Format.RGB565, true);
 		//texcoords - vertex size + 2
 		for (int i = 3, iteration = 0; i < chunk.vertices.length; i += 5, iteration++){
 			chunk.vertices[i] = iteration%4>1 ? 0 : 1;
@@ -44,7 +41,7 @@ public class Terrain implements ITerrain{
 	public void render () {
 		Gdx.gl10.glEnable(GL10.GL_DEPTH_TEST);
 		Gdx.gl10.glEnable(GL10.GL_TEXTURE_2D);
-		grass.bind();
+		CritterCaptors.getTexture("grass").bind();
 		Gdx.gl10.glPushMatrix();
 		Gdx.gl10.glTranslatef(location.x-chunk.width*scaleX/2, location.y, location.z-chunk.width*scaleZ/2);
 		mesh.render(GL10.GL_TRIANGLES);

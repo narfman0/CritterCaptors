@@ -22,6 +22,7 @@ import java.util.Random;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Pixmap.Format;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.loaders.ModelLoaderRegistry;
 import com.badlogic.gdx.graphics.g3d.model.Model;
@@ -54,6 +55,7 @@ public class CritterCaptors extends Game {
 		textureMap.put("skydome", new Texture(Gdx.files.internal("data/sky/skydome.png"), Format.RGB565, true));
 		textureMap.put("base", new Texture(Gdx.files.internal("data/textures/base.png"), Format.RGB565, true));
 		textureMap.put("grass", new Texture(Gdx.files.internal("data/textures/grass1.jpg"), Format.RGB565, true));
+		textureMap.get("grass").setFilter(TextureFilter.MipMap, TextureFilter.Nearest);
 		modelMap = new HashMap<String, Model>();
 		modelMap.put("skydome", ModelLoaderRegistry.load(Gdx.files.internal("data/sky/skydome.obj")));
 		modelMap.put("base", ModelLoaderRegistry.load(Gdx.files.internal("data/models/base.g3d")));
