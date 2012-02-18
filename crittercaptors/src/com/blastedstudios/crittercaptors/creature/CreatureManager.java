@@ -74,7 +74,7 @@ public class CreatureManager {
 	private int getCreatureLevelFromDistance(float distance) {
 		int randomMod = CritterCaptors.random.nextInt((int)Math.sqrt(distance)),
 			level = (int)(16.65f*Math.pow(Math.E, .000383f*distance))-12;
-		return level + randomMod;
+		return Math.max(1, level + randomMod);
 	}
 
 	private Creature spawn(HashMap<AffinityEnum, Float> worldAffinities) {

@@ -78,10 +78,9 @@ public class WorldLocationUtil {
 				executerService.execute(new AltitudeThread(heightMap, x*(Terrain.DEFAULT_WIDTH+1)+z, latlon[0], latlon[1]));
 			}
 		try {
-			Gdx.app.log("WorldLocationUtil:getHeightmap","Changed heightmap time to 5 seconds for debugging, make longer for release");
-			//TODO change back to 60 or something else
-			executerService.awaitTermination(10, TimeUnit.SECONDS);
+			executerService.awaitTermination(1, TimeUnit.MINUTES);
 		} catch (InterruptedException e) {
+			Gdx.app.log("WorldLocationUtil:getHeightmap","Heightmap not complete after one minute, consider a better device");
 			e.printStackTrace();
 		}
 		return heightMap;
@@ -98,7 +97,7 @@ public class WorldLocationUtil {
 	 */
 	public static double getAltitude(Double longitude, Double latitude) {
 		double result = Double.NaN;
-		String html = HTMLUtil.getHTML("http://gisdata.usgs.gov/"
+		String html = HTMLUtil.getHTML("http://cumulus.cr.usgs.gov/"
 				+ "xmlwebservices2/elevation_service.asmx/"
 				+ "getElevation?X_Value=" + String.valueOf(longitude)
 				+ "&Y_Value=" + String.valueOf(latitude)
