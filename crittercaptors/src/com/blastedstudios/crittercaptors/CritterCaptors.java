@@ -65,6 +65,9 @@ public class CritterCaptors extends Game {
 			}catch(Exception e){
 				modelMap.put(name, ModelLoaderRegistry.load(Gdx.files.internal("data/models/" + name.toLowerCase() + ".g3d")));
 			}
+			try{
+				textureMap.put(name, new Texture(Gdx.files.internal("data/textures/" + name.toLowerCase() + ".png"), Format.RGB565, true));
+			}catch(Exception e){}
 		}
 		setScreen(new MainScreen(this));
 	}
