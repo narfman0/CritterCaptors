@@ -9,6 +9,5 @@ public interface ITerrain {
 	public void render ();
 	public float getHeight(float x, float z);
 	public Vector3 getLocation();
-	public float getScaleX();
-	public float getScaleZ();
+	public float getScale();
 }

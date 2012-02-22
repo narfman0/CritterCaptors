@@ -21,7 +21,7 @@ public class TerrainManager {
 		this.game = game;
 		baseTerrain = new Terrain(
 				new float[(Terrain.DEFAULT_WIDTH + 1) * (Terrain.DEFAULT_WIDTH + 1)], 
-				new Vector3(), SCALE, SCALE);
+				new Vector3(), SCALE);
 		BASE_TERRAIN_STRIDE = Terrain.DEFAULT_WIDTH*SCALE;
 		if(game.getOptions().getOptionBoolean(OptionsUtil.USE_GPS))
 			add(new Vector3());
@@ -33,7 +33,7 @@ public class TerrainManager {
 			if(terrain.getLocation().dst(location) < 10)
 				found = true;
 		if(!found)
-			terrains.add(new Terrain(game.getWorldLocationManager().getHeightmap(location), location, SCALE, SCALE));
+			terrains.add(new Terrain(game.getWorldLocationManager().getHeightmap(location), location, SCALE));
 	}
 
 	public void render(Vector3 playerLocation) {
@@ -56,13 +56,13 @@ public class TerrainManager {
 	 */
 	public float getHeight(float x, float z){
 		for(ITerrain terrain : terrains)
-			if(terrain.getLocation().x + Terrain.DEFAULT_WIDTH_DIV2*terrain.getScaleX() >= x &&
-				terrain.getLocation().x - Terrain.DEFAULT_WIDTH_DIV2*terrain.getScaleX() <= x &&
-				terrain.getLocation().z + Terrain.DEFAULT_WIDTH_DIV2*terrain.getScaleZ() >= z &&
-				terrain.getLocation().z - Terrain.DEFAULT_WIDTH_DIV2*terrain.getScaleZ() <= z )
+			if(terrain.getLocation().x + Terrain.DEFAULT_WIDTH_DIV2*terrain.getScale() >= x &&
+				terrain.getLocation().x - Terrain.DEFAULT_WIDTH_DIV2*terrain.getScale() <= x &&
+				terrain.getLocation().z + Terrain.DEFAULT_WIDTH_DIV2*terrain.getScale() >= z &&
+				terrain.getLocation().z - Terrain.DEFAULT_WIDTH_DIV2*terrain.getScale() <= z )
 				return terrain.getHeight(
-						x-terrain.getLocation().x+Terrain.DEFAULT_WIDTH_DIV2*terrain.getScaleX(), 
-						z-terrain.getLocation().z+Terrain.DEFAULT_WIDTH_DIV2*terrain.getScaleZ());
+						x-terrain.getLocation().x+Terrain.DEFAULT_WIDTH_DIV2*terrain.getScale(), 
+						z-terrain.getLocation().z+Terrain.DEFAULT_WIDTH_DIV2*terrain.getScale());
 		return 0;
 	}
 	

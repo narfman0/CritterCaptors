@@ -20,33 +20,31 @@ import com.blastedstudios.crittercaptors.CritterCaptors;
 public class QuadTerrainNode implements ITerrain{
 	private static final int DEFAULT_MAX_LOD = (int)(Math.log10(DEFAULT_WIDTH)/Math.log10(4))-1;
 	public final Vector3 location;
-	public final float scaleX, scaleZ;
+	public final float scale;
 	public final int lod, width;
 	private TerrainChunk chunk;
 	private Mesh mesh;
 	private QuadTerrainNode[] children;
 	
-	public QuadTerrainNode (final float[] heightMap, final Vector3 location, 
-			int scaleX, int scaleZ){
-		this(heightMap, location, scaleX, scaleZ, DEFAULT_MAX_LOD);
+	public QuadTerrainNode (final float[] heightMap, final Vector3 location, int scale){
+		this(heightMap, location, scale, DEFAULT_MAX_LOD);
 	}
 
 	public QuadTerrainNode (final float[] heightMap, final Vector3 location, 
-			int scaleX, int scaleZ, int lod) {
+			int scale, int lod) {
 		this.location = location;
 		this.lod = lod;
-		this.scaleX = scaleX;
-		this.scaleZ = scaleZ;
+		this.scale = scale;
 		
 		final int width = (int)Math.sqrt(heightMap.length)-1,//#quads 
 				stride = (int)Math.pow(2, lod),
 				widthOver2 = width/2, widthOver4 = width/4;
 		if(lod>0){
 			children = new QuadTerrainNode[4];
-			Vector3 location0 = new Vector3(location.x-scaleX*widthOver4,0,location.x+scaleZ*widthOver4),
-					location1 = new Vector3(location.x+scaleX*widthOver4,0,location.x+scaleZ*widthOver4),
-					location2 = new Vector3(location.x-scaleX*widthOver4,0,location.x-scaleZ*widthOver4),
-					location3 = new Vector3(location.x+scaleX*widthOver4,0,location.x-scaleZ*widthOver4);
+			Vector3 location0 = new Vector3(location.x-scale*widthOver4,0,location.x+scale*widthOver4),
+					location1 = new Vector3(location.x+scale*widthOver4,0,location.x+scale*widthOver4),
+					location2 = new Vector3(location.x-scale*widthOver4,0,location.x-scale*widthOver4),
+					location3 = new Vector3(location.x+scale*widthOver4,0,location.x-scale*widthOver4);
 			float[] heightMap0 = new float[(widthOver2+1)*(widthOver2+1)],
 					heightMap1 = new float[(widthOver2+1)*(widthOver2+1)],
 					heightMap2 = new float[(widthOver2+1)*(widthOver2+1)],
@@ -58,10 +56,10 @@ public class QuadTerrainNode implements ITerrain{
 					heightMap2[z*widthOver2+x] = heightMap[(z+widthOver2+1)*widthOver2+x];
 					heightMap3[z*widthOver2+x] = heightMap[(z+widthOver2+1)*widthOver2+x+widthOver2+1];
 				}
-			children[0] = new QuadTerrainNode(heightMap0, location0, scaleX, scaleZ, lod-1);
-			children[1] = new QuadTerrainNode(heightMap1, location1, scaleX, scaleZ, lod-1);
-			children[2] = new QuadTerrainNode(heightMap2, location2, scaleX, scaleZ, lod-1);
-			children[3] = new QuadTerrainNode(heightMap3, location3, scaleX, scaleZ, lod-1);
+			children[0] = new QuadTerrainNode(heightMap0, location0, scale, lod-1);
+			children[1] = new QuadTerrainNode(heightMap1, location1, scale, lod-1);
+			children[2] = new QuadTerrainNode(heightMap2, location2, scale, lod-1);
+			children[3] = new QuadTerrainNode(heightMap3, location3, scale, lod-1);
 		}
 		//build own mesh
 		this.width = widthOver4+1;
@@ -69,7 +67,7 @@ public class QuadTerrainNode implements ITerrain{
 		for(int z=0,i=0; z<(widthOver4+1); z+=stride)
 			for(int x=0; x<(widthOver4+1); x+=stride)
 				lodHeightMap[i++] = heightMap[z*(widthOver4+1)+x];
-		chunk = new TerrainChunk(widthOver4, widthOver4, lodHeightMap, 5, scaleX, scaleZ);
+		chunk = new TerrainChunk(widthOver4, widthOver4, lodHeightMap, 5, scale);
 		//texcoords - vertex size + 2
 		for (int i = 3, iteration = 0; i < chunk.vertices.length; i += 5, iteration++){
 			chunk.vertices[i] = iteration%4>1 ? 0 : 1;
@@ -104,11 +102,7 @@ public class QuadTerrainNode implements ITerrain{
 		return location;
 	}
 
-	public float getScaleX() {
-		return scaleX;
-	}
-
-	public float getScaleZ() {
-		return scaleZ;
+	public float getScale() {
+		return scale;
 	}
 }

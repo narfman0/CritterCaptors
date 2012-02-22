@@ -12,20 +12,18 @@ import com.blastedstudios.crittercaptors.util.MathUtil;
 
 public class Terrain implements ITerrain{
 	public final Vector3 location;
-	public final int scaleX, scaleZ;
+	public final int scale;
 	private TerrainChunk chunk;
 	private Mesh mesh;
 
 	/**
 	 * Simple terrain sing a single terrain chunk
 	 */
-	public Terrain (final float[] heightMap, final Vector3 location, 
-			int scaleX, int scaleZ) {
+	public Terrain (final float[] heightMap, final Vector3 location, int scale) {
 		this.location = location;
-		this.scaleX = scaleX;
-		this.scaleZ = scaleZ;
+		this.scale = scale;
 		int width = (int)Math.sqrt(heightMap.length)-1;
-		chunk = new TerrainChunk(width, width, heightMap, 5, scaleX, scaleZ);
+		chunk = new TerrainChunk(width, width, heightMap, 5, scale);
 		//texcoords - vertex size + 2
 		for (int i = 3, iteration = 0; i < chunk.vertices.length; i += 5, iteration++){
 			chunk.vertices[i] = iteration%4>1 ? 0 : 1;
@@ -43,25 +41,25 @@ public class Terrain implements ITerrain{
 		Gdx.gl10.glEnable(GL10.GL_TEXTURE_2D);
 		CritterCaptors.getTexture("grass").bind();
 		Gdx.gl10.glPushMatrix();
-		Gdx.gl10.glTranslatef(location.x-chunk.width*scaleX/2, location.y, location.z-chunk.width*scaleZ/2);
+		Gdx.gl10.glTranslatef(location.x-chunk.width*scale/2, location.y, location.z-chunk.width*scale/2);
 		mesh.render(GL10.GL_TRIANGLES);
 		Gdx.gl10.glPopMatrix();
 	}
 
 	public float getHeight(float x, float z) {
 		int left, top;
-		left = (int)x / (int)scaleX;
-		top = (int)z / (int)scaleZ;
+		left = (int)x / (int)scale;
+		top = (int)z / (int)scale;
 		float cZ = 0f;
         float rightDiagDifference = chunk.heightMap[left + top*chunk.width] - chunk.heightMap[left + 1 +(top + 1)*chunk.width];
         float leftDiagDifference = chunk.heightMap[left + 1+ top*chunk.width] - chunk.heightMap[left+ (top + 1)*chunk.width];
 
         if (Math.abs(rightDiagDifference) >= Math.abs(leftDiagDifference))
         {
-            if (-((x % scaleX) / scaleX) + 1 > (z % scaleZ) / scaleZ)
+            if (-((x % scale) / scale) + 1 > (z % scale) / scale)
             {
-                float xNormalized = (x % scaleX) / scaleX;
-                float zNormalized = (z % scaleZ) / scaleZ;
+                float xNormalized = (x % scale) / scale;
+                float zNormalized = (z % scale) / scale;
 
                 float topHeight = MathUtil.lerp(
                   chunk.heightMap[left+ top*chunk.width],
@@ -77,8 +75,8 @@ public class Terrain implements ITerrain{
             }
             else
             {
-                float xNormalized = (x % scaleX) / scaleX;
-                float zNormalized = (z % scaleZ) / scaleZ;
+                float xNormalized = (x % scale) / scale;
+                float zNormalized = (z % scale) / scale;
 
                 float topHeight = MathUtil.lerp(
                   chunk.heightMap[left+ (top + 1)*chunk.width],
@@ -95,11 +93,11 @@ public class Terrain implements ITerrain{
         }
         else
         {
-            if (((x % scaleX) / scaleX) > (z % scaleZ) / scaleZ)
+            if (((x % scale) / scale) > (z % scale) / scale)
             {
 
-                float xNormalized = (x % scaleX) / scaleX;
-                float zNormalized = (z % scaleZ) / scaleZ;
+                float xNormalized = (x % scale) / scale;
+                float zNormalized = (z % scale) / scale;
 
                 float topHeight = MathUtil.lerp(
                   chunk.heightMap[left+ top*chunk.width],
@@ -115,8 +113,8 @@ public class Terrain implements ITerrain{
             }
             else
             {
-                float xNormalized = (x % scaleX) / scaleX;
-                float zNormalized = (z % scaleZ) / scaleZ;
+                float xNormalized = (x % scale) / scale;
+                float zNormalized = (z % scale) / scale;
 
                 float topHeight = MathUtil.lerp(
                   chunk.heightMap[left+ (top + 1)*chunk.width],
@@ -131,18 +129,14 @@ public class Terrain implements ITerrain{
                 cZ = MathUtil.lerp(bottomHeight, topHeight, zNormalized);
             }
         }
-		return cZ;
+		return cZ*scale;
 	}
 
 	public Vector3 getLocation() {
 		return location;
 	}
 
-	public float getScaleX() {
-		return scaleX;
-	}
-
-	public float getScaleZ() {
-		return scaleZ;
+	public float getScale() {
+		return scale;
 	}
 }

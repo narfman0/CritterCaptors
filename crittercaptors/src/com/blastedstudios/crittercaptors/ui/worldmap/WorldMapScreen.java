@@ -31,7 +31,7 @@ public class WorldMapScreen extends AbstractScreen {
 	private BitmapFont font;
     private Camera camera;
     public static final float MOVE_SPEED = 10f, TURN_RATE = 100f,
-		REMOVE_DISTANCE = 1000000f, FIGHT_DISTANCE = 20f;
+		REMOVE_DISTANCE = 1000000f, FIGHT_DISTANCE = 150f;
     private SideWindow sideMenu = null;
     private TerrainManager terrainManager;
     
@@ -53,9 +53,10 @@ public class WorldMapScreen extends AbstractScreen {
 		game.getWorldLocationManager().update();
 		game.getCreatureManager().update(game.getWorldLocationManager().getWorldAffinities(), camera.position);
 		for(int i=0; i<game.getCreatureManager().getCreatures().size(); i++){
-			float distance = game.getCreatureManager().getCreatures().get(i).camera.position.dst2(camera.position);
+			Creature creature = game.getCreatureManager().getCreatures().get(i);
+			float distance = creature.camera.position.dst2(camera.position);
 			if(distance < FIGHT_DISTANCE){
-				game.setScreen(new BattleScreen(game, game.getCreatureManager().getCreatures().get(i)));
+				game.setScreen(new BattleScreen(game, creature));
 				game.getCreatureManager().getCreatures().clear();
 				dispose();
 			}if(distance > REMOVE_DISTANCE)
@@ -65,6 +66,7 @@ public class WorldMapScreen extends AbstractScreen {
 		Gdx.gl10.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 		processInput();
 		RenderUtil.drawSky(CritterCaptors.getModel("skydome"), CritterCaptors.getTexture("skydome"), camera.position);
+		terrainManager.render(camera.position);
 		for(Creature creature : game.getCreatureManager().getCreatures()){
 			Vector3 position = creature.camera.position.tmp();
 			position.y += terrainManager.getHeight(position.x, position.z);
@@ -72,7 +74,6 @@ public class WorldMapScreen extends AbstractScreen {
 			RenderUtil.drawModel(CritterCaptors.getModel(creature.getName()), texture, 
 					position, creature.camera.direction, new Vector3(1f,1f,1f));
 		}
-		terrainManager.render(camera.position);
 		
 		//render base after terrain to cache location (need terrain to get height of base)
 		for(Base base : game.getCharacter().getBases())

@@ -2,20 +2,19 @@ package com.blastedstudios.crittercaptors.ui.terrain;
 
 public class TerrainChunk {
 	public final float[] heightMap;
-	public final short width, height, scaleX, scaleZ;
+	public final short width, height, scale;
 	public final float[] vertices;
 	public final short[] indices;
 	public final int vertexSize;
 
 	public TerrainChunk (final int width, final int height, final float[] heightMap, 
-			int vertexSize, int scaleX, int scaleZ) {
+			int vertexSize, int scale) {
 		if ((width + 1) * (height + 1) > Short.MAX_VALUE)
 			throw new IllegalArgumentException("Chunk size too big, (width + 1)*(height+1) must be <= 32767");
 		this.heightMap = heightMap;
 		this.width = (short)width;
 		this.height = (short)height;
-		this.scaleX = (short)scaleX;
-		this.scaleZ = (short)scaleZ;
+		this.scale = (short)scale;
 		this.vertices = new float[heightMap.length * vertexSize];
 		this.indices = new short[width * height * 6];
 		this.vertexSize = vertexSize;
@@ -34,9 +33,9 @@ public class TerrainChunk {
 
 		for (int z = 0; z < heightPitch; z++) {
 			for (int x = 0; x < widthPitch; x++) {
-				vertices[idx++] = x*scaleX;
-				vertices[idx++] = heightMap[hIdx++];
-				vertices[idx++] = z*scaleZ;
+				vertices[idx++] = x*scale;
+				vertices[idx++] = heightMap[hIdx++]*scale;
+				vertices[idx++] = z*scale;
 				idx += inc;
 			}
 		}

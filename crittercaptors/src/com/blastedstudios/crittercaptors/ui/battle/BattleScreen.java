@@ -21,8 +21,8 @@ public class BattleScreen extends AbstractScreen {
     static{
     	float[] heightMap = new float[(Terrain.DEFAULT_WIDTH + 1) * (Terrain.DEFAULT_WIDTH + 1)];
 		for(int x=0; x<Terrain.DEFAULT_WIDTH; x++)
-			heightMap[Terrain.DEFAULT_WIDTH*Terrain.DEFAULT_WIDTH + x] = 5f + (float)Math.sin(x/4);
-		terrain = new Terrain(heightMap, new Vector3(), 10, 10);
+			heightMap[Terrain.DEFAULT_WIDTH*Terrain.DEFAULT_WIDTH + x] = 1f - (float)Math.sin(x/4)/5f;		
+		terrain = new Terrain(heightMap, new Vector3(), 10);
     }
 
 	public BattleScreen(CritterCaptors game, Creature enemy) {
