@@ -51,7 +51,7 @@ public class WorldMapScreen extends AbstractScreen {
 	
 	@Override public void render (float arg0) {
 		game.getWorldLocationManager().update();
-		game.getCreatureManager().update(game.getWorldLocationManager().getWorldAffinities(), camera.position);
+		game.getCreatureManager().update(game.getWorldLocationManager().getWorldAffinities(), camera.position, game);
 		for(int i=0; i<game.getCreatureManager().getCreatures().size(); i++){
 			Creature creature = game.getCreatureManager().getCreatures().get(i);
 			float distance = creature.camera.position.dst2(camera.position);

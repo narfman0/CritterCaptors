@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.junit.Test;
 import org.w3c.dom.Element;
 
 import com.badlogic.gdx.Gdx;
@@ -16,14 +17,12 @@ import com.blastedstudios.crittercaptors.util.XMLUtil;
 public class CreatureManager {
 	private final List<Creature> creatures;
 	private final HashMap<AffinityEnum,List<Creature>> creatureTemplates;
-	private final CritterCaptors game;
 	private float timeSinceLastSpawn = 0;
 	private static final float TIME_BETWEEN_SPAWNS = 4,
 		TIME_BETWEEN_CREATURE_CHANGE_DIRECTION = 10,
 		SPAWN_DISTANCE_FROM_PLAYER = 20f;//100f;
 	
-	public CreatureManager(CritterCaptors game){
-		this.game = game;
+	public CreatureManager(){
 		creatures = new ArrayList<Creature>();
 		creatureTemplates = new HashMap<AffinityEnum,List<Creature>>();
 		for(AffinityEnum affinity : AffinityEnum.values())
@@ -36,7 +35,8 @@ public class CreatureManager {
 		}
 	}
 
-	public void update(HashMap<AffinityEnum, Float> worldAffinities, Vector3 location) {
+	public void update(HashMap<AffinityEnum, Float> worldAffinities, Vector3 location,
+			CritterCaptors game) {
 		//check if we are going to spawn a creature
 		timeSinceLastSpawn += Gdx.graphics.getDeltaTime();
 		if(timeSinceLastSpawn > TIME_BETWEEN_SPAWNS){
@@ -47,7 +47,8 @@ public class CreatureManager {
 				creature.camera.position.x = location.x + (float)Math.cos(angle) * SPAWN_DISTANCE_FROM_PLAYER;
 				creature.camera.position.z = location.z + (float)Math.sin(angle) * SPAWN_DISTANCE_FROM_PLAYER;
 				float distance = game.getCharacter().getClosestRetardantDistance(creature.camera.position);
-				creature.setExperience(ExperienceUtil.getExperience(getCreatureLevelFromDistance(distance)));
+				int creatureLevel = getCreatureLevelFromDistance(distance);
+				creature.setExperience(ExperienceUtil.getExperience(creatureLevel));
 				creature.heal();
 				creatures.add(creature);
 			}
@@ -71,7 +72,7 @@ public class CreatureManager {
 	 * @param distance (note: not distance squared)
 	 * @return level according to how far from nearest retardant exponentially
 	 */
-	private int getCreatureLevelFromDistance(float distance) {
+	private static int getCreatureLevelFromDistance(float distance) {
 		int randomMod = CritterCaptors.random.nextInt((int)Math.sqrt(distance)),
 			level = (int)(16.65f*Math.pow(Math.E, .000383f*distance))-12;
 		return Math.max(1, level + randomMod);
@@ -106,5 +107,13 @@ public class CreatureManager {
 				if(template.getName().equals(name))
 					return template.clone();
 		return null;
+	}
+	
+	@Test
+	public void testGetCreatureLevelFromDistance(){
+		int[] levelSet = new int[1000];
+		for(int i=1; i<levelSet.length+1; i++)
+		 levelSet[i-1] = getCreatureLevelFromDistance(i*5);
+		assert(levelSet[0] >= 1);
 	}
 }

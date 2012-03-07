@@ -49,7 +49,7 @@ public class CritterCaptors extends Game {
 		//	ModelLoaderRegistry.loadStillModel(Gdx.files.internal("data/models/base.g3dt"));
 		//com.badlogic.gdx.graphics.g3d.loaders.g3d.chunks.G3dExporter.export(model, Gdx.files.absolute("data/models/base.g3d"));
 		options = new OptionsUtil();
-		creatureManager = new CreatureManager(this);
+		creatureManager = new CreatureManager();
 		worldLocationManager = new WorldLocationUtil();
 		textureMap = new HashMap<String, Texture>();
 		textureMap.put("skydome", new Texture(Gdx.files.internal("data/sky/skydome.png"), Format.RGB565, true));
@@ -101,8 +101,10 @@ public class CritterCaptors extends Game {
 		Base newBase = new Base(worldLocationManager.getLatitude(),
 				worldLocationManager.getLongitude(),
 				new HashMap<BaseUpgradeEnum, Integer>());
-		if(character.getBases().size() == 0)
+		if(character.getBases().size() == 0){
 			newBase.upgrade(BaseUpgradeEnum.MonsterRetardant);
+			newBase.setRetardantEnabled(true);
+		}
 		character.getBases().add(newBase);
 		character.addCash(-Base.BASE_COST);
 	}

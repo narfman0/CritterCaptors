@@ -160,4 +160,12 @@ public class Character {
 			}
 		return closestDistance;
 	}
+	
+	public int getActiveRetardantCount(){
+		int count = 0;
+		for(Base base : bases)
+			if(base.isRetardantEnabled())
+				count++;
+		return count;
+	}
 }

@@ -45,6 +45,10 @@ public class UpgradesScreen extends AbstractScreen implements Screen {
 				vrButton.setText(getVRText());
 			}
 		});
+		if(game.activeBase.isRetardantEnabled() && game.getCharacter().getActiveRetardantCount() == 1){
+			retardantEnableButton.color.set(Color.DARK_GRAY);
+			retardantEnableButton.touchable = false;
+		}
 		vrButton.touchable = game.getCharacter().getCash() >= getVRUpgradeCash(); 
 		if(!vrButton.touchable)
 			vrButton.color.set(Color.RED);
