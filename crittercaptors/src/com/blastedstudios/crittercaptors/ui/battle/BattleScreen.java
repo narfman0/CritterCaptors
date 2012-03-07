@@ -54,7 +54,12 @@ public class BattleScreen extends AbstractScreen {
 		stage.draw();
 	}
 
-	public void fight(String name) {
+	/**
+	 * @param name ability name
+	 * @param dmgModifier the multiplier of damage according to how 
+	 * well the user input the gesture
+	 */
+	public void fight(String name, float dmgModifier) {
 		String enemyAttack = enemy.getActiveAbilities().get(CritterCaptors.random.nextInt(
 				enemy.getActiveAbilities().size())).name;
 		
@@ -64,10 +69,12 @@ public class BattleScreen extends AbstractScreen {
 				second = playerFirst ? enemy : activeCreature;
 		String firstAttack = playerFirst ? name : enemyAttack, 
 				secondAttack = playerFirst ? enemyAttack : name;
+		int firstAtkDmg = (int)(first.attack(second, firstAttack) * (playerFirst?dmgModifier:1)),
+			secondAtkDmg = (int)(second.attack(first, secondAttack) * (!playerFirst?dmgModifier:1));
 		
-		if(second.receiveDamage(first.attack(enemy, firstAttack)) || 
-				first.receiveDamage(second.attack(activeCreature, secondAttack)) ||
-				second.statusUpdate(true) || first.statusUpdate(true))
+		if(second.receiveDamage(firstAtkDmg) || second.statusUpdate(true))
+			death();
+		if(first.receiveDamage(secondAtkDmg) || first.statusUpdate(true))
 			death();
 		
 		creatureInfoWindow.update();
@@ -110,7 +117,7 @@ public class BattleScreen extends AbstractScreen {
 			endBattle();
 			return;
 		}else
-			fight(null);
+			fight(null, 0);
 		stage.addActor(new CaptureFailWindow(game, skin, this, 
 				(int)(100*catchRate), (int)(100*catchRoll) ));
 	}

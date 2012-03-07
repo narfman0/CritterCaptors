@@ -29,7 +29,7 @@ public class CreatureSelectWindow extends Window {
 				button.setClickListener(new ClickListener() {
 					@Override public void click(Actor actor, float arg1, float arg2) {
 						battleScreen.setActiveCreature(creature);
-						battleScreen.fight(null);
+						battleScreen.fight(null, 0);
 						stage.addActor(new BottomWindow(game, skin, battleScreen));
 						actor.getStage().removeActor(actor.parent);
 					}

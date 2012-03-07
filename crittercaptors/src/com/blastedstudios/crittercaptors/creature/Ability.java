@@ -19,14 +19,15 @@ public class Ability {
 	
 	final public int power;
 	final public AffinityEnum affinity;
-	final public String name;
+	final public String name, gestureName;
 	final public StatusEffectEnum status;
 	final public float hitRate;
 	final public Stats buff;
 	final public boolean buffSelf;
 	
 	public Ability(String name, int power, AffinityEnum affinity, float hitRate,
-			StatusEffectEnum status, Stats buff, boolean buffSelf){
+			StatusEffectEnum status, Stats buff, boolean buffSelf, 
+			String gestureName){
 		this.name = name;
 		this.power = power;
 		this.affinity = affinity;
@@ -34,6 +35,7 @@ public class Ability {
 		this.status = status;
 		this.buff = buff;
 		this.buffSelf = buffSelf;
+		this.gestureName = gestureName;
 	}
 	
 	public static Ability fromXML(Element abilityElement){
@@ -52,6 +54,6 @@ public class Ability {
 		return new Ability(abilityElement.getAttribute("name"), 
 				Integer.parseInt(abilityElement.getAttribute("power")),
 				AffinityEnum.valueOf(abilityElement.getAttribute("affinity")), 
-				hitRate, status, buff, buffSelf);
+				hitRate, status, buff, buffSelf, abilityElement.getAttribute("gestureName"));
 	}
 }

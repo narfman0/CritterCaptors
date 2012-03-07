@@ -70,6 +70,7 @@ public class CritterCaptors extends Game {
 			}catch(Exception e){}
 		}
 		setScreen(new MainScreen(this));
+		Gdx.input.removeComplexGestureListener(null);
 	}
 	
 	public static Model getModel(String model){
