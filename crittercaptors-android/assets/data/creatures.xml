@@ -1,0 +1,32 @@
+<creatures>
+	<creature name="Gecko" experience="0" catchRate=".333" number="1">
+		<baseStats hpMax="45" attack="49" defense="49" specialAttack="65" specialDefense="65" speed="45"/>
+		<evYield hpMax="0" attack="0" defense="0" specialAttack="1" specialDefense="0" speed="0"/>
+		<affinity>coastal</affinity>
+		<ability name="Tackle" level="1"/>
+	</creature>
+	<creature name="Armadillo" experience="0" catchRate=".333" >
+		<baseStats hpMax="39" attack="50" defense="54" specialAttack="60" specialDefense="50" speed="65"/>
+		<evYield hpMax="0" attack="0" defense="1" specialAttack="0" specialDefense="0" speed="0"/>
+		<affinity>rural</affinity>
+		<ability name="Tackle" level="1"/>
+	</creature>
+	<creature name="Penguin" experience="0" catchRate=".333" >
+		<baseStats hpMax="39" attack="52" defense="43" specialAttack="60" specialDefense="50" speed="65"/>
+		<evYield hpMax="0" attack="0" defense="1" specialAttack="0" specialDefense="0" speed="0"/>
+		<affinity>ocean</affinity>
+		<ability name="Tackle" level="1"/>
+	</creature>
+	<creature name="Squirrel" experience="0" catchRate=".333" >
+		<baseStats hpMax="39" attack="52" defense="43" specialAttack="60" specialDefense="50" speed="67"/>
+		<evYield hpMax="0" attack="0" defense="0" specialAttack="0" specialDefense="0" speed="1"/>
+		<affinity>suburban</affinity>
+		<ability name="Tackle" level="1"/>
+	</creature>
+	<creature name="Chipmunk" experience="0" catchRate=".333" >
+		<baseStats hpMax="37" attack="50" defense="41" specialAttack="62" specialDefense="50" speed="69"/>
+		<evYield hpMax="0" attack="0" defense="0" specialAttack="0" specialDefense="0" speed="1"/>
+		<affinity>urban</affinity>
+		<ability name="Tackle" level="1"/>
+	</creature>
+</creatures>

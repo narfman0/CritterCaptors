@@ -1,7 +1,6 @@
 package com.blastedstudios.crittercaptors.util;
 
-import java.io.File;
-import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.util.Vector;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -35,7 +34,7 @@ public class XMLUtil {
         DocumentBuilder docBuilder;
 		try {
 			docBuilder = docBuilderFactory.newDocumentBuilder();
-	        return docBuilder.parse(new File(path));
+	        return docBuilder.parse(Gdx.files.internal(path).read());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -49,7 +48,7 @@ public class XMLUtil {
 	public static void writeToFile(Document xmlDoc, String path) {
 		try {
 			DOMSource source = new DOMSource(xmlDoc);
-			FileOutputStream destStream = new FileOutputStream(Gdx.files.internal(path).file());
+			OutputStream destStream = Gdx.files.internal(path).write(false);
 			StreamResult dest = new StreamResult(destStream);
 			TransformerFactory factory = TransformerFactory.newInstance();
 			Transformer xformer = factory.newTransformer();
