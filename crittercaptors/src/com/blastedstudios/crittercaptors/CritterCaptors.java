@@ -48,7 +48,6 @@ public class CritterCaptors extends Game {
 		//com.badlogic.gdx.graphics.g3d.model.still.StillModel model = 
 		//	ModelLoaderRegistry.loadStillModel(Gdx.files.internal("data/models/base.g3dt"));
 		//com.badlogic.gdx.graphics.g3d.loaders.g3d.chunks.G3dExporter.export(model, Gdx.files.absolute("data/models/base.g3d"));
-		Gdx.input.removeComplexGestureListener(null);
 		options = new OptionsUtil();
 		creatureManager = new CreatureManager();
 		worldLocationManager = new WorldLocationUtil();
@@ -66,6 +65,7 @@ public class CritterCaptors extends Game {
 				textureMap.put(name, new Texture(Gdx.files.internal("data/textures/" + name.toLowerCase() + ".png"), Format.RGB565, true));
 			}catch(Exception e){}
 		}
+		Gdx.input.removeComplexGestureListener(null);
 		setScreen(new MainScreen(this));
 	}
 	
