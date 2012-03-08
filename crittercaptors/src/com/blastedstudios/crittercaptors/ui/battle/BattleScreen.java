@@ -39,7 +39,7 @@ public class BattleScreen extends AbstractScreen {
 		stage.addActor(new BottomWindow(game, skin, this));
 	}
 	
-	@Override public void render(float arg0){
+	@Override public void render(float time){
         camera.update();
         camera.apply(Gdx.gl10);
 		
@@ -51,7 +51,7 @@ public class BattleScreen extends AbstractScreen {
 		RenderUtil.drawModel(CritterCaptors.getModel(activeCreature.getName()), 
 				CritterCaptors.getTexture(activeCreature.getName()), new Vector3(1, 0, 3.5f), new Vector3(1,0,1), new Vector3(1,1,1));
 
-		stage.act(arg0);
+		stage.act(time);
 		stage.draw();
 	}
 

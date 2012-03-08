@@ -1,5 +1,8 @@
 package com.blastedstudios.crittercaptors.ui.battle;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
@@ -41,9 +44,30 @@ public class CreatureInfoWindow extends Window {
 	public void update(){
 		levelLabel.setText(creature.getLevel()+"");
 		statusLabel.setText(creature.getStatus().name());
-		hpRatio.setText(creature.getHPCurrent() + "/" + creature.getHPMax());
 		hpSlider.touchable = true;
-		hpSlider.setValue(creature.getHPCurrent());
-		hpSlider.touchable = false;
+		new Timer().scheduleAtFixedRate(new HPTimer(), 100, 10); 
+	}
+	
+	private class HPTimer extends TimerTask{
+		float iterationModifier;
+		final int difference;
+		
+		public HPTimer(){
+			iterationModifier = 1f;
+			difference = (int)hpSlider.getValue() - creature.getHPCurrent();
+		}
+		
+		@Override public void run() {
+			int current = creature.getHPCurrent() + (int)(iterationModifier*difference);
+			hpRatio.setText(current + "/" + creature.getHPMax());
+			hpSlider.setValue(current);
+			iterationModifier -= .01f;
+			if(iterationModifier <= 0){
+				hpRatio.setText(creature.getHPCurrent() + "/" + creature.getHPMax());
+				hpSlider.setValue(creature.getHPCurrent());
+				hpSlider.touchable = false;
+				cancel();
+			}
+		}
 	}
 }
