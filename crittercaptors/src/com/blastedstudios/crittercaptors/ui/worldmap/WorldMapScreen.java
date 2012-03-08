@@ -90,9 +90,8 @@ public class WorldMapScreen extends AbstractScreen {
 				stage.addActor(sideMenu = new SideWindow(game, skin));
 		if(game.getOptions().getOptionBoolean(OptionsUtil.USE_ACCELEROMETER))
 			movement.add(camera.direction.tmp().mul(-Gdx.graphics.getDeltaTime()*Gdx.input.getAccelerometerZ()));
-		//if screen touched
-		if(Gdx.input.getX() != 0){
-			float degree = (Gdx.input.getX() - Gdx.graphics.getWidth()/2f) / (Gdx.graphics.getWidth()/2f);
+		if(Gdx.input.isTouched() && Gdx.input.getX() != 0){
+			float degree = (Gdx.input.getX() - Gdx.graphics.getWidth()/2f) / (Gdx.graphics.getWidth()/-2f);
 			camera.rotate(TURN_RATE * Gdx.graphics.getDeltaTime() * degree, 0, 1, 0);
 		}
 		camera.position.add(movement.mul(MOVE_SPEED));
