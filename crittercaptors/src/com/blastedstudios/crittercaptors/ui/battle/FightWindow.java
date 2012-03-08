@@ -39,7 +39,6 @@ public class FightWindow extends Window implements ComplexGestureListener {
 			attackButton.setClickListener(new ClickListener() {
 				@Override public void click(Actor actor, float arg1, float arg2) {
 					battleScreen.fight(actor.name, 1);
-					stage.addActor(new BottomWindow(game, skin, battleScreen));
 					actor.getStage().removeActor(actor.parent);
 					Gdx.input.removeComplexGestureListener(fightWindow);
 				}

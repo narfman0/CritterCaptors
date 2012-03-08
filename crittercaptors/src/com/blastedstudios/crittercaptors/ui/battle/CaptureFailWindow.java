@@ -18,15 +18,11 @@ public class CaptureFailWindow extends Window {
 		final Button okButton = new TextButton("Ok", skin.getStyle(TextButtonStyle.class), "ok");
 		okButton.setClickListener(new ClickListener() {
 			@Override public void click(Actor actor, float arg1, float arg2) {
-				stage.addActor(new BottomWindow(game, skin, battleScreen));
+				battleScreen.fight(null, 0);
 				actor.getStage().removeActor(actor.parent);
 			}
 		});
-		add(new TextField("Catch failed!", skin));
-		row();
-		add(new TextField("Must roll > " + roll, skin));
-		row();
-		add(new TextField("You rolled " + targetRoll, skin));
+		add(new TextField("Catch failed!\nMust roll >" + roll + "\nYou rolled " + targetRoll, skin));
 		row();
 		add(okButton);
 		pack();

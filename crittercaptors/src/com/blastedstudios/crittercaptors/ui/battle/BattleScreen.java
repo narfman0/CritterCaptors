@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.blastedstudios.crittercaptors.CritterCaptors;
 import com.blastedstudios.crittercaptors.creature.Creature;
 import com.blastedstudios.crittercaptors.ui.AbstractScreen;
+import com.blastedstudios.crittercaptors.ui.battle.attackwindows.AttackWindowFirst;
 import com.blastedstudios.crittercaptors.ui.terrain.ITerrain;
 import com.blastedstudios.crittercaptors.ui.terrain.Terrain;
 import com.blastedstudios.crittercaptors.ui.worldmap.WorldMapScreen;
@@ -71,20 +72,15 @@ public class BattleScreen extends AbstractScreen {
 				secondAttack = playerFirst ? enemyAttack : name;
 		int firstAtkDmg = (int)(first.attack(second, firstAttack) * (playerFirst?dmgModifier:1)),
 			secondAtkDmg = (int)(second.attack(first, secondAttack) * (!playerFirst?dmgModifier:1));
-		
-		if(second.receiveDamage(firstAtkDmg) || second.statusUpdate(true))
-			death();
-		if(first.receiveDamage(secondAtkDmg) || first.statusUpdate(true))
-			death();
-		
-		creatureInfoWindow.update();
-		enemyInfoWindow.update();
+		AttackStruct attack = new AttackStruct(firstAtkDmg, secondAtkDmg, 
+				firstAttack, secondAttack, first, second);
+		stage.addActor(new AttackWindowFirst(game, skin, this, attack));
 	}
 	
 	/**
 	 * check who died and act appropriately
 	 */
-	private void death(){
+	public void death(){
 		if(activeCreature.getHPCurrent() == 0){ 
 			if(game.getCharacter().getNextActiveCreature() != null)
 				stage.addActor(new CreatureSelectWindow(game, skin, this));
@@ -116,8 +112,7 @@ public class BattleScreen extends AbstractScreen {
 			game.getCharacter().getOwnedCreatures().add(enemy);
 			endBattle();
 			return;
-		}else
-			fight(null, 0);
+		}
 		stage.addActor(new CaptureFailWindow(game, skin, this, 
 				(int)(100*catchRate), (int)(100*catchRoll) ));
 	}
@@ -132,5 +127,10 @@ public class BattleScreen extends AbstractScreen {
 		stage.removeActor(creatureInfoWindow);
 		creatureInfoWindow = new CreatureInfoWindow(game, skin, activeCreature, 0, (int)stage.height()-200);
 		stage.addActor(creatureInfoWindow);
+	}
+	
+	public void updateStatusWindows(){
+		creatureInfoWindow.update();
+		enemyInfoWindow.update();
 	}
 }
