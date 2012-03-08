@@ -48,6 +48,7 @@ public class CritterCaptors extends Game {
 		//com.badlogic.gdx.graphics.g3d.model.still.StillModel model = 
 		//	ModelLoaderRegistry.loadStillModel(Gdx.files.internal("data/models/base.g3dt"));
 		//com.badlogic.gdx.graphics.g3d.loaders.g3d.chunks.G3dExporter.export(model, Gdx.files.absolute("data/models/base.g3d"));
+		Gdx.input.removeComplexGestureListener(null);
 		options = new OptionsUtil();
 		creatureManager = new CreatureManager();
 		worldLocationManager = new WorldLocationUtil();
@@ -60,17 +61,12 @@ public class CritterCaptors extends Game {
 		modelMap.put("skydome", ModelLoaderRegistry.load(Gdx.files.internal("data/sky/skydome.obj")));
 		modelMap.put("base", ModelLoaderRegistry.load(Gdx.files.internal("data/models/base.g3d")));
 		for(String name : creatureManager.getCreatureTemplateNames()){
-			try{
-				modelMap.put(name, ModelLoaderRegistry.load(Gdx.files.internal("data/models/static/" + name.toLowerCase() + ".obj")));
-			}catch(Exception e){
-				modelMap.put(name, ModelLoaderRegistry.load(Gdx.files.internal("data/models/" + name.toLowerCase() + ".g3d")));
-			}
+			modelMap.put(name, ModelLoaderRegistry.load(Gdx.files.internal("data/models/" + name.toLowerCase() + ".g3d")));
 			try{
 				textureMap.put(name, new Texture(Gdx.files.internal("data/textures/" + name.toLowerCase() + ".png"), Format.RGB565, true));
 			}catch(Exception e){}
 		}
 		setScreen(new MainScreen(this));
-		Gdx.input.removeComplexGestureListener(null);
 	}
 	
 	public static Model getModel(String model){
