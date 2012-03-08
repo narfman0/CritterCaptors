@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.junit.Test;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import com.badlogic.gdx.Gdx;
@@ -27,8 +28,8 @@ public class CreatureManager {
 		creatureTemplates = new HashMap<AffinityEnum,List<Creature>>();
 		for(AffinityEnum affinity : AffinityEnum.values())
 			creatureTemplates.put(affinity, new ArrayList<Creature>());
-		for(Element creatureElement : XMLUtil.iterableElementList(
-				XMLUtil.parse("data/creatures.xml").getElementsByTagName("creature"))){
+		Document creatureDoc = XMLUtil.parse("data/creatures.xml");
+		for(Element creatureElement : XMLUtil.iterableElementList(creatureDoc.getElementsByTagName("creature"))){
 			Creature creature = Creature.fromXML(creatureElement);
 			for(AffinityEnum creatureAffinity : creature.getAffinities())
 				creatureTemplates.get(creatureAffinity).add(creature);

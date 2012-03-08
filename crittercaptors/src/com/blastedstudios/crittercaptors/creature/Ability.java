@@ -2,6 +2,7 @@ package com.blastedstudios.crittercaptors.creature;
 
 import java.util.HashMap;
 
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import com.blastedstudios.crittercaptors.creature.AffinityEnum;
@@ -11,7 +12,8 @@ public class Ability {
 	final public static HashMap<String,Ability> abilities;
 	static{
 		abilities = new HashMap<String, Ability>();
-		for(Element abilityElement : XMLUtil.iterableElementList(XMLUtil.parse("data/abilities.xml").getElementsByTagName("ability"))){
+		Document abilityDoc = XMLUtil.parse("data/abilities.xml");
+		for(Element abilityElement : XMLUtil.iterableElementList(abilityDoc.getElementsByTagName("ability"))){
 			Ability ability = fromXML(abilityElement);
 			abilities.put(ability.name, ability);
 		}

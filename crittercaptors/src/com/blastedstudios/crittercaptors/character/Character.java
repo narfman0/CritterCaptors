@@ -17,7 +17,7 @@ import com.blastedstudios.crittercaptors.creature.StatusEffectEnum;
 import com.blastedstudios.crittercaptors.util.XMLUtil;
 
 public class Character {
-	private static final String SAVE_PATH = "data/saves.xml";
+	private static final String SAVE_PATH = "Games/CritterCaptors/saves.xml";
 	private String name;
 	private int cash = 0;
 	private List<Creature> ownedCreatures;
@@ -80,7 +80,7 @@ public class Character {
 	}
 	
 	public static String[] getSavedCharactersNames(){
-		Document saveFile = XMLUtil.parse(SAVE_PATH);
+		Document saveFile = getCharacterSaveDocument();
 		NodeList saveNodes = saveFile.getDocumentElement().getElementsByTagName("save");
 		String[] names = new String[saveNodes.getLength()];
 		int i=0;
@@ -92,7 +92,7 @@ public class Character {
 	public static Character load(CreatureManager creatureManager, String name){
 		ArrayList<Creature> ownedCreatures = new ArrayList<Creature>();
 		int cash = 0;
-		Document saveFile = XMLUtil.parse(SAVE_PATH);
+		Document saveFile = getCharacterSaveDocument();
 		for(Element saveElement : XMLUtil.iterableElementList(saveFile.getDocumentElement().getElementsByTagName("save")))
 			if(saveElement.getAttribute("name").equals(name)){
 				cash = Integer.parseInt(saveElement.getAttribute("cash"));
@@ -117,7 +117,7 @@ public class Character {
 	}
 	
 	public void save(){
-		Document saveFile = XMLUtil.parse(SAVE_PATH);
+		Document saveFile = getCharacterSaveDocument();
 		for(Element saveElement : XMLUtil.iterableElementList(saveFile.getDocumentElement().getElementsByTagName("save")))
 			if(saveElement.getAttribute("name").equals(name))
 				saveFile.getDocumentElement().removeChild(saveElement);
@@ -132,7 +132,17 @@ public class Character {
 		for(Base base : bases)
 			saveElement.appendChild(base.asXML(saveFile));
 		saveFile.getDocumentElement().appendChild(saveElement);
-		XMLUtil.writeToFile(saveFile, "data/saves.xml");
+		XMLUtil.writeToFile(saveFile, SAVE_PATH);
+	}
+	
+	private static Document getCharacterSaveDocument(){
+		Document saveFile = XMLUtil.parse(SAVE_PATH);
+		if(saveFile == null){
+			saveFile = XMLUtil.create();
+			Element optionsEle = saveFile.createElement("saves");
+			saveFile.appendChild(optionsEle);
+		}
+		return saveFile;
 	}
 
 	public void sell(Creature creature) {

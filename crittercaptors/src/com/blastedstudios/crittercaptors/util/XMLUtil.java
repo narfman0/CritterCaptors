@@ -5,6 +5,7 @@ import java.util.Vector;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
@@ -29,6 +30,15 @@ public class XMLUtil {
 		return nodes;
 	}
 	
+	public static Document create(){
+		try {
+			return DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+		} catch (ParserConfigurationException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	public static Document parse(String path){
 		DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder docBuilder;
@@ -36,7 +46,7 @@ public class XMLUtil {
 			docBuilder = docBuilderFactory.newDocumentBuilder();
 	        return docBuilder.parse(Gdx.files.internal(path).read());
 		} catch (Exception e) {
-			e.printStackTrace();
+			Gdx.app.debug("Xml parse failed",path+" load failed with message: "+e.getMessage());
 		}
 		return null;
 	}
@@ -48,7 +58,7 @@ public class XMLUtil {
 	public static void writeToFile(Document xmlDoc, String path) {
 		try {
 			DOMSource source = new DOMSource(xmlDoc);
-			OutputStream destStream = Gdx.files.internal(path).write(false);
+			OutputStream destStream = Gdx.files.external(path).write(false);
 			StreamResult dest = new StreamResult(destStream);
 			TransformerFactory factory = TransformerFactory.newInstance();
 			Transformer xformer = factory.newTransformer();

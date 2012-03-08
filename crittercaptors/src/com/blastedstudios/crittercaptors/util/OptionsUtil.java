@@ -2,6 +2,7 @@ package com.blastedstudios.crittercaptors.util;
 
 import java.util.HashMap;
 
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -9,13 +10,19 @@ import org.w3c.dom.NodeList;
  * Saves preferences and other user data not related to characters
  */
 public class OptionsUtil {
-	private static final String OPTIONS_PATH = "data/options.xml";
+	private static final String OPTIONS_PATH = "Games/CritterCaptors/options.xml";
 	public static final String USE_GPS = "Use GPS", USE_ACCELEROMETER = "Use Accelerometer";
 	private HashMap<String,String> options = new HashMap<String, String>();
 	private final Element documentElement;
 	
 	public OptionsUtil(){
-		documentElement = XMLUtil.parse(OPTIONS_PATH).getDocumentElement();
+		Document optionsDoc = XMLUtil.parse(OPTIONS_PATH); 
+		if(optionsDoc == null){
+			optionsDoc = XMLUtil.create();
+			Element optionsEle = optionsDoc.createElement("options");
+			optionsDoc.appendChild(optionsEle);
+		}
+		documentElement = optionsDoc.getDocumentElement();
 		NodeList optionsList = documentElement.getElementsByTagName("option");
 		for(Element optionElement : XMLUtil.iterableElementList(optionsList))
 			options.put(optionElement.getAttribute("name"), optionElement.getAttribute("value"));
