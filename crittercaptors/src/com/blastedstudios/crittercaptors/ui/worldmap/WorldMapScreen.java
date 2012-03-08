@@ -1,22 +1,18 @@
 package com.blastedstudios.crittercaptors.ui.worldmap;
 
-import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.Input.Peripheral;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.blastedstudios.crittercaptors.CritterCaptors;
 import com.blastedstudios.crittercaptors.character.Base;
 import com.blastedstudios.crittercaptors.creature.Creature;
@@ -24,11 +20,10 @@ import com.blastedstudios.crittercaptors.ui.AbstractScreen;
 import com.blastedstudios.crittercaptors.ui.battle.BattleScreen;
 import com.blastedstudios.crittercaptors.ui.terrain.TerrainManager;
 import com.blastedstudios.crittercaptors.util.MercatorUtil;
+import com.blastedstudios.crittercaptors.util.OptionsUtil;
 import com.blastedstudios.crittercaptors.util.RenderUtil;
 
 public class WorldMapScreen extends AbstractScreen {
-	private SpriteBatch spriteBatch;
-	private BitmapFont font;
     private Camera camera;
     public static final float MOVE_SPEED = 10f, TURN_RATE = 100f,
 		REMOVE_DISTANCE = 1000000f, FIGHT_DISTANCE = 150f;
@@ -41,9 +36,6 @@ public class WorldMapScreen extends AbstractScreen {
 	
 	public WorldMapScreen(CritterCaptors game, boolean isNewCharacter) {
 		super(game);
-		spriteBatch = new SpriteBatch();
-		font = new BitmapFont(Gdx.files.getFileHandle("data/fonts/arial-15.fnt", FileType.Internal), 
-				Gdx.files.getFileHandle("data/fonts/arial-15.png", FileType.Internal), false);
 		terrainManager = new TerrainManager(game);
 		if(isNewCharacter)
 			showNewCharacterWindow();
@@ -79,23 +71,6 @@ public class WorldMapScreen extends AbstractScreen {
 		for(Base base : game.getCharacter().getBases())
 			base.render(terrainManager, game.getWorldLocationManager());
 		
-		spriteBatch.begin();
-		font.drawMultiLine(spriteBatch, "acc x=" + Gdx.input.getAccelerometerX() + 
-				"\nacc y=" + Gdx.input.getAccelerometerY() + 
-				"\nacc z=" + Gdx.input.getAccelerometerZ() +
-				"\nazimuth=" + Gdx.input.getAzimuth() + 
-				"\npitch=" + Gdx.input.getPitch() + 
-				"\nroll=" + Gdx.input.getRoll(), 4, 256);
-		font.drawMultiLine(spriteBatch, "gpsIsAvailable=" + Gdx.input.isPeripheralAvailable(Peripheral.GPS) +
-				"\nlat=" + Gdx.input.getGPSLatitude() + 
-				"\nlon=" + Gdx.input.getGPSLongitude() + 
-				"\nalt=" + Gdx.input.getGPSAltitude() +
-				"\nnumCharacterCreatures=" + game.getCharacter().getOwnedCreatures().size() +
-				"\nnumCreatures=" + game.getCreatureManager().getCreatures().size() +
-				"\ncurrentLocation=" + camera.position.x + "," + camera.position.z + 
-				"\ndeltax=" + Gdx.input.getDeltaX() + "\ndeltay=" + Gdx.input.getDeltaY() +
-				"\nx=" + Gdx.input.getX() + "\ny=" + Gdx.input.getY(), 164, 256);
-		spriteBatch.end();
 		stage.act(Gdx.graphics.getDeltaTime());
 		stage.draw();
 	}
@@ -113,6 +88,13 @@ public class WorldMapScreen extends AbstractScreen {
 		if (Gdx.input.isKeyPressed(Keys.ESCAPE))
 			if(sideMenu == null || sideMenu.dispose)
 				stage.addActor(sideMenu = new SideWindow(game, skin));
+		if(game.getOptions().getOptionBoolean(OptionsUtil.USE_ACCELEROMETER))
+			movement.add(camera.direction.tmp().mul(-Gdx.graphics.getDeltaTime()*Gdx.input.getAccelerometerZ()));
+		//if screen touched
+		if(Gdx.input.getX() != 0){
+			float degree = (Gdx.input.getX() - Gdx.graphics.getWidth()/2f) / (Gdx.graphics.getWidth()/2f);
+			camera.rotate(TURN_RATE * Gdx.graphics.getDeltaTime() * degree, 0, 1, 0);
+		}
 		camera.position.add(movement.mul(MOVE_SPEED));
 		camera.position.y = terrainManager.getHeight(camera.position.x, camera.position.z)+1.9f;
         camera.update();

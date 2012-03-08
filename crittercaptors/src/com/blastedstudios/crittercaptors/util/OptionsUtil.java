@@ -10,7 +10,7 @@ import org.w3c.dom.NodeList;
  */
 public class OptionsUtil {
 	private static final String OPTIONS_PATH = "data/options.xml";
-	public static final String USE_GPS = "Use GPS";
+	public static final String USE_GPS = "Use GPS", USE_ACCELEROMETER = "Use Accelerometer";
 	private HashMap<String,String> options = new HashMap<String, String>();
 	private final Element documentElement;
 	

@@ -16,6 +16,13 @@ import com.blastedstudios.crittercaptors.util.OptionsUtil;
 public class OptionsScreen extends AbstractScreen implements Screen {
 	public OptionsScreen(final CritterCaptors game) {
 		super(game);
+		final TextButton accelerometerMovementButton = new TextButton(getAccelerometerMovementButtonText(), skin.getStyle(TextButtonStyle.class), "enableAccMov");
+		accelerometerMovementButton.setClickListener(new ClickListener() {
+			@Override public void click(Actor arg0, float arg1, float arg2) {
+				game.getOptions().saveOption(OptionsUtil.USE_ACCELEROMETER, !game.getOptions().getOptionBoolean(OptionsUtil.USE_ACCELEROMETER));
+				accelerometerMovementButton.setText(getAccelerometerMovementButtonText());
+			}
+		});
 		final TextButton enableGPSButton = new TextButton(getEnableGPSText(), skin.getStyle(TextButtonStyle.class), "enableGPS");
 		enableGPSButton.setClickListener(new ClickListener() {
 			@Override public void click(Actor arg0, float arg1, float arg2) {
@@ -31,6 +38,8 @@ public class OptionsScreen extends AbstractScreen implements Screen {
 		});
 		Window window = new Window("Options", skin.getStyle(WindowStyle.class), "options");
 		window.row();
+		window.add(accelerometerMovementButton);
+		window.row();
 		window.add(enableGPSButton);
 		window.row();
 		window.add(okButton);
@@ -42,5 +51,9 @@ public class OptionsScreen extends AbstractScreen implements Screen {
 	
 	private String getEnableGPSText(){
 		return game.getOptions().getOptionBoolean(OptionsUtil.USE_GPS) ? "Disable GPS" : "Enable GPS";
+	}
+	
+	private String getAccelerometerMovementButtonText(){
+		return game.getOptions().getOptionBoolean(OptionsUtil.USE_ACCELEROMETER) ? "Disable Accelerometer" : "Enable Accelerometer";
 	}
 }
