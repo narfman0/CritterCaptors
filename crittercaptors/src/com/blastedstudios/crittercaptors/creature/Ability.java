@@ -5,6 +5,7 @@ import java.util.HashMap;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import com.badlogic.gdx.Files.FileType;
 import com.blastedstudios.crittercaptors.creature.AffinityEnum;
 import com.blastedstudios.crittercaptors.util.XMLUtil;
 
@@ -12,7 +13,7 @@ public class Ability {
 	final public static HashMap<String,Ability> abilities;
 	static{
 		abilities = new HashMap<String, Ability>();
-		Document abilityDoc = XMLUtil.parse("data/abilities.xml");
+		Document abilityDoc = XMLUtil.parse("data/abilities.xml", FileType.Internal);
 		for(Element abilityElement : XMLUtil.iterableElementList(abilityDoc.getElementsByTagName("ability"))){
 			Ability ability = fromXML(abilityElement);
 			abilities.put(ability.name, ability);

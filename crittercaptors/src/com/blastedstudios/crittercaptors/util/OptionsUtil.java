@@ -6,6 +6,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import com.badlogic.gdx.Files.FileType;
+
 /**
  * Saves preferences and other user data not related to characters
  */
@@ -16,7 +18,7 @@ public class OptionsUtil {
 	private final Element documentElement;
 	
 	public OptionsUtil(){
-		Document optionsDoc = XMLUtil.parse(OPTIONS_PATH); 
+		Document optionsDoc = XMLUtil.parse(OPTIONS_PATH, FileType.External); 
 		if(optionsDoc == null){
 			optionsDoc = XMLUtil.create();
 			Element optionsEle = optionsDoc.createElement("options");

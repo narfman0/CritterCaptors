@@ -17,6 +17,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 
 public class XMLUtil {
@@ -39,12 +40,15 @@ public class XMLUtil {
 		return null;
 	}
 	
-	public static Document parse(String path){
+	public static Document parse(String path, FileType type){
 		DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder docBuilder;
 		try {
 			docBuilder = docBuilderFactory.newDocumentBuilder();
-	        return docBuilder.parse(Gdx.files.internal(path).read());
+			if(type == FileType.Internal)
+				return docBuilder.parse(Gdx.files.internal(path).read());
+			else
+				return docBuilder.parse(Gdx.files.external(path).read());
 		} catch (Exception e) {
 			Gdx.app.debug("Xml parse failed",path+" load failed with message: "+e.getMessage());
 		}

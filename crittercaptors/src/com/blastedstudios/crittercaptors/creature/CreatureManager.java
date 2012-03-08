@@ -9,6 +9,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.math.Vector3;
 import com.blastedstudios.crittercaptors.CritterCaptors;
 import com.blastedstudios.crittercaptors.util.ExperienceUtil;
@@ -28,7 +29,7 @@ public class CreatureManager {
 		creatureTemplates = new HashMap<AffinityEnum,List<Creature>>();
 		for(AffinityEnum affinity : AffinityEnum.values())
 			creatureTemplates.put(affinity, new ArrayList<Creature>());
-		Document creatureDoc = XMLUtil.parse("data/creatures.xml");
+		Document creatureDoc = XMLUtil.parse("data/creatures.xml", FileType.Internal);
 		for(Element creatureElement : XMLUtil.iterableElementList(creatureDoc.getElementsByTagName("creature"))){
 			Creature creature = Creature.fromXML(creatureElement);
 			for(AffinityEnum creatureAffinity : creature.getAffinities())

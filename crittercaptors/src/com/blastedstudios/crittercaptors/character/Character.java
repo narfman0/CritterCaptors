@@ -9,6 +9,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.math.Vector3;
 import com.blastedstudios.crittercaptors.creature.Creature;
 import com.blastedstudios.crittercaptors.creature.CreatureManager;
@@ -136,7 +137,7 @@ public class Character {
 	}
 	
 	private static Document getCharacterSaveDocument(){
-		Document saveFile = XMLUtil.parse(SAVE_PATH);
+		Document saveFile = XMLUtil.parse(SAVE_PATH, FileType.External);
 		if(saveFile == null){
 			saveFile = XMLUtil.create();
 			Element optionsEle = saveFile.createElement("saves");
