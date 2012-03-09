@@ -1,5 +1,7 @@
 package com.blastedstudios.crittercaptors.util;
 
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.net.URL;
 import java.util.HashMap;
@@ -7,10 +9,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import javax.imageio.ImageIO;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector3;
+import com.blastedstudios.crittercaptors.CritterCaptors;
 import com.blastedstudios.crittercaptors.creature.AffinityCalculator;
 import com.blastedstudios.crittercaptors.creature.AffinityEnum;
 import com.blastedstudios.crittercaptors.ui.terrain.Terrain;
@@ -26,8 +27,11 @@ public class WorldLocationUtil {
 	private static final float TIME_TO_UPDATE = 60;
 	private HashMap<AffinityEnum, Float> currentWorldAffinities = new HashMap<AffinityEnum, Float>();
 	private final ExecutorService executerService;
+	private CritterCaptors game;
 	
-	public WorldLocationUtil(){
+	public WorldLocationUtil(CritterCaptors game){
+		this.game = game;
+		//TODO wait for fix to initialize GPS correctly 
 		latInitial = 36.878705;//Gdx.input.getGPSLatitude();
 		lonInitial = -76.260400;//Gdx.input.getGPSLongitude();
 		executerService = Executors.newCachedThreadPool();
@@ -36,9 +40,10 @@ public class WorldLocationUtil {
 	public void update(){
 		timeSinceLastUpdate += Gdx.graphics.getDeltaTime();
 		if(timeSinceLastUpdate > TIME_TO_UPDATE){
-			//TODO add back in updates
-			//lat = Gdx.input.getGPSLatitude();
-			//lon = Gdx.input.getGPSLongitude();
+			if(game.getOptions().getOptionBoolean(OptionsUtil.USE_GPS)){
+				lat = Gdx.input.getGPSLatitude();
+				lon = Gdx.input.getGPSLongitude();
+			}
 			timeSinceLastUpdate = 0;
 			executerService.execute(new AffinitiesThread());
 			try {
@@ -133,12 +138,15 @@ public class WorldLocationUtil {
 
 	private class AffinitiesThread implements Runnable {
 		public void run() {
-			String url = "http://ojw.dev.openstreetmap.org/StaticMap/?lat="+
-				lat+"&lon="+lon+"&z=18&w=64&h=64&mode=Export&show=1";
 			try {
-				BufferedImage worldLocationLastImage = ImageIO.read(new URL(url));
+				URL url = new URL("http://ojw.dev.openstreetmap.org/StaticMap/?lat="+
+						lat+"&lon="+lon+"&z=18&w=64&h=64&mode=Export&show=1");
+				Image img = Toolkit.getDefaultToolkit().createImage(url);
+				BufferedImage worldLocationLastImage = RenderUtil.toBufferedImage(img);
 				AffinityCalculator.getAffinitiesFromTexture(worldLocationLastImage, currentWorldAffinities);
-			} catch (Exception e) {	}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 }
