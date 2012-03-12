@@ -1,12 +1,12 @@
 package com.blastedstudios.crittercaptors.creature;
 
-import java.awt.Color;
-import java.awt.image.BufferedImage;
 import java.util.HashMap;
 
+import com.badlogic.gdx.graphics.Color;
+
 public class AffinityCalculator {
-	private static final Color SUBURBAN_COLOR = new Color(220,220,220),
-			OCEAN_COLOR = new Color(181,208,208);
+	public static final Color SUBURBAN_COLOR = new Color(220,220,220, 0),
+			OCEAN_COLOR = new Color(181,208,208, 0);
 	
 	/**
 	 * @param affinities 
@@ -14,11 +14,12 @@ public class AffinityCalculator {
 	 * One may use this to derive the actual affinity, for instance, .85 suburban will
 	 * be defined as suburban area and will spawn only creatures from that affinity.
 	 */
-	public static void getAffinitiesFromTexture(BufferedImage image, 
+	public static void getAffinitiesFromTexture(Color[] image, 
 			HashMap<AffinityEnum, Float> affinities){
 		affinities.clear();
-		float pixelCount = image.getWidth() * image.getHeight();
-		HashMap<Color,Float> map = getColorMap(image);
+		int imgWidth = (int) Math.sqrt(image.length);
+		float pixelCount = imgWidth * imgWidth;
+		HashMap<Color,Float> map = getColorMap(image, imgWidth);
 		if(map.containsKey(SUBURBAN_COLOR))
 			affinities.put(AffinityEnum.suburban, map.get(SUBURBAN_COLOR)/pixelCount);
 		if(map.containsKey(OCEAN_COLOR))
@@ -28,11 +29,11 @@ public class AffinityCalculator {
 	/**
 	 * @return HashMap of color -> how many pixels were in @param image
 	 */
-	private static HashMap<Color,Float> getColorMap(BufferedImage image){
+	private static HashMap<Color,Float> getColorMap(Color[] image, int imgWidth){
 		HashMap<Color,Float> map = new HashMap<Color, Float>();
-		for(int x=0; x<image.getWidth(); x++)
-			for(int y=0; y<image.getHeight(); y++){
-				Color color = new Color(image.getRGB(x, y));
+		for(int y=0; y<imgWidth; y++)
+			for(int x=0; x<imgWidth; x++){
+				Color color = image[x + y*imgWidth];
 				if(map.containsKey(color))
 					map.put(color, map.get(color)+1f);
 				else

@@ -1,8 +1,5 @@
 package com.blastedstudios.crittercaptors.util;
 
-import java.awt.Image;
-import java.awt.Toolkit;
-import java.awt.image.BufferedImage;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
@@ -10,6 +7,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector3;
 import com.blastedstudios.crittercaptors.CritterCaptors;
 import com.blastedstudios.crittercaptors.creature.AffinityCalculator;
@@ -141,9 +139,14 @@ public class WorldLocationUtil {
 			try {
 				URL url = new URL("http://ojw.dev.openstreetmap.org/StaticMap/?lat="+
 						lat+"&lon="+lon+"&z=18&w=64&h=64&mode=Export&show=1");
-				Image img = Toolkit.getDefaultToolkit().createImage(url);
-				BufferedImage worldLocationLastImage = RenderUtil.toBufferedImage(img);
-				AffinityCalculator.getAffinitiesFromTexture(worldLocationLastImage, currentWorldAffinities);
+				Color[] colors = RenderUtil.imageFromURL(url);
+				if(colors == null){
+					//TODO fix imageFromURL to load texs correctly. Appears that
+					//libgdx does not work 100% with their Pixmap class which
+					//would work perfectly for this express reason
+					colors = new Color[]{AffinityCalculator.SUBURBAN_COLOR};
+				}
+				AffinityCalculator.getAffinitiesFromTexture(colors, currentWorldAffinities);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

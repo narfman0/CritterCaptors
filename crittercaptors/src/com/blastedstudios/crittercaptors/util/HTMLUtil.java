@@ -7,6 +7,9 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.GdxRuntimeException;
+
 public class HTMLUtil {
 	private static String getString(InputStream stream){
 		String line, result = "";
@@ -19,7 +22,7 @@ public class HTMLUtil {
 		}
 		return result;
 	}
-	
+
 	public static String getHTML(String urlToRead) {
 		try {
 			HttpURLConnection conn = (HttpURLConnection) new URL(urlToRead).openConnection();
@@ -56,4 +59,34 @@ public class HTMLUtil {
 	    catch (IOException e) {}
 	    return result;
 	}*/
+
+	public static class URLHandle extends FileHandle {
+		final URL url; 
+
+		public URLHandle(URL url) {
+			try {
+				this.url = url;
+			} catch(Exception e) {
+				throw new GdxRuntimeException("Couldn't create URLHandle for '" + url + "'", e);
+			}
+		}
+
+		@Override
+		public FileHandle child(String name) {
+			return null;
+		}
+
+		@Override
+		public FileHandle parent() {
+			return null;
+		}               
+
+		public InputStream read () {
+			try {
+				return url.openStream();
+			} catch (IOException e) {
+				throw new GdxRuntimeException("Couldn't read URL '" + url.toString() + "'");
+			}
+		}
+	}
 }

@@ -1,20 +1,16 @@
 package com.blastedstudios.crittercaptors.util;
 
-import java.awt.Graphics;
-import java.awt.GraphicsConfiguration;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
-import java.awt.HeadlessException;
-import java.awt.Image;
-import java.awt.Transparency;
 import java.awt.image.BufferedImage;
-
-import javax.swing.ImageIcon;
+import java.io.InputStream;
+import java.lang.reflect.Method;
+import java.net.URL;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.model.Model;
 import com.badlogic.gdx.math.Vector3;
@@ -57,43 +53,72 @@ public class RenderUtil {
 		Gdx.gl10.glPopMatrix();
 	}
 	
-	public static BufferedImage toBufferedImage(Image image) {
-	    if (image instanceof BufferedImage) {
-	        return (BufferedImage)image;
-	    }
-
-	    // This code ensures that all the pixels in the image are loaded
-	    image = new ImageIcon(image).getImage();
-
-	    // Create a buffered image with a format that's compatible with the screen
-	    BufferedImage bimage = null;
-	    GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-	    try {
-	        // Determine the type of transparency of the new buffered image
-	        int transparency = Transparency.OPAQUE;
-
-	        // Create the buffered image
-	        GraphicsDevice gs = ge.getDefaultScreenDevice();
-	        GraphicsConfiguration gc = gs.getDefaultConfiguration();
-	        bimage = gc.createCompatibleImage(
-	            image.getWidth(null), image.getHeight(null), transparency);
-	    } catch (HeadlessException e) {
-	        // The system does not have a screen
-	    }
-
-	    if (bimage == null) {
-	        // Create a buffered image using the default color model
-	        int type = BufferedImage.TYPE_INT_RGB;
-	        bimage = new BufferedImage(image.getWidth(null), image.getHeight(null), type);
-	    }
-
-	    // Copy image to buffered image
-	    Graphics g = bimage.createGraphics();
-
-	    // Paint the image onto the buffered image
-	    g.drawImage(image, 0, 0, null);
-	    g.dispose();
-
-	    return bimage;
+	public static Color[] imageFromURL(URL url){
+		Color[] colors = imageFromURLPC(url);
+		if(colors == null)
+			colors = imageFromURLAndroid(url);
+		if(colors == null)
+			colors = imageFromURLGDX(url);
+		return colors;
+	}
+	
+	private static Color[] imageFromURLAndroid(URL url){
+		try{
+			int width = 64;
+			Color[] colors = new Color[width*width];
+			Class<?> bitmapFactoryClass = Class.forName("android.graphics.BitmapFactory");
+			Method meth = bitmapFactoryClass.getMethod("decodeStream", InputStream.class);
+			Object bitmap = meth.invoke(bitmapFactoryClass, url.openStream());
+			Method getPixelMethod = bitmap.getClass().getMethod("getPixel", Integer.class, Integer.class);
+			for(int y=0; y<width; y++)
+				for(int x=0; x<width; x++){
+					int col = (Integer) getPixelMethod.invoke(bitmap, x, y);
+					Color colo = new Color(0,(col>>16)&0xFF, (col>>8)&0xFF, col&0xFF);
+					colors[y*width + x] = colo;
+				}
+			return colors;
+		}catch(Exception e){
+			Gdx.app.error("imageFromURLAndroid", "Failed to retreieve image with message: " + e.getMessage());
+		}
+		return null;
+	}
+	
+	private static Color[] imageFromURLPC(URL url){
+		try{
+			Class<?> imageIOClass = Class.forName("javax.imageio.ImageIO");
+			Method readMeth = imageIOClass.getMethod("read", URL.class);
+			BufferedImage bufferedImage = (BufferedImage) readMeth.invoke(imageIOClass, url);
+			Color[] colors = new Color[bufferedImage.getWidth()*bufferedImage.getHeight()];
+			for(int y=0; y<bufferedImage.getHeight(); y++)
+				for(int x=0; x<bufferedImage.getWidth(); x++){
+					int col = bufferedImage.getRGB(x, y);
+					Color colo = new Color((col>>16)&0xFF, (col>>8)&0xFF, col&0xFF,0);
+					colors[y*bufferedImage.getHeight() + x] = colo;
+				}
+			return colors;
+		}catch(Exception e){
+			Gdx.app.error("imageFromURLPC", "Failed to retreieve image with message: " + e.getMessage());
+		}
+		return null;
+	}
+	
+	/**
+	 * Does not work, throwing an exception on the first line. Would be superior
+	 */
+	private static Color[] imageFromURLGDX(URL url){
+		try{
+			Pixmap map = new Pixmap(new HTMLUtil.URLHandle(url));
+			Color[] colors = new Color[map.getWidth()*map.getHeight()];
+			for(int y=0; y<map.getWidth(); y++)
+				for(int x=0; x<map.getWidth(); x++){
+					int col = map.getPixel(x, y);
+					Color color = new Color(0,(col>>16)&0xFF, (col>>8)&0xFF, col&0xFF);
+					colors[y*map.getWidth() + x] = color;
+				}
+			return colors;
+		}catch(Exception e){
+			Gdx.app.error("imageFromURLGDX", "Failed to retreieve image with message: " + e.getMessage());
+		}
+		return null;
 	}
 }
