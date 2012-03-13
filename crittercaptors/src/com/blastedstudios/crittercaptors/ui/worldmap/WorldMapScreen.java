@@ -96,6 +96,7 @@ public class WorldMapScreen extends AbstractScreen {
 				camera.rotate(TURN_RATE * Gdx.graphics.getDeltaTime() * degree, 0, 1, 0);
 			} if(Gdx.input.getY() != 0){
 				float degree = (Gdx.input.getY() - Gdx.graphics.getHeight()/2f) / (Gdx.graphics.getHeight()/2f);
+				degree *= game.getOptions().getOptionBoolean(OptionEnum.MovementInvert) ? -1 : 1;
 				movement.add(camera.direction.tmp().mul(-Gdx.graphics.getDeltaTime()*degree));
 			}
 		}

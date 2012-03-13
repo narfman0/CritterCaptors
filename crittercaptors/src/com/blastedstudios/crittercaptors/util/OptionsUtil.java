@@ -17,7 +17,7 @@ public class OptionsUtil {
 	private final Element documentElement;
 	
 	public enum OptionEnum{
-		Gps, Accelerometer, TouchMovement;
+		Gps, Accelerometer, TouchMovement, MovementInvert;
 	}
 	
 	public OptionsUtil(){
