@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.badlogic.gdx.math.Vector3;
 import com.blastedstudios.crittercaptors.CritterCaptors;
-import com.blastedstudios.crittercaptors.util.OptionsUtil;
+import com.blastedstudios.crittercaptors.util.OptionsUtil.OptionEnum;
 
 public class TerrainManager {
 	private static final List<ITerrain> terrains = new ArrayList<ITerrain>();
@@ -23,7 +23,7 @@ public class TerrainManager {
 				new float[(Terrain.DEFAULT_WIDTH + 1) * (Terrain.DEFAULT_WIDTH + 1)], 
 				new Vector3(), SCALE);
 		BASE_TERRAIN_STRIDE = Terrain.DEFAULT_WIDTH*SCALE;
-		if(game.getOptions().getOptionBoolean(OptionsUtil.USE_GPS))
+		if(game.getOptions().getOptionBoolean(OptionEnum.Gps))
 			add(new Vector3());
 	}
 	

@@ -20,8 +20,8 @@ import com.blastedstudios.crittercaptors.ui.AbstractScreen;
 import com.blastedstudios.crittercaptors.ui.battle.BattleScreen;
 import com.blastedstudios.crittercaptors.ui.terrain.TerrainManager;
 import com.blastedstudios.crittercaptors.util.MercatorUtil;
-import com.blastedstudios.crittercaptors.util.OptionsUtil;
 import com.blastedstudios.crittercaptors.util.RenderUtil;
+import com.blastedstudios.crittercaptors.util.OptionsUtil.OptionEnum;
 
 public class WorldMapScreen extends AbstractScreen {
     private Camera camera;
@@ -88,11 +88,16 @@ public class WorldMapScreen extends AbstractScreen {
 		if (Gdx.input.isKeyPressed(Keys.ESCAPE))
 			if(sideMenu == null || sideMenu.dispose)
 				stage.addActor(sideMenu = new SideWindow(game, skin));
-		if(game.getOptions().getOptionBoolean(OptionsUtil.USE_ACCELEROMETER))
+		if(game.getOptions().getOptionBoolean(OptionEnum.Accelerometer))
 			movement.add(camera.direction.tmp().mul(-Gdx.graphics.getDeltaTime()*Gdx.input.getAccelerometerZ()));
-		if(Gdx.input.isTouched() && Gdx.input.getX() != 0){
-			float degree = (Gdx.input.getX() - Gdx.graphics.getWidth()/2f) / (Gdx.graphics.getWidth()/-2f);
-			camera.rotate(TURN_RATE * Gdx.graphics.getDeltaTime() * degree, 0, 1, 0);
+		if(Gdx.input.isTouched() && game.getOptions().getOptionBoolean(OptionEnum.TouchMovement)){
+			if(Gdx.input.getX() != 0){
+				float degree = (Gdx.input.getX() - Gdx.graphics.getWidth()/2f) / (Gdx.graphics.getWidth()/-2f);
+				camera.rotate(TURN_RATE * Gdx.graphics.getDeltaTime() * degree, 0, 1, 0);
+			} if(Gdx.input.getY() != 0){
+				float degree = (Gdx.input.getY() - Gdx.graphics.getHeight()/2f) / (Gdx.graphics.getHeight()/2f);
+				movement.add(camera.direction.tmp().mul(-Gdx.graphics.getDeltaTime()*degree));
+			}
 		}
 		camera.position.add(movement.mul(MOVE_SPEED));
 		camera.position.y = terrainManager.getHeight(camera.position.x, camera.position.z)+1.9f;

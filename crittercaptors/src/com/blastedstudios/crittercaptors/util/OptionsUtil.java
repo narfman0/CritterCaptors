@@ -13,9 +13,12 @@ import com.badlogic.gdx.Files.FileType;
  */
 public class OptionsUtil {
 	private static final String OPTIONS_PATH = "Games/CritterCaptors/options.xml";
-	public static final String USE_GPS = "Use GPS", USE_ACCELEROMETER = "Use Accelerometer";
-	private HashMap<String,String> options = new HashMap<String, String>();
+	private HashMap<OptionEnum,String> options = new HashMap<OptionEnum, String>();
 	private final Element documentElement;
+	
+	public enum OptionEnum{
+		Gps, Accelerometer, TouchMovement;
+	}
 	
 	public OptionsUtil(){
 		Document optionsDoc = XMLUtil.parse(OPTIONS_PATH, FileType.External); 
@@ -27,23 +30,24 @@ public class OptionsUtil {
 		documentElement = optionsDoc.getDocumentElement();
 		NodeList optionsList = documentElement.getElementsByTagName("option");
 		for(Element optionElement : XMLUtil.iterableElementList(optionsList))
-			options.put(optionElement.getAttribute("name"), optionElement.getAttribute("value"));
+			options.put(OptionEnum.valueOf(optionElement.getAttribute("name")), optionElement.getAttribute("value"));
 	}
 	
-	public boolean getOptionBoolean(String option){
+	public boolean getOptionBoolean(OptionEnum option){
 		return Boolean.parseBoolean(getOption(option));
 	}
 
-	public String getOption(String option){
+	public String getOption(OptionEnum option){
 		return options.get(option);
 	}
 
-	public void saveOption(String name, Boolean value){
-		saveOption(name, value.toString());
+	public void saveOption(OptionEnum option, Boolean value){
+		saveOption(option, value.toString());
 	}
 	
-	public void saveOption(String name, String value){
-		options.put(name, value);
+	public void saveOption(OptionEnum option, String value){
+		String name = option.name();
+		options.put(option, value);
 		NodeList optionsList = documentElement.getElementsByTagName("option");
 		for(Element optionElement : XMLUtil.iterableElementList(optionsList))
 			if(optionElement.getAttribute("name").equals(name))

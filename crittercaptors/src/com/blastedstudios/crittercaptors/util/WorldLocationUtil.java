@@ -13,6 +13,7 @@ import com.blastedstudios.crittercaptors.CritterCaptors;
 import com.blastedstudios.crittercaptors.creature.AffinityCalculator;
 import com.blastedstudios.crittercaptors.creature.AffinityEnum;
 import com.blastedstudios.crittercaptors.ui.terrain.Terrain;
+import com.blastedstudios.crittercaptors.util.OptionsUtil.OptionEnum;
 
 /**
  * Keep world location up to date. Since floats are too inaccurate, using doubles
@@ -38,7 +39,7 @@ public class WorldLocationUtil {
 	public void update(){
 		timeSinceLastUpdate += Gdx.graphics.getDeltaTime();
 		if(timeSinceLastUpdate > TIME_TO_UPDATE){
-			if(game.getOptions().getOptionBoolean(OptionsUtil.USE_GPS)){
+			if(game.getOptions().getOptionBoolean(OptionEnum.Gps)){
 				lat = Gdx.input.getGPSLatitude();
 				lon = Gdx.input.getGPSLongitude();
 			}

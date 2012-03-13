@@ -11,49 +11,41 @@ import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle;
 import com.blastedstudios.crittercaptors.CritterCaptors;
 import com.blastedstudios.crittercaptors.ui.AbstractScreen;
-import com.blastedstudios.crittercaptors.util.OptionsUtil;
+import com.blastedstudios.crittercaptors.util.OptionsUtil.OptionEnum;
 
 public class OptionsScreen extends AbstractScreen implements Screen {
 	public OptionsScreen(final CritterCaptors game) {
 		super(game);
-		final TextButton accelerometerMovementButton = new TextButton(getAccelerometerMovementButtonText(), skin.getStyle(TextButtonStyle.class), "enableAccMov");
-		accelerometerMovementButton.setClickListener(new ClickListener() {
-			@Override public void click(Actor arg0, float arg1, float arg2) {
-				game.getOptions().saveOption(OptionsUtil.USE_ACCELEROMETER, !game.getOptions().getOptionBoolean(OptionsUtil.USE_ACCELEROMETER));
-				accelerometerMovementButton.setText(getAccelerometerMovementButtonText());
-			}
-		});
-		final TextButton enableGPSButton = new TextButton(getEnableGPSText(), skin.getStyle(TextButtonStyle.class), "enableGPS");
-		enableGPSButton.setClickListener(new ClickListener() {
-			@Override public void click(Actor arg0, float arg1, float arg2) {
-				game.getOptions().saveOption(OptionsUtil.USE_GPS, !game.getOptions().getOptionBoolean(OptionsUtil.USE_GPS));
-				enableGPSButton.setText(getEnableGPSText());
-			}
-		});
+		Window window = new Window("Options", skin.getStyle(WindowStyle.class), "options");
+		for(final OptionEnum option : OptionEnum.values()){
+			final TextButton button = new TextButton(getButtonText(option), skin.getStyle(TextButtonStyle.class), "enable" + option.name());
+			button.setClickListener(new ClickListener() {
+				@Override public void click(Actor arg0, float arg1, float arg2) {
+					game.getOptions().saveOption(option, !game.getOptions().getOptionBoolean(option));
+					button.setText(getButtonText(option));
+				}
+			});
+			window.add(button);
+			window.row();
+		}
 		final Button okButton = new TextButton("Ok", skin.getStyle(TextButtonStyle.class), "ok");
 		okButton.setClickListener(new ClickListener() {
 			@Override public void click(Actor arg0, float arg1, float arg2) {
 				game.setScreen(new MainScreen(game));
 			}
 		});
-		Window window = new Window("Options", skin.getStyle(WindowStyle.class), "options");
-		window.row();
-		window.add(accelerometerMovementButton);
-		window.row();
-		window.add(enableGPSButton);
-		window.row();
 		window.add(okButton);
-		window.row();
+		window.pack();
 		window.x = Gdx.graphics.getWidth()/2 - window.width/2;
 		window.y = Gdx.graphics.getHeight()/2 - window.height/2;
 		stage.addActor(window);
 	}
-	
-	private String getEnableGPSText(){
-		return game.getOptions().getOptionBoolean(OptionsUtil.USE_GPS) ? "Disable GPS" : "Enable GPS";
-	}
-	
-	private String getAccelerometerMovementButtonText(){
-		return game.getOptions().getOptionBoolean(OptionsUtil.USE_ACCELEROMETER) ? "Disable Accelerometer" : "Enable Accelerometer";
+
+	private String getButtonText(OptionEnum option){
+		String text = option.name();
+		for(int i=0; i<text.length(); i++)
+			if(i>0 && Character.isUpperCase(text.charAt(i)))
+				text = text.substring(0, i++) + " " + text.substring((i++-1));
+		return game.getOptions().getOptionBoolean(option) ? "Disable " + text : "Enable " + text;
 	}
 }
