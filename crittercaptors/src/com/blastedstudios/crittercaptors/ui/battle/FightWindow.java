@@ -16,6 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.blastedstudios.crittercaptors.CritterCaptors;
 import com.blastedstudios.crittercaptors.creature.Ability;
 import com.blastedstudios.crittercaptors.util.MathUtil;
+import com.blastedstudios.crittercaptors.util.OptionsUtil.OptionEnum;
 
 public class FightWindow extends Window implements ComplexGestureListener {
 	final BattleScreen battleScreen;
@@ -24,9 +25,6 @@ public class FightWindow extends Window implements ComplexGestureListener {
 		super("Fight", skin);
 		this.battleScreen = battleScreen;
 		final FightWindow fightWindow = this;
-		final List<Button> attackButtons = new ArrayList<Button>();
-		for(Ability ability : battleScreen.getActiveCreature().getActiveAbilities())
-			attackButtons.add(new TextButton(ability.name, skin.getStyle(TextButtonStyle.class), ability.name));
 		final Button cancelButton = new TextButton("Cancel", skin.getStyle(TextButtonStyle.class), "cancel");
 		cancelButton.setClickListener(new ClickListener() {
 			@Override public void click(Actor actor, float arg1, float arg2) {
@@ -35,6 +33,20 @@ public class FightWindow extends Window implements ComplexGestureListener {
 				Gdx.input.removeComplexGestureListener(fightWindow);
 			}
 		});
+		if(game.getOptions().getOptionBoolean(OptionEnum.GestureActions))
+			Gdx.input.addComplexGestureListener(this);
+		addAttackButtons(skin);
+		add(cancelButton);
+		pack();
+		x = 8;
+		y = 8;
+	}
+	
+	private void addAttackButtons(final Skin skin){
+		final FightWindow fightWindow = this;
+		final List<Button> attackButtons = new ArrayList<Button>();
+		for(Ability ability : battleScreen.getActiveCreature().getActiveAbilities())
+			attackButtons.add(new TextButton(ability.name, skin.getStyle(TextButtonStyle.class), ability.name));
 		for(Button attackButton : attackButtons)
 			attackButton.setClickListener(new ClickListener() {
 				@Override public void click(Actor actor, float arg1, float arg2) {
@@ -51,12 +63,6 @@ public class FightWindow extends Window implements ComplexGestureListener {
 			add(attackButtons.get(1));
 		if(attackButtons.size()>3)
 			add(attackButtons.get(3));
-		add(cancelButton);
-		pack();
-		x = 8;
-		y = 8;
-
-		Gdx.input.addComplexGestureListener(this);
 	}
 
 	@Override public void gesturePerformed(List<ComplexGesturePrediction> predictions) {

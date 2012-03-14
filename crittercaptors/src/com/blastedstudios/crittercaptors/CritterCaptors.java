@@ -65,6 +65,7 @@ public class CritterCaptors extends Game {
 				textureMap.put(name, new Texture(Gdx.files.internal("data/textures/" + name.toLowerCase() + ".png"), Format.RGB565, true));
 			}catch(Exception e){}
 		}
+		Gdx.input.loadComplexGestures(Gdx.files.internal("data/gestures"));
 		Gdx.input.removeComplexGestureListener(null);
 		setScreen(new MainScreen(this));
 	}
