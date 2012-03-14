@@ -26,7 +26,8 @@ import com.blastedstudios.crittercaptors.util.OptionsUtil.OptionEnum;
 public class WorldMapScreen extends AbstractScreen {
     private Camera camera;
     public static final float MOVE_SPEED = 10f, TURN_RATE = 100f,
-		REMOVE_DISTANCE = 1000000f, FIGHT_DISTANCE = 150f;
+		REMOVE_DISTANCE = 1000000f, FIGHT_DISTANCE = 150f, 
+		ACCELEROMETER_THRESHOLD = (float) (Math.PI/6);
     private SideWindow sideMenu = null;
     private TerrainManager terrainManager;
     
@@ -88,8 +89,9 @@ public class WorldMapScreen extends AbstractScreen {
 		if (Gdx.input.isKeyPressed(Keys.ESCAPE))
 			if(sideMenu == null || sideMenu.dispose)
 				stage.addActor(sideMenu = new SideWindow(game, skin));
-		if(game.getOptions().getOptionBoolean(OptionEnum.Accelerometer))
-			movement.add(camera.direction.tmp().mul(-Gdx.graphics.getDeltaTime()*Gdx.input.getAccelerometerZ()));
+		if(game.getOptions().getOptionBoolean(OptionEnum.Accelerometer) && 
+				Math.abs(Gdx.input.getAccelerometerZ()) > ACCELEROMETER_THRESHOLD )
+			movement.add(camera.direction.tmp().mul(Gdx.graphics.getDeltaTime()*(Gdx.input.getAccelerometerZ()-ACCELEROMETER_THRESHOLD)));
 		if(Gdx.input.isTouched() && game.getOptions().getOptionBoolean(OptionEnum.TouchMovement)){
 			if(Gdx.input.getX() != 0){
 				float degree = (Gdx.input.getX() - Gdx.graphics.getWidth()/2f) / (Gdx.graphics.getWidth()/-2f);
