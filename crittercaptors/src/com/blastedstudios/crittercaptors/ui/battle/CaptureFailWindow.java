@@ -6,7 +6,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.blastedstudios.crittercaptors.CritterCaptors;
@@ -22,7 +21,9 @@ public class CaptureFailWindow extends Window {
 				actor.getStage().removeActor(actor.parent);
 			}
 		});
-		add(new TextField("Catch failed!\nMust roll >" + roll + "\nYou rolled " + targetRoll, skin));
+		TextButton catchResult = new TextButton("Catch failed!\nMust roll >" + roll + "\nYou rolled " + targetRoll, skin);
+		add(catchResult);
+		catchResult.touchable = false;
 		row();
 		add(okButton);
 		pack();
