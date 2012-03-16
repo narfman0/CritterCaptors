@@ -28,7 +28,6 @@ public class WorldMapScreen extends AbstractScreen {
     public static final float MOVE_SPEED = 10f, TURN_RATE = 100f,
 		REMOVE_DISTANCE = 1000000f, FIGHT_DISTANCE = 150f, 
 		ACCELEROMETER_THRESHOLD = (float) (Math.PI/6);
-    private SideWindow sideMenu = null;
     private TerrainManager terrainManager;
     
     public WorldMapScreen(CritterCaptors game) {
@@ -40,6 +39,7 @@ public class WorldMapScreen extends AbstractScreen {
 		terrainManager = new TerrainManager(game);
 		if(isNewCharacter)
 			showNewCharacterWindow();
+		stage.addActor(new SideWindow(game, skin));
 	}
 	
 	@Override public void render (float arg0) {
@@ -69,8 +69,16 @@ public class WorldMapScreen extends AbstractScreen {
 		}
 		
 		//render base after terrain to cache location (need terrain to get height of base)
-		for(Base base : game.getCharacter().getBases())
-			base.render(terrainManager, game.getWorldLocationManager());
+		for(Base base : game.getCharacter().getBases()){
+			if(base.getCachedPosition() == null){
+				double[] mercator = MercatorUtil.toPixel(
+						game.getWorldLocationManager().lonInitial - base.lon, 
+						game.getWorldLocationManager().latInitial - base.lat);
+				float x = (float)mercator[0], z = (float)mercator[1], y = terrainManager.getHeight(x, z);
+				base.setCachedPosition(new Vector3(x, y, z));
+			}
+			base.render();
+		}
 		
 		stage.act(Gdx.graphics.getDeltaTime());
 		stage.draw();
@@ -86,9 +94,6 @@ public class WorldMapScreen extends AbstractScreen {
 			camera.rotate(TURN_RATE * Gdx.graphics.getDeltaTime(), 0, 1, 0);
 		if (Gdx.input.isKeyPressed(Keys.D))
 			camera.rotate(-TURN_RATE * Gdx.graphics.getDeltaTime(), 0, 1, 0);
-		if (Gdx.input.isKeyPressed(Keys.ESCAPE))
-			if(sideMenu == null || sideMenu.dispose)
-				stage.addActor(sideMenu = new SideWindow(game, skin));
 		if(game.getOptions().getOptionBoolean(OptionEnum.Accelerometer) && 
 				Math.abs(Gdx.input.getAccelerometerZ()) > ACCELEROMETER_THRESHOLD )
 			movement.add(camera.direction.tmp().mul(Gdx.graphics.getDeltaTime()*(Gdx.input.getAccelerometerZ()-ACCELEROMETER_THRESHOLD)));

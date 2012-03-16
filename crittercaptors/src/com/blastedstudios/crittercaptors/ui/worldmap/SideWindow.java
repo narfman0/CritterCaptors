@@ -16,13 +16,10 @@ import com.blastedstudios.crittercaptors.ui.mainscreen.MainScreen;
 import com.blastedstudios.crittercaptors.util.MercatorUtil;
 
 public class SideWindow extends Window{
-	public boolean dispose = false;
-
 	public SideWindow(final CritterCaptors game, final Skin skin) {
 		super("Menu", skin);
 		final Button creaturesButton = new TextButton("Creatures", skin.getStyle(TextButtonStyle.class), "creatures");
 		final Button baseButton = new TextButton("Base", skin.getStyle(TextButtonStyle.class), "base");
-		final Button cancelButton = new TextButton("Cancel", skin.getStyle(TextButtonStyle.class), "cancel");
 		final Button exitButton = new TextButton("Exit", skin.getStyle(TextButtonStyle.class), "exit");
 		creaturesButton.setClickListener(new ClickListener() {
 			@Override public void click(Actor actor, float arg1, float arg2) {
@@ -34,12 +31,6 @@ public class SideWindow extends Window{
 				baseButtonHit(game, skin);
 			}
 		});
-		cancelButton.setClickListener(new ClickListener() {
-			@Override public void click(Actor actor, float arg1, float arg2) {
-				dispose = true;
-				actor.getStage().removeActor(actor.parent);
-			}
-		});
 		exitButton.setClickListener(new ClickListener() {
 			@Override public void click(Actor actor, float arg1, float arg2) {
 				game.getCharacter().save();
@@ -49,8 +40,6 @@ public class SideWindow extends Window{
 		add(creaturesButton);
 		row();
 		add(baseButton);
-		row();
-		add(cancelButton);
 		row();
 		add(exitButton);
 		pack();

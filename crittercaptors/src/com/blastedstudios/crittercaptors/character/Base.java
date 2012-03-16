@@ -7,10 +7,7 @@ import org.w3c.dom.Element;
 
 import com.badlogic.gdx.math.Vector3;
 import com.blastedstudios.crittercaptors.CritterCaptors;
-import com.blastedstudios.crittercaptors.ui.terrain.TerrainManager;
-import com.blastedstudios.crittercaptors.util.MercatorUtil;
 import com.blastedstudios.crittercaptors.util.RenderUtil;
-import com.blastedstudios.crittercaptors.util.WorldLocationUtil;
 import com.blastedstudios.crittercaptors.util.XMLUtil;
 
 public class Base {
@@ -18,7 +15,7 @@ public class Base {
 	public static final int BASE_COST = 1500, RETARDANT_COST = 1000,
 			VR_SIMULATOR_COST = 2000, VR_SIMULATOR_UPGRADE = 400;
 	private static final String BASE_NAME = "base";
-	private final double lat, lon;
+	public final double lat, lon;
 	private Vector3 cachedPosition;//used to skip mercator proj every frame
 	private final HashMap<BaseUpgradeEnum, Integer> upgrades;
 	
@@ -32,13 +29,11 @@ public class Base {
 		return cachedPosition;
 	}
 	
-	public void render(TerrainManager terrainManager, WorldLocationUtil worldLocationUtil){
-		if(cachedPosition == null){
-			double[] mercator = MercatorUtil.toPixel(worldLocationUtil.lonInitial - lon, 
-					worldLocationUtil.latInitial - lat);
-			float x = (float)mercator[0], z = (float)mercator[1], y = terrainManager.getHeight(x, z);
-			cachedPosition = new Vector3(x, y, z);
-		}
+	public void setCachedPosition(Vector3 cachedPosition){
+		this.cachedPosition = cachedPosition;
+	}
+	
+	public void render(){
 		RenderUtil.drawModel(CritterCaptors.getModel(BASE_NAME), CritterCaptors.getTexture(BASE_NAME),
 				cachedPosition, new Vector3(), new Vector3(1,1,1));
 	}

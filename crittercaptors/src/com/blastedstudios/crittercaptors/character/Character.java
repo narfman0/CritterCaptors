@@ -164,7 +164,7 @@ public class Character {
 	public float getClosestRetardantDistance(Vector3 position){
 		float closestDistance = Float.MAX_VALUE;
 		for(Base base : bases)
-			if(base.isRetardantEnabled()){
+			if(base.isRetardantEnabled() && base.getCachedPosition() != null){
 				float distance =  base.getCachedPosition().tmp().dst(position);
 				if(distance < closestDistance)
 					closestDistance = distance;
