@@ -14,6 +14,7 @@ public class CreatureInfoWindow extends Window {
 	private final Creature creature;
 	private final Label levelLabel, hpRatio, statusLabel;
 	private final Slider hpSlider;
+	private HPTimer timer;
 	
 	public CreatureInfoWindow(final CritterCaptors game, final Skin skin, 
 			final Creature creature, final int x, final int y) {
@@ -45,7 +46,9 @@ public class CreatureInfoWindow extends Window {
 		levelLabel.setText(creature.getLevel()+"");
 		statusLabel.setText(creature.getStatus().name());
 		hpSlider.touchable = true;
-		new Timer().scheduleAtFixedRate(new HPTimer(), 100, 10); 
+		if(timer != null)
+			timer.cancel();
+		new Timer().scheduleAtFixedRate(timer = new HPTimer(), 100, 10); 
 	}
 	
 	private class HPTimer extends TimerTask{
