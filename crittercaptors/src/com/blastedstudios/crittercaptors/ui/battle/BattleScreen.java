@@ -93,9 +93,10 @@ public class BattleScreen extends AbstractScreen {
 				game.setScreen(new BlackoutScreen(game, this));
 		}else{ 
 			//show window indicating victory!
-			activeCreature.addExperience(ExperienceUtil.getKillExperience(enemy));
+			int xpAdded = ExperienceUtil.getKillExperience(enemy);
+			activeCreature.addExperience(xpAdded);
 			activeCreature.getEV().add(enemy.getEVYield());
-			endBattle();
+			stage.addActor(new VictoryWindow(game, skin, this, xpAdded));
 		}
 	}
 	
@@ -115,7 +116,7 @@ public class BattleScreen extends AbstractScreen {
 		if(catchRoll >= catchRate){
 			enemy.setActive(game.getCharacter().getNextEmptyActiveIndex());
 			game.getCharacter().getOwnedCreatures().add(enemy);
-			endBattle();
+			stage.addActor(new CaptureSuccessWindow(game, skin, this));
 			return;
 		}
 		stage.addActor(new CaptureFailWindow(game, skin, this, 
@@ -124,6 +125,10 @@ public class BattleScreen extends AbstractScreen {
 
 	public Creature getActiveCreature() {
 		return activeCreature;
+	}
+	
+	public Creature getEnemy(){
+		return enemy;
 	}
 
 	public void setActiveCreature(Creature activeCreature) {
