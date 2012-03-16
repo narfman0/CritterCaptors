@@ -19,13 +19,15 @@ public class AttackWindowSecond extends Window {
 		String text = attackStruct.creatureSecond.getName() + " uses ability\n" +
 		attackStruct.attackSecond + "\ndoing " + attackStruct.attackDamageSecond+
 		" dmg";
-		if(attackStruct.creatureFirst.receiveDamage(attackStruct.attackDamageSecond))
-			battleScreen.death();
+		final boolean dead = attackStruct.creatureFirst.receiveDamage(attackStruct.attackDamageSecond);
 		battleScreen.updateStatusWindows();
 		final Button button = new TextButton(text, skin.getStyle(TextButtonStyle.class), "atk");
 		button.setClickListener(new ClickListener() {
 			@Override public void click(Actor actor, float arg1, float arg2) {
-				battleScreen.setNextBattleWindow(new StatusWindowSecond(game, skin, battleScreen, attackStruct), attackStruct);
+				if(dead)
+					battleScreen.death();
+				else
+					battleScreen.setNextBattleWindow(new StatusWindowSecond(game, skin, battleScreen, attackStruct), attackStruct);
 				actor.getStage().removeActor(actor.parent);
 			}
 		});

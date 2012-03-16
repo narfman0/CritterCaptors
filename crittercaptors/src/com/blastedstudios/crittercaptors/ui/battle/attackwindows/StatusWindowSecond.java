@@ -16,16 +16,17 @@ public class StatusWindowSecond extends Window {
 	public StatusWindowSecond(final CritterCaptors game, final Skin skin, 
 			final BattleScreen battleScreen, final AttackStruct attackStruct) {
 		super("", skin);
-		boolean dead = attackStruct.creatureSecond.statusUpdate(true);
+		final boolean dead = attackStruct.creatureSecond.statusUpdate(true);
 		String text = attackStruct.creatureSecond.getName() + " has status: " + 
 			attackStruct.creatureSecond.getStatus(); 
-		if(dead)
-			battleScreen.death();
 		battleScreen.updateStatusWindows();
 		final Button button = new TextButton(text, skin.getStyle(TextButtonStyle.class), "accept");
 		button.setClickListener(new ClickListener() {
 			@Override public void click(Actor actor, float arg1, float arg2) {
-				battleScreen.setNextBattleWindow(new StatusWindowFirst(game, skin, battleScreen, attackStruct), attackStruct);
+				if(dead)
+					battleScreen.death();
+				else
+					battleScreen.setNextBattleWindow(new StatusWindowFirst(game, skin, battleScreen, attackStruct), attackStruct);
 				actor.getStage().removeActor(actor.parent);
 			}
 		});
