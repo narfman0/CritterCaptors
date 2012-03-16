@@ -71,7 +71,7 @@ public class FightWindow extends Window implements ComplexGestureListener {
 				for(Ability ability : battleScreen.getActiveCreature().getActiveAbilities())
 					if(ability.gestureName.equals(prediction.name)){
 						float dmg = MathUtil.gestureScoreToDamageModifier(prediction.score);
-						battleScreen.fight(prediction.name, dmg);
+						battleScreen.fight(ability.name, dmg);
 						Gdx.input.removeComplexGestureListener(this);
 					}
 	}
