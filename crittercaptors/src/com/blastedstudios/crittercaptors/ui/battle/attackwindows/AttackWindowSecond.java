@@ -25,7 +25,7 @@ public class AttackWindowSecond extends Window {
 		final Button button = new TextButton(text, skin.getStyle(TextButtonStyle.class), "atk");
 		button.setClickListener(new ClickListener() {
 			@Override public void click(Actor actor, float arg1, float arg2) {
-				actor.getStage().addActor(new StatusWindowSecond(game, skin, battleScreen, attackStruct));
+				battleScreen.setNextBattleWindow(new StatusWindowSecond(game, skin, battleScreen, attackStruct), attackStruct);
 				actor.getStage().removeActor(actor.parent);
 			}
 		});

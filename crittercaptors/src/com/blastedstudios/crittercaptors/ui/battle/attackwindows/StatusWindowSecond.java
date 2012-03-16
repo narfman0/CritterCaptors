@@ -25,7 +25,7 @@ public class StatusWindowSecond extends Window {
 		final Button button = new TextButton(text, skin.getStyle(TextButtonStyle.class), "accept");
 		button.setClickListener(new ClickListener() {
 			@Override public void click(Actor actor, float arg1, float arg2) {
-				actor.getStage().addActor(new StatusWindowFirst(game, skin, battleScreen, attackStruct));
+				battleScreen.setNextBattleWindow(new StatusWindowFirst(game, skin, battleScreen, attackStruct), attackStruct);
 				actor.getStage().removeActor(actor.parent);
 			}
 		});

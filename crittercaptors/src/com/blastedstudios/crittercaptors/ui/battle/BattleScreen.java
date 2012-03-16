@@ -4,10 +4,15 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.blastedstudios.crittercaptors.CritterCaptors;
 import com.blastedstudios.crittercaptors.creature.Creature;
+import com.blastedstudios.crittercaptors.creature.StatusEffectEnum;
 import com.blastedstudios.crittercaptors.ui.AbstractScreen;
 import com.blastedstudios.crittercaptors.ui.battle.attackwindows.AttackWindowFirst;
+import com.blastedstudios.crittercaptors.ui.battle.attackwindows.AttackWindowSecond;
+import com.blastedstudios.crittercaptors.ui.battle.attackwindows.StatusWindowFirst;
+import com.blastedstudios.crittercaptors.ui.battle.attackwindows.StatusWindowSecond;
 import com.blastedstudios.crittercaptors.ui.terrain.ITerrain;
 import com.blastedstudios.crittercaptors.ui.terrain.Terrain;
 import com.blastedstudios.crittercaptors.ui.worldmap.WorldMapScreen;
@@ -74,7 +79,7 @@ public class BattleScreen extends AbstractScreen {
 			secondAtkDmg = (int)(second.attack(first, secondAttack) * (!playerFirst?dmgModifier:1));
 		AttackStruct attack = new AttackStruct(firstAtkDmg, secondAtkDmg, 
 				firstAttack, secondAttack, first, second);
-		stage.addActor(new AttackWindowFirst(game, skin, this, attack));
+		setNextBattleWindow(new AttackWindowFirst(game, skin, this, attack), attack);
 	}
 	
 	/**
@@ -132,5 +137,32 @@ public class BattleScreen extends AbstractScreen {
 	public void updateStatusWindows(){
 		creatureInfoWindow.update();
 		enemyInfoWindow.update();
+	}
+	
+	/**
+	 * Figures out the next attack window that should be shown
+	 */
+	public void setNextBattleWindow(Window next, AttackStruct attackStruct){
+		if(next instanceof AttackWindowFirst)
+			if(attackStruct.attackFirst != null)
+				stage.addActor(next);
+			else
+				setNextBattleWindow(new AttackWindowSecond(game, skin, this, attackStruct), attackStruct);
+		if(next instanceof AttackWindowSecond)
+			if(attackStruct.attackSecond != null)
+				stage.addActor(next);
+			else
+				setNextBattleWindow(new StatusWindowSecond(game, skin, this, attackStruct), attackStruct);
+		if(next instanceof StatusWindowFirst)
+			if(attackStruct.creatureFirst.getStatus() != StatusEffectEnum.None)
+				stage.addActor(next);
+			else
+				stage.addActor(new BottomWindow(game, skin, this));
+		if(next instanceof StatusWindowSecond)
+			if(attackStruct.creatureSecond.getStatus() != StatusEffectEnum.None)
+				stage.addActor(next);
+			else
+				setNextBattleWindow(new StatusWindowFirst(game, skin, this, attackStruct), attackStruct);
+			
 	}
 }
