@@ -20,7 +20,7 @@ import com.blastedstudios.crittercaptors.util.OptionsUtil.OptionEnum;
  * up to render, and setting initial lat so as to shrink the error when converting
  */
 public class WorldLocationUtil {
-	private double lat = 36.878705, lon = -76.260400;
+	private double lat = 36.878705, lon = -76.260400, lastLat, lastLon;
 	public final double latInitial, lonInitial;
 	private float timeSinceLastUpdate = TIME_TO_UPDATE;
 	private static final float TIME_TO_UPDATE = 60;
@@ -30,9 +30,9 @@ public class WorldLocationUtil {
 	
 	public WorldLocationUtil(CritterCaptors game){
 		this.game = game;
-		//TODO wait for fix to initialize GPS correctly 
-		latInitial = 36.878705;//Gdx.input.getGPSLatitude();
-		lonInitial = -76.260400;//Gdx.input.getGPSLongitude();
+		double[] loc = getLocation();
+		this.latInitial = loc[0];
+		this.lonInitial = loc[1];
 		executerService = Executors.newCachedThreadPool();
 	}
 
@@ -142,9 +142,10 @@ public class WorldLocationUtil {
 						lat+"&lon="+lon+"&z=18&w=64&h=64&mode=Export&show=1");
 				Color[] colors = RenderUtil.imageFromURL(url);
 				if(colors == null){
-					//TODO fix imageFromURL to load texs correctly. Appears that
-					//libgdx does not work 100% with their Pixmap class which
-					//would work perfectly for this express reason
+					//TODO below
+					Gdx.app.log("Affinities Thread", "fix imageFromURL to load texs correctly."+
+							"libgdx does not work 100% with their Pixmap class which"+
+							"would work perfectly for this express reason");
 					colors = new Color[]{AffinityCalculator.SUBURBAN_COLOR};
 				}
 				AffinityCalculator.getAffinitiesFromTexture(colors, currentWorldAffinities);
@@ -152,5 +153,27 @@ public class WorldLocationUtil {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	private double[] getLocation(){
+		if(game.getOptions().getOptionBoolean(OptionEnum.Gps)){
+			while(!isGPSAcquired())
+				try {
+					Thread.sleep(1000);
+					lastLat = Gdx.input.getGPSLatitude();
+					lastLon = Gdx.input.getGPSLongitude();
+				} catch (InterruptedException e) {}
+			return new double[]{Gdx.input.getGPSLatitude(),Gdx.input.getGPSLongitude()};
+		}else
+			return new double[]{36.878705,-76.260400};
+	}
+	
+	/**
+	 * .01 is gps accuracy... it must not be changing more than that squared (pythag)
+	 */
+	private boolean isGPSAcquired(){
+		if(lastLat != 0 && lastLon != 0 && lastLat*lastLat + lastLon*lastLon < .01)
+			return true;
+		return false;
 	}
 }
