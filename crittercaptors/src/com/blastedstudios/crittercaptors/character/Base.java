@@ -16,12 +16,12 @@ public class Base {
 	public static final int BASE_COST = 1500, RETARDANT_COST = 1000,
 			VR_SIMULATOR_COST = 2000, VR_SIMULATOR_UPGRADE = 400;
 	private static final String BASE_NAME = "base";
-	public final LocationStruct latLon;
+	public final LocationStruct loc;
 	private Vector3 cachedPosition;//used to skip mercator proj every frame
 	private final HashMap<BaseUpgradeEnum, Integer> upgrades;
 	
-	public Base(LocationStruct latLon, HashMap<BaseUpgradeEnum, Integer> upgrades){
-		this.latLon = latLon;
+	public Base(LocationStruct loc, HashMap<BaseUpgradeEnum, Integer> upgrades){
+		this.loc = loc;
 		this.upgrades = upgrades;
 	}
 	
@@ -51,8 +51,8 @@ public class Base {
 	
 	public Element asXML(Document doc){
 		Element baseEle = doc.createElement("base");
-		baseEle.setAttribute("lat", Double.toString(latLon.lat));
-		baseEle.setAttribute("lon", Double.toString(latLon.lon));
+		baseEle.setAttribute("lat", Double.toString(loc.lat));
+		baseEle.setAttribute("lon", Double.toString(loc.lon));
 		for(BaseUpgradeEnum key : upgrades.keySet()){
 			Element upgradeElement = doc.createElement("upgrade");
 			upgradeElement.setAttribute("name", key.name());

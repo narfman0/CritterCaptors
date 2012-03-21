@@ -12,9 +12,9 @@ public class MercatorUtil {
     private static final double COM = 0.5 * ECCENT;
     private static final double PI_2 = Math.PI / 2.0;
  
-    public static double[] toPixel(LocationStruct latLon)
+    public static double[] toPixel(LocationStruct location)
     {
-        return new double[] { lonToX(latLon.lon), latToY(latLon.lat) };
+        return new double[] { lonToX(location.lon), latToY(location.lat) };
     }
  
     public static LocationStruct toGeoCoord(double x, double y)

@@ -71,8 +71,8 @@ public class WorldMapScreen extends AbstractScreen {
 		//render base after terrain to cache location (need terrain to get height of base)
 		for(Base base : game.getCharacter().getBases()){
 			if(base.getCachedPosition() == null){
-				double[] mercator = MercatorUtil.toPixel(game.getWorldLocationManager().initialLatLon.tmp().sub(base.latLon));
-				float x = (float)mercator[0], z = (float)mercator[1], y = terrainManager.getHeight(x, z);
+				double[] mercator = MercatorUtil.toPixel(game.getWorldLocationManager().initialLatLon.tmp().sub(base.loc));
+				float x = -(float)mercator[0], z = -(float)mercator[1], y = terrainManager.getHeight(x, z);
 				base.setCachedPosition(new Vector3(x, y, z));
 			}
 			base.render();
