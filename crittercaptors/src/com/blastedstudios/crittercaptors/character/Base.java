@@ -8,6 +8,7 @@ import org.w3c.dom.Element;
 import com.badlogic.gdx.math.Vector3;
 import com.blastedstudios.crittercaptors.CritterCaptors;
 import com.blastedstudios.crittercaptors.util.RenderUtil;
+import com.blastedstudios.crittercaptors.util.LocationStruct;
 import com.blastedstudios.crittercaptors.util.XMLUtil;
 
 public class Base {
@@ -15,13 +16,12 @@ public class Base {
 	public static final int BASE_COST = 1500, RETARDANT_COST = 1000,
 			VR_SIMULATOR_COST = 2000, VR_SIMULATOR_UPGRADE = 400;
 	private static final String BASE_NAME = "base";
-	public final double lat, lon;
+	public final LocationStruct latLon;
 	private Vector3 cachedPosition;//used to skip mercator proj every frame
 	private final HashMap<BaseUpgradeEnum, Integer> upgrades;
 	
-	public Base(double lat, double lon, HashMap<BaseUpgradeEnum, Integer> upgrades){
-		this.lat = lat;
-		this.lon = lon;
+	public Base(LocationStruct latLon, HashMap<BaseUpgradeEnum, Integer> upgrades){
+		this.latLon = latLon;
 		this.upgrades = upgrades;
 	}
 	
@@ -44,14 +44,15 @@ public class Base {
 			BaseUpgradeEnum key = BaseUpgradeEnum.valueOf(upgradeElement.getAttribute("name"));
 			upgrades.put(key, Integer.parseInt(upgradeElement.getAttribute("value")));
 		}
-		return new Base(Double.parseDouble(baseElement.getAttribute("lat")), 
-				Double.parseDouble(baseElement.getAttribute("lon")), upgrades);
+		LocationStruct loc = new LocationStruct(Double.parseDouble(baseElement.getAttribute("lat")), 
+				Double.parseDouble(baseElement.getAttribute("lon")));
+		return new Base(loc, upgrades);
 	}
 	
 	public Element asXML(Document doc){
 		Element baseEle = doc.createElement("base");
-		baseEle.setAttribute("lat", Double.toString(lat));
-		baseEle.setAttribute("lon", Double.toString(lon));
+		baseEle.setAttribute("lat", Double.toString(latLon.lat));
+		baseEle.setAttribute("lon", Double.toString(latLon.lon));
 		for(BaseUpgradeEnum key : upgrades.keySet()){
 			Element upgradeElement = doc.createElement("upgrade");
 			upgradeElement.setAttribute("name", key.name());

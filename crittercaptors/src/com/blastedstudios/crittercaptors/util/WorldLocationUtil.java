@@ -20,8 +20,9 @@ import com.blastedstudios.crittercaptors.util.OptionsUtil.OptionEnum;
  * up to render, and setting initial lat so as to shrink the error when converting
  */
 public class WorldLocationUtil {
-	private double lat = 36.878705, lon = -76.260400, lastLat, lastLon;
-	public final double latInitial, lonInitial;
+	private static final LocationStruct DEFAULT = new LocationStruct(36.878705,-76.260400);
+	private LocationStruct latLon = DEFAULT.tmp(), lastLatLon = new LocationStruct(0, 0);
+	public final LocationStruct initialLatLon;
 	private float timeSinceLastUpdate = TIME_TO_UPDATE;
 	private static final float TIME_TO_UPDATE = 60;
 	private HashMap<AffinityEnum, Float> currentWorldAffinities = new HashMap<AffinityEnum, Float>();
@@ -30,19 +31,15 @@ public class WorldLocationUtil {
 	
 	public WorldLocationUtil(CritterCaptors game){
 		this.game = game;
-		double[] loc = getLocation();
-		this.latInitial = loc[0];
-		this.lonInitial = loc[1];
+		this.initialLatLon = getLocation();
 		executerService = Executors.newCachedThreadPool();
 	}
 
 	public void update(){
 		timeSinceLastUpdate += Gdx.graphics.getDeltaTime();
 		if(timeSinceLastUpdate > TIME_TO_UPDATE){
-			if(game.getOptions().getOptionBoolean(OptionEnum.Gps)){
-				lat = Gdx.input.getGPSLatitude();
-				lon = Gdx.input.getGPSLongitude();
-			}
+			if(game.getOptions().getOptionBoolean(OptionEnum.Gps))
+				latLon = new LocationStruct(Gdx.input.getGPSLatitude(),Gdx.input.getGPSLongitude());
 			timeSinceLastUpdate = 0;
 			executerService.execute(new AffinitiesThread());
 			try {
@@ -54,20 +51,12 @@ public class WorldLocationUtil {
 		}
 	}
 	
-	public double getLatitude(){
-		return lat;
+	public LocationStruct getLatLon(){
+		return latLon;
 	}
 
-	public double getLongitude(){
-		return lon;
-	}
-
-	public double getRelativeLongitude(){
-		return lonInitial - lon;
-	}
-
-	public double getRelativeLatitude(){
-		return latInitial - lat;
+	public LocationStruct getRelativeLatLon(){
+		return initialLatLon.tmp().sub(latLon);
 	}
 
 	public float[] getHeightmap(Vector3 location){
@@ -76,10 +65,8 @@ public class WorldLocationUtil {
 			for(int z=0; z<Terrain.DEFAULT_WIDTH + 1; z++){
 				double geoCoordX = x-(Terrain.DEFAULT_WIDTH + 1)/2+location.x;
 				double geoCoordZ = z-(Terrain.DEFAULT_WIDTH + 1)/2+location.z;
-				double[] latlon = MercatorUtil.toGeoCoord(geoCoordX, geoCoordZ);
-				latlon[0] += lon;
-				latlon[1] += lat;
-				executerService.execute(new AltitudeThread(heightMap, x*(Terrain.DEFAULT_WIDTH+1)+z, latlon[0], latlon[1]));
+				LocationStruct latlon = MercatorUtil.toGeoCoord(geoCoordX, geoCoordZ).add(latLon);
+				executerService.execute(new AltitudeThread(heightMap, x*(Terrain.DEFAULT_WIDTH+1)+z, latlon.lon, latlon.lat));
 			}
 		try {
 			executerService.awaitTermination(1, TimeUnit.MINUTES);
@@ -139,7 +126,7 @@ public class WorldLocationUtil {
 		public void run() {
 			try {
 				URL url = new URL("http://ojw.dev.openstreetmap.org/StaticMap/?lat="+
-						lat+"&lon="+lon+"&z=18&w=64&h=64&mode=Export&show=1");
+						latLon.lat+"&lon="+latLon.lon+"&z=18&w=64&h=64&mode=Export&show=1");
 				Color[] colors = RenderUtil.imageFromURL(url);
 				if(colors == null){
 					//TODO below
@@ -155,24 +142,24 @@ public class WorldLocationUtil {
 		}
 	}
 
-	private double[] getLocation(){
+	private LocationStruct getLocation(){
 		if(game.getOptions().getOptionBoolean(OptionEnum.Gps)){
 			while(!isGPSAcquired())
 				try {
 					Thread.sleep(1000);
-					lastLat = Gdx.input.getGPSLatitude();
-					lastLon = Gdx.input.getGPSLongitude();
+					lastLatLon.lat = Gdx.input.getGPSLatitude();
+					lastLatLon.lon = Gdx.input.getGPSLongitude();
 				} catch (InterruptedException e) {}
-			return new double[]{Gdx.input.getGPSLatitude(),Gdx.input.getGPSLongitude()};
+			return new LocationStruct(Gdx.input.getGPSLatitude(),Gdx.input.getGPSLongitude());
 		}else
-			return new double[]{36.878705,-76.260400};
+			return DEFAULT.tmp();
 	}
 	
 	/**
 	 * .01 is gps accuracy... it must not be changing more than that squared (pythag)
 	 */
 	private boolean isGPSAcquired(){
-		if(lastLat != 0 && lastLon != 0 && lastLat*lastLat + lastLon*lastLon < .01)
+		if(lastLatLon.lat != 0 && lastLatLon.lon != 0 && lastLatLon.lat*lastLatLon.lat + lastLatLon.lon*lastLatLon.lon < .01)
 			return true;
 		return false;
 	}

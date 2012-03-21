@@ -39,7 +39,7 @@ public class WorldMapScreen extends AbstractScreen {
 		terrainManager = new TerrainManager(game);
 		if(isNewCharacter)
 			showNewCharacterWindow();
-		stage.addActor(new SideWindow(game, skin));
+		stage.addActor(new SideWindow(game, skin, this));
 	}
 	
 	@Override public void render (float arg0) {
@@ -71,9 +71,7 @@ public class WorldMapScreen extends AbstractScreen {
 		//render base after terrain to cache location (need terrain to get height of base)
 		for(Base base : game.getCharacter().getBases()){
 			if(base.getCachedPosition() == null){
-				double[] mercator = MercatorUtil.toPixel(
-						game.getWorldLocationManager().lonInitial - base.lon, 
-						game.getWorldLocationManager().latInitial - base.lat);
+				double[] mercator = MercatorUtil.toPixel(game.getWorldLocationManager().initialLatLon.tmp().sub(base.latLon));
 				float x = (float)mercator[0], z = (float)mercator[1], y = terrainManager.getHeight(x, z);
 				base.setCachedPosition(new Vector3(x, y, z));
 			}
@@ -115,9 +113,7 @@ public class WorldMapScreen extends AbstractScreen {
 
 	@Override public void resize (int width, int height) {
         camera = RenderUtil.resize(width, height);
-        double[] mercator = MercatorUtil.toPixel(
-        		game.getWorldLocationManager().getRelativeLongitude(),
-        		game.getWorldLocationManager().getRelativeLatitude());
+        double[] mercator = MercatorUtil.toPixel(game.getWorldLocationManager().getRelativeLatLon());
         camera.translate((float)mercator[0], 0, (float)mercator[1]);
         camera.update();
 	}
@@ -139,5 +135,9 @@ public class WorldMapScreen extends AbstractScreen {
 		window.x = Gdx.graphics.getWidth() / 2 - window.width / 2;
 		window.y = Gdx.graphics.getHeight() / 2 - window.height / 2;
 		stage.addActor(window);
+	}
+	
+	public Camera getCamera(){
+		return camera;
 	}
 }

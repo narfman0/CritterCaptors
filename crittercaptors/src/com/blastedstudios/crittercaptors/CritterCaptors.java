@@ -21,6 +21,7 @@ import java.util.Random;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.Texture;
@@ -31,8 +32,11 @@ import com.blastedstudios.crittercaptors.character.BaseUpgradeEnum;
 import com.blastedstudios.crittercaptors.character.Character;
 import com.blastedstudios.crittercaptors.creature.CreatureManager;
 import com.blastedstudios.crittercaptors.ui.mainscreen.MainScreen;
+import com.blastedstudios.crittercaptors.util.MercatorUtil;
 import com.blastedstudios.crittercaptors.util.OptionsUtil;
 import com.blastedstudios.crittercaptors.util.WorldLocationUtil;
+import com.blastedstudios.crittercaptors.util.OptionsUtil.OptionEnum;
+import com.blastedstudios.crittercaptors.util.LocationStruct;
 
 public class CritterCaptors extends Game {
 	public static Random random = new Random();
@@ -94,10 +98,11 @@ public class CritterCaptors extends Game {
 		return worldLocationManager;
 	}
 
-	public void addBase() {
-		Base newBase = new Base(worldLocationManager.getLatitude(),
-				worldLocationManager.getLongitude(),
-				new HashMap<BaseUpgradeEnum, Integer>());
+	public void addBase(Camera camera) {
+		LocationStruct loc = worldLocationManager.getLatLon().tmp();
+		if(!options.getOptionBoolean(OptionEnum.Gps))
+			loc.add(MercatorUtil.toGeoCoord(camera.position.x, camera.position.z));
+		Base newBase = new Base(loc, new HashMap<BaseUpgradeEnum, Integer>());
 		if(character.getBases().size() == 0){
 			newBase.upgrade(BaseUpgradeEnum.MonsterRetardant);
 			newBase.setRetardantEnabled(true);

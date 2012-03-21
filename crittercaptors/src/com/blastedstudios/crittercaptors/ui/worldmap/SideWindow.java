@@ -16,8 +16,11 @@ import com.blastedstudios.crittercaptors.ui.mainscreen.MainScreen;
 import com.blastedstudios.crittercaptors.util.MercatorUtil;
 
 public class SideWindow extends Window{
-	public SideWindow(final CritterCaptors game, final Skin skin) {
+	private final WorldMapScreen worldMapScreen;
+	
+	public SideWindow(final CritterCaptors game, final Skin skin, final WorldMapScreen worldMapScreen) {
 		super("Menu", skin);
+		this.worldMapScreen = worldMapScreen;
 		final Button creaturesButton = new TextButton("Creatures", skin.getStyle(TextButtonStyle.class), "creatures");
 		final Button baseButton = new TextButton("Base", skin.getStyle(TextButtonStyle.class), "base");
 		final Button exitButton = new TextButton("Exit", skin.getStyle(TextButtonStyle.class), "exit");
@@ -48,9 +51,7 @@ public class SideWindow extends Window{
 	}
 
 	protected void baseButtonHit(CritterCaptors game, Skin skin) {
-		double[] pixels = MercatorUtil.toPixel(
-				game.getWorldLocationManager().getRelativeLongitude(), 
-				game.getWorldLocationManager().getRelativeLatitude());
+		double[] pixels = MercatorUtil.toPixel(game.getWorldLocationManager().getRelativeLatLon());
 		Vector3 pos = new Vector3((float)pixels[0],0,(float)pixels[1]);
 		for(Base characterBase : game.getCharacter().getBases())
 			if(characterBase.getCachedPosition() != null && 
@@ -62,6 +63,6 @@ public class SideWindow extends Window{
 			if(game.getCharacter().getCash() < Base.BASE_COST)
 				stage.addActor(new BuildBaseBrokeWindow(game, skin));
 			else
-				stage.addActor(new BuildBaseWindow(game, skin));
+				stage.addActor(new BuildBaseWindow(game, skin, worldMapScreen));
 	}
 }
