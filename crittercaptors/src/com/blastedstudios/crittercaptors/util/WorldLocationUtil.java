@@ -20,8 +20,7 @@ import com.blastedstudios.crittercaptors.util.OptionsUtil.OptionEnum;
  * up to render, and setting initial lat so as to shrink the error when converting
  */
 public class WorldLocationUtil {
-	private static final LocationStruct DEFAULT = new LocationStruct(36.878705,-76.260400);
-	private LocationStruct latLon = DEFAULT.tmp(), lastLatLon = new LocationStruct(0, 0);
+	private LocationStruct loc = LocationStruct.DEFAULT.tmp(), lastLoc = LocationStruct.ZERO.tmp();
 	public final LocationStruct initialLatLon;
 	private float timeSinceLastUpdate = TIME_TO_UPDATE;
 	private static final float TIME_TO_UPDATE = 60;
@@ -31,7 +30,7 @@ public class WorldLocationUtil {
 	
 	public WorldLocationUtil(CritterCaptors game){
 		this.game = game;
-		this.initialLatLon = getLocation();
+		this.initialLatLon = getInitialLocation();
 		executerService = Executors.newCachedThreadPool();
 	}
 
@@ -39,7 +38,7 @@ public class WorldLocationUtil {
 		timeSinceLastUpdate += Gdx.graphics.getDeltaTime();
 		if(timeSinceLastUpdate > TIME_TO_UPDATE){
 			if(game.getOptions().getOptionBoolean(OptionEnum.Gps))
-				latLon = new LocationStruct(Gdx.input.getGPSLatitude(),Gdx.input.getGPSLongitude());
+				loc = new LocationStruct(Gdx.input.getGPSLatitude(),Gdx.input.getGPSLongitude());
 			timeSinceLastUpdate = 0;
 			executerService.execute(new AffinitiesThread());
 			try {
@@ -51,12 +50,12 @@ public class WorldLocationUtil {
 		}
 	}
 	
-	public LocationStruct getLatLon(){
-		return latLon;
+	public LocationStruct getLocation(){
+		return loc;
 	}
 
 	public LocationStruct getRelativeLatLon(){
-		return initialLatLon.tmp().sub(latLon);
+		return initialLatLon.tmp().sub(loc);
 	}
 
 	public float[] getHeightmap(Vector3 location){
@@ -65,7 +64,7 @@ public class WorldLocationUtil {
 			for(int z=0; z<Terrain.DEFAULT_WIDTH + 1; z++){
 				double geoCoordX = x-(Terrain.DEFAULT_WIDTH + 1)/2+location.x;
 				double geoCoordZ = z-(Terrain.DEFAULT_WIDTH + 1)/2+location.z;
-				LocationStruct latlon = MercatorUtil.toGeoCoord(geoCoordX, geoCoordZ).add(latLon);
+				LocationStruct latlon = MercatorUtil.toGeoCoord(geoCoordX, geoCoordZ).add(loc);
 				executerService.execute(new AltitudeThread(heightMap, x*(Terrain.DEFAULT_WIDTH+1)+z, latlon.lon, latlon.lat));
 			}
 		try {
@@ -126,7 +125,7 @@ public class WorldLocationUtil {
 		public void run() {
 			try {
 				URL url = new URL("http://ojw.dev.openstreetmap.org/StaticMap/?lat="+
-						latLon.lat+"&lon="+latLon.lon+"&z=18&w=64&h=64&mode=Export&show=1");
+						loc.lat+"&lon="+loc.lon+"&z=18&w=64&h=64&mode=Export&show=1");
 				Color[] colors = RenderUtil.imageFromURL(url);
 				if(colors == null){
 					//TODO below
@@ -142,24 +141,24 @@ public class WorldLocationUtil {
 		}
 	}
 
-	private LocationStruct getLocation(){
+	private LocationStruct getInitialLocation(){
 		if(game.getOptions().getOptionBoolean(OptionEnum.Gps)){
 			while(!isGPSAcquired())
 				try {
 					Thread.sleep(1000);
-					lastLatLon.lat = Gdx.input.getGPSLatitude();
-					lastLatLon.lon = Gdx.input.getGPSLongitude();
+					lastLoc.lat = Gdx.input.getGPSLatitude();
+					lastLoc.lon = Gdx.input.getGPSLongitude();
 				} catch (InterruptedException e) {}
 			return new LocationStruct(Gdx.input.getGPSLatitude(),Gdx.input.getGPSLongitude());
 		}else
-			return DEFAULT.tmp();
+			return LocationStruct.DEFAULT.tmp();
 	}
 	
 	/**
 	 * .01 is gps accuracy... it must not be changing more than that squared (pythag)
 	 */
 	private boolean isGPSAcquired(){
-		if(lastLatLon.lat != 0 && lastLatLon.lon != 0 && lastLatLon.lat*lastLatLon.lat + lastLatLon.lon*lastLatLon.lon < .01)
+		if(!lastLoc.equals(LocationStruct.ZERO) && lastLoc.lat*lastLoc.lat + lastLoc.lon*lastLoc.lon < .01)
 			return true;
 		return false;
 	}

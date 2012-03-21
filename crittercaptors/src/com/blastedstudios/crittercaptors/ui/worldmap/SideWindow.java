@@ -14,6 +14,7 @@ import com.blastedstudios.crittercaptors.character.Base;
 import com.blastedstudios.crittercaptors.ui.base.BaseScreen;
 import com.blastedstudios.crittercaptors.ui.mainscreen.MainScreen;
 import com.blastedstudios.crittercaptors.util.MercatorUtil;
+import com.blastedstudios.crittercaptors.util.OptionsUtil.OptionEnum;
 
 public class SideWindow extends Window{
 	private final WorldMapScreen worldMapScreen;
@@ -51,8 +52,7 @@ public class SideWindow extends Window{
 	}
 
 	protected void baseButtonHit(CritterCaptors game, Skin skin) {
-		double[] pixels = MercatorUtil.toPixel(game.getWorldLocationManager().getRelativeLatLon());
-		Vector3 pos = new Vector3((float)pixels[0],0,(float)pixels[1]);
+		Vector3 pos = worldMapScreen.getCamera().position;
 		for(Base characterBase : game.getCharacter().getBases())
 			if(characterBase.getCachedPosition() != null && 
 				characterBase.getCachedPosition().dst2(pos) < Base.BASE_DISTANCE)

@@ -99,7 +99,7 @@ public class CritterCaptors extends Game {
 	}
 
 	public void addBase(Camera camera) {
-		LocationStruct loc = worldLocationManager.getLatLon().tmp();
+		LocationStruct loc = worldLocationManager.getLocation().tmp();
 		if(!options.getOptionBoolean(OptionEnum.Gps))
 			loc.add(MercatorUtil.toGeoCoord(camera.position.x, camera.position.z));
 		Base newBase = new Base(loc, new HashMap<BaseUpgradeEnum, Integer>());

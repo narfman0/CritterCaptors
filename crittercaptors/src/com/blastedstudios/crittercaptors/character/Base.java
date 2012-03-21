@@ -12,7 +12,7 @@ import com.blastedstudios.crittercaptors.util.LocationStruct;
 import com.blastedstudios.crittercaptors.util.XMLUtil;
 
 public class Base {
-	public static final float BASE_DISTANCE = 100f;
+	public static final float BASE_DISTANCE = 10f;
 	public static final int BASE_COST = 1500, RETARDANT_COST = 1000,
 			VR_SIMULATOR_COST = 2000, VR_SIMULATOR_UPGRADE = 400;
 	private static final String BASE_NAME = "base";

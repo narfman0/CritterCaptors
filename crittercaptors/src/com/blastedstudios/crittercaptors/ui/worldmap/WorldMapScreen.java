@@ -71,8 +71,8 @@ public class WorldMapScreen extends AbstractScreen {
 		//render base after terrain to cache location (need terrain to get height of base)
 		for(Base base : game.getCharacter().getBases()){
 			if(base.getCachedPosition() == null){
-				double[] mercator = MercatorUtil.toPixel(game.getWorldLocationManager().initialLatLon.tmp().sub(base.loc));
-				float x = -(float)mercator[0], z = -(float)mercator[1], y = terrainManager.getHeight(x, z);
+				double[] mercator = MercatorUtil.toPixel(base.loc.tmp().sub(game.getWorldLocationManager().initialLatLon));
+				float x = (float)mercator[0], z = (float)mercator[1], y = terrainManager.getHeight(x, z);
 				base.setCachedPosition(new Vector3(x, y, z));
 			}
 			base.render();
@@ -105,7 +105,13 @@ public class WorldMapScreen extends AbstractScreen {
 				movement.add(camera.direction.tmp().mul(-Gdx.graphics.getDeltaTime()*degree));
 			}
 		}
-		camera.position.add(movement.mul(MOVE_SPEED));
+		if(game.getOptions().getOptionBoolean(OptionEnum.Gps)){
+			//TODO verify gps movement
+			double[] coords = MercatorUtil.toPixel(game.getWorldLocationManager().getRelativeLatLon());
+			camera.position.x = (float) coords[0];
+			camera.position.z = (float) coords[1];
+		}else
+			camera.position.add(movement.mul(MOVE_SPEED));
 		camera.position.y = terrainManager.getHeight(camera.position.x, camera.position.z)+1.9f;
         camera.update();
         camera.apply(Gdx.gl10);
