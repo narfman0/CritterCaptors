@@ -6,13 +6,6 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.blastedstudios.crittercaptors.CritterCaptors;
 import com.blastedstudios.crittercaptors.character.Base;
 import com.blastedstudios.crittercaptors.creature.Creature;
@@ -20,8 +13,8 @@ import com.blastedstudios.crittercaptors.ui.AbstractScreen;
 import com.blastedstudios.crittercaptors.ui.battle.BattleScreen;
 import com.blastedstudios.crittercaptors.ui.terrain.TerrainManager;
 import com.blastedstudios.crittercaptors.util.MercatorUtil;
-import com.blastedstudios.crittercaptors.util.RenderUtil;
 import com.blastedstudios.crittercaptors.util.OptionsUtil.OptionEnum;
+import com.blastedstudios.crittercaptors.util.RenderUtil;
 
 public class WorldMapScreen extends AbstractScreen {
     private Camera camera;
@@ -38,7 +31,7 @@ public class WorldMapScreen extends AbstractScreen {
 		super(game);
 		terrainManager = new TerrainManager(game);
 		if(isNewCharacter)
-			showNewCharacterWindow();
+			stage.addActor(new NewCharacterWindow(skin));
 		stage.addActor(new SideWindow(game, skin, this));
 	}
 	
@@ -105,6 +98,16 @@ public class WorldMapScreen extends AbstractScreen {
 				movement.add(camera.direction.tmp().mul(-Gdx.graphics.getDeltaTime()*degree));
 			}
 		}
+		if(game.getOptions().getOptionBoolean(OptionEnum.Compass)){
+			//TODO verify compass
+			double p = Math.toRadians(Gdx.input.getPitch()),
+					y = Math.toRadians(Gdx.input.getAzimuth());
+			camera.direction.x = (float)(Math.cos(y)*Math.cos(p));
+			camera.direction.y = (float)(Math.sin(y)*Math.cos(p));
+			camera.direction.z = (float)(Math.sin(p));
+			camera.direction.nor();
+			Gdx.app.error("Compass direction", "pitch=" + p + " yaw=" + y);
+		}
 		if(game.getOptions().getOptionBoolean(OptionEnum.Gps)){
 			//TODO verify gps movement
 			double[] coords = MercatorUtil.toPixel(game.getWorldLocationManager().getRelativeLatLon());
@@ -122,25 +125,6 @@ public class WorldMapScreen extends AbstractScreen {
         double[] mercator = MercatorUtil.toPixel(game.getWorldLocationManager().getRelativeLatLon());
         camera.translate((float)mercator[0], 0, (float)mercator[1]);
         camera.update();
-	}
-	
-	private void showNewCharacterWindow(){
-		final Window window = new Window("Welcome!", skin);
-		final Button button = new TextButton("Ok", skin.getStyle(TextButtonStyle.class), "ok");
-		button.setClickListener(new ClickListener() {
-			@Override public void click(Actor arg0, float arg1, float arg2) {
-				stage.removeActor(window);
-			}
-		});
-		window.add(new Label("You should build a base\nimmediately to take care"+
-			"\nof creature management\nand provide a place for\nyour character to rest.\n\n" +
-			"Press <esc> and choose\n\"Base\" from the menu", skin));
-		window.row();
-		window.add(button);
-		window.pack();
-		window.x = Gdx.graphics.getWidth() / 2 - window.width / 2;
-		window.y = Gdx.graphics.getHeight() / 2 - window.height / 2;
-		stage.addActor(window);
 	}
 	
 	public Camera getCamera(){

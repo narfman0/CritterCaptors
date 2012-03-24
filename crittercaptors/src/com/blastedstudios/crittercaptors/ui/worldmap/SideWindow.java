@@ -7,14 +7,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.blastedstudios.crittercaptors.CritterCaptors;
 import com.blastedstudios.crittercaptors.character.Base;
 import com.blastedstudios.crittercaptors.ui.base.BaseScreen;
 import com.blastedstudios.crittercaptors.ui.mainscreen.MainScreen;
-import com.blastedstudios.crittercaptors.util.MercatorUtil;
-import com.blastedstudios.crittercaptors.util.OptionsUtil.OptionEnum;
 
 public class SideWindow extends Window{
 	private final WorldMapScreen worldMapScreen;
