@@ -98,21 +98,17 @@ public class WorldMapScreen extends AbstractScreen {
 				movement.add(camera.direction.tmp().mul(-Gdx.graphics.getDeltaTime()*degree));
 			}
 		}
-		if(game.getOptions().getOptionBoolean(OptionEnum.Compass)){
-			//TODO verify compass
-			double p = Math.toRadians(Gdx.input.getPitch()),
-					y = Math.toRadians(Gdx.input.getAzimuth());
-			camera.direction.x = (float)(Math.cos(y)*Math.cos(p));
-			camera.direction.y = (float)(Math.sin(y)*Math.cos(p));
-			camera.direction.z = (float)(Math.sin(p));
-			camera.direction.nor();
-			Gdx.app.error("Compass direction", "pitch=" + p + " yaw=" + y);
-		}
 		if(game.getOptions().getOptionBoolean(OptionEnum.Gps)){
-			//TODO verify gps movement
+			//TODO verify gps
+			camera.direction.x = (float)(Math.cos(Gdx.input.getGPSBearing()));
+			camera.direction.z = (float)(Math.sin(Gdx.input.getGPSBearing()));
+			camera.direction.nor();
+			Gdx.app.debug("Compass direction", "bearing=" + Gdx.input.getGPSBearing());
+			
 			double[] coords = MercatorUtil.toPixel(game.getWorldLocationManager().getRelativeLatLon());
 			camera.position.x = (float) coords[0];
 			camera.position.z = (float) coords[1];
+			Gdx.app.debug("GPS movement", "Camera location is x=" + camera.position.x + " y=" + camera.position.y + " z=" + camera.position.z);
 		}else
 			camera.position.add(movement.mul(MOVE_SPEED));
 		camera.position.y = terrainManager.getHeight(camera.position.x, camera.position.z)+1.9f;

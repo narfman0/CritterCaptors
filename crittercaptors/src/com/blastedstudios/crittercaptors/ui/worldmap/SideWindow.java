@@ -50,10 +50,9 @@ public class SideWindow extends Window{
 	}
 
 	protected void baseButtonHit(CritterCaptors game, Skin skin) {
-		Vector3 pos = worldMapScreen.getCamera().position;
 		for(Base characterBase : game.getCharacter().getBases())
 			if(characterBase.getCachedPosition() != null && 
-				characterBase.getCachedPosition().dst2(pos) < Base.BASE_DISTANCE)
+				characterBase.getCachedPosition().dst2(worldMapScreen.getCamera().position) < Base.BASE_DISTANCE)
 				game.activeBase = characterBase;
 		if(game.activeBase != null)
 			game.setScreen(new BaseScreen(game));

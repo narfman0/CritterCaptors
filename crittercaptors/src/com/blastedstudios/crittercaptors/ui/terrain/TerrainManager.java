@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.badlogic.gdx.math.Vector3;
 import com.blastedstudios.crittercaptors.CritterCaptors;
+import com.blastedstudios.crittercaptors.util.MathUtil;
 import com.blastedstudios.crittercaptors.util.OptionsUtil.OptionEnum;
 
 public class TerrainManager {
@@ -60,9 +61,9 @@ public class TerrainManager {
 				terrain.getLocation().x - Terrain.DEFAULT_WIDTH_DIV2*terrain.getScale() <= x &&
 				terrain.getLocation().z + Terrain.DEFAULT_WIDTH_DIV2*terrain.getScale() >= z &&
 				terrain.getLocation().z - Terrain.DEFAULT_WIDTH_DIV2*terrain.getScale() <= z )
-				return terrain.getHeight(
+				return MathUtil.clamp(terrain.getHeight(
 						x-terrain.getLocation().x+Terrain.DEFAULT_WIDTH_DIV2*terrain.getScale(), 
-						z-terrain.getLocation().z+Terrain.DEFAULT_WIDTH_DIV2*terrain.getScale());
+						z-terrain.getLocation().z+Terrain.DEFAULT_WIDTH_DIV2*terrain.getScale()), 0, 1000);
 		return 0;
 	}
 	

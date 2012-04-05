@@ -30,4 +30,8 @@ public class LocationStruct{
 	public boolean equals(LocationStruct location){
 		return lat == location.lat && lon == location.lon;
 	}
+	
+	public String toString(){
+		return "Lat: " + lat + " / Lon: " + lon;
+	}
 }

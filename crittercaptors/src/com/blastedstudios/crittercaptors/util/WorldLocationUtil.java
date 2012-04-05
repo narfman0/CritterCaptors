@@ -158,7 +158,9 @@ public class WorldLocationUtil {
 	 * .01 is gps accuracy... it must not be changing more than that squared (pythag)
 	 */
 	private boolean isGPSAcquired(){
-		if(!lastLoc.equals(LocationStruct.ZERO) && lastLoc.lat*lastLoc.lat + lastLoc.lon*lastLoc.lon < .01)
+		if(!lastLoc.equals(LocationStruct.ZERO) && 
+				Math.pow(Gdx.input.getGPSLatitude()-lastLoc.lat,2) + 
+				Math.pow(Gdx.input.getGPSLongitude()-lastLoc.lon,2) < .01)
 			return true;
 		return false;
 	}
