@@ -35,7 +35,7 @@ public class Base {
 	
 	public void render(){
 		RenderUtil.drawModel(CritterCaptors.getModel(BASE_NAME), CritterCaptors.getTexture(BASE_NAME),
-				cachedPosition, new Vector3(), new Vector3(1,1,1));
+				cachedPosition, new Vector3());
 	}
 
 	public static Base fromXML(Element baseElement) {

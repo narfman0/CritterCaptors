@@ -58,7 +58,7 @@ public class WorldMapScreen extends AbstractScreen {
 			position.y += terrainManager.getHeight(position.x, position.z);
 			Texture texture = CritterCaptors.getTexture(creature.getName());
 			RenderUtil.drawModel(CritterCaptors.getModel(creature.getName()), texture, 
-					position, creature.camera.direction, new Vector3(1f,1f,1f));
+					position, creature.camera.direction);
 		}
 		
 		//render base after terrain to cache location (need terrain to get height of base)
