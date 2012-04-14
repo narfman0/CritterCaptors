@@ -100,15 +100,15 @@ public class WorldMapScreen extends AbstractScreen {
 		}
 		if(game.getOptions().getOptionBoolean(OptionEnum.Gps)){
 			//TODO verify gps
-			camera.direction.x = (float)(Math.cos(Gdx.input.getGPSBearing()));
-			camera.direction.z = (float)(Math.sin(Gdx.input.getGPSBearing()));
+			camera.direction.x = (float)(Math.cos(Gdx.input.getAzimuth()));
+			camera.direction.z = (float)(Math.sin(Gdx.input.getAzimuth()));
 			camera.direction.nor();
 			Gdx.app.debug("Compass direction", "bearing=" + Gdx.input.getGPSBearing());
 			
 			double[] coords = MercatorUtil.toPixel(game.getWorldLocationManager().getRelativeLatLon());
 			camera.position.x = (float) coords[0];
 			camera.position.z = (float) coords[1];
-			Gdx.app.debug("GPS movement", "Camera location is x=" + camera.position.x + " y=" + camera.position.y + " z=" + camera.position.z);
+			Gdx.app.debug("GPS movement", "Azimuth=" + Gdx.input.getAzimuth() + " cam loc is x=" + camera.position.x + " y=" + camera.position.y + " z=" + camera.position.z);
 		}else
 			camera.position.add(movement.mul(MOVE_SPEED));
 		camera.position.y = terrainManager.getHeight(camera.position.x, camera.position.z)+1.9f;
