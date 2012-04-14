@@ -52,9 +52,9 @@ public class BattleScreen extends AbstractScreen {
 		RenderUtil.drawSky(CritterCaptors.getModel("skydome"), CritterCaptors.getTexture("skydome"), camera.position);
 		terrain.render();
 		RenderUtil.drawModel(CritterCaptors.getModel(enemy.getName()), CritterCaptors.getTexture(enemy.getName()),
-				new Vector3(-3, 0, 10), new Vector3(-1,0,-1));
+				new Vector3(-3, 0, 10), new Vector3(0,0,0));
 		RenderUtil.drawModel(CritterCaptors.getModel(activeCreature.getName()), 
-				CritterCaptors.getTexture(activeCreature.getName()), new Vector3(1, 0, 3.5f), new Vector3(1,0,1));
+				CritterCaptors.getTexture(activeCreature.getName()), new Vector3(3, 0, 3.5f), new Vector3(0,0,0));
 
 		stage.act(time);
 		stage.draw();
