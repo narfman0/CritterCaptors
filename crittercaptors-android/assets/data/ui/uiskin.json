@@ -179,7 +179,7 @@ resources: {
 			{ width: 1, height: 1, x: 9, y: 115 }
 		]
 	},
-	com.badlogic.gdx.graphics.g2d.BitmapFont: { default-font: { file: data/fonts/arial-15.fnt } },
+	com.badlogic.gdx.graphics.g2d.BitmapFont: { default-font: { file: data/fonts/arial-32.fnt } },
 	com.badlogic.gdx.graphics.Color: {
 		green: { a: 1, b: 0, g: 1, r: 0 },
 		white: { a: 1, b: 1, g: 1, r: 1 },

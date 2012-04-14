@@ -40,6 +40,7 @@ public class CritterCaptorsAndroid extends AndroidApplication {
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
 		config.useGPS = true;
 		config.useComplexGestures = true;
+		config.useCompass = true;
 		initialize(new CritterCaptors(), config);
 	}
 }
