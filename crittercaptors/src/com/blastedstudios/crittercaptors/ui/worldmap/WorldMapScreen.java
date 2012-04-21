@@ -22,7 +22,7 @@ public class WorldMapScreen extends AbstractScreen {
     private Camera camera;
     public static final float MOVE_SPEED = 10f, TURN_RATE = 100f,
 		REMOVE_DISTANCE = 1000000f, FIGHT_DISTANCE = 150f, 
-		ACCELEROMETER_THRESHOLD = (float) (Math.PI/6);
+		ACCELEROMETER_THRESHOLD = (float) (Math.PI/6), SMOOTHING_FACTOR = .85f;
     private TerrainManager terrainManager;
     private TextField debug;
     
@@ -114,14 +114,16 @@ public class WorldMapScreen extends AbstractScreen {
 			debug.setText("Az=" + (int)Gdx.input.getAzimuth() + " loc x=" + (int)camera.position.x + " y=" + (int)camera.position.y + " z=" + (int)camera.position.z + 
 					" dir x=" + camera.direction.x + " y=" + camera.direction.y + " z=" + camera.direction.z);
 		if(game.getOptions().getOptionBoolean(OptionEnum.Gps)){
-			camera.direction.x = (float)(Math.cos(Math.toRadians(Gdx.input.getAzimuth())));
-			camera.direction.z = (float)(Math.sin(Math.toRadians(Gdx.input.getAzimuth())));
+			Vector3 compassDirection = new Vector3((float)(Math.cos(Math.toRadians(Gdx.input.getAzimuth()))), camera.direction.y, (float)(Math.sin(Math.toRadians(Gdx.input.getAzimuth()))));
+			camera.direction.mul(SMOOTHING_FACTOR);
+			camera.direction.add(compassDirection.mul(1-SMOOTHING_FACTOR));
 			camera.direction.nor();
 			Gdx.app.debug("Compass direction", "bearing=" + Gdx.input.getGPSBearing());
 			
 			double[] coords = MercatorUtil.toPixel(game.getWorldLocationManager().getRelativeLatLon());
-			camera.position.x = (float) coords[0];
-			camera.position.z = (float) coords[1];
+			Vector3 gpsPosition = new Vector3((float) coords[0], camera.position.y, (float) coords[1]); 
+			camera.position.mul(SMOOTHING_FACTOR);
+			camera.position.add(gpsPosition.mul(1-SMOOTHING_FACTOR));
 			Gdx.app.debug("GPS movement", "Azimuth=" + Gdx.input.getAzimuth() + " cam loc is x=" + camera.position.x + " y=" + camera.position.y + " z=" + camera.position.z);
 		}else
 			camera.position.add(movement.mul(MOVE_SPEED));
