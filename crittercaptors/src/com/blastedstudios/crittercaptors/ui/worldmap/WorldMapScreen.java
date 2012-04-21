@@ -111,11 +111,11 @@ public class WorldMapScreen extends AbstractScreen {
 			}
 		}
 		if(game.getOptions().getOptionBoolean(OptionEnum.Debug))
-			debug.setText("Az=" + (int)Gdx.input.getAzimuth() + " loc x=" + (int)camera.position.x + " y=" + (int)camera.position.y + " z=" + (int)camera.position.z);
+			debug.setText("Az=" + (int)Gdx.input.getAzimuth() + " loc x=" + (int)camera.position.x + " y=" + (int)camera.position.y + " z=" + (int)camera.position.z + 
+					" dir x=" + camera.direction.x + " y=" + camera.direction.y + " z=" + camera.direction.z);
 		if(game.getOptions().getOptionBoolean(OptionEnum.Gps)){
-			//TODO verify gps
-			camera.direction.x = (float)(Math.cos(Gdx.input.getAzimuth()));
-			camera.direction.z = (float)(Math.sin(Gdx.input.getAzimuth()));
+			camera.direction.x = (float)(Math.cos(Math.toRadians(Gdx.input.getAzimuth())));
+			camera.direction.z = (float)(Math.sin(Math.toRadians(Gdx.input.getAzimuth())));
 			camera.direction.nor();
 			Gdx.app.debug("Compass direction", "bearing=" + Gdx.input.getGPSBearing());
 			
