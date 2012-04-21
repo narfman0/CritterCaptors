@@ -6,6 +6,8 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.blastedstudios.crittercaptors.CritterCaptors;
 import com.blastedstudios.crittercaptors.character.Base;
 import com.blastedstudios.crittercaptors.creature.Creature;
@@ -22,6 +24,7 @@ public class WorldMapScreen extends AbstractScreen {
 		REMOVE_DISTANCE = 1000000f, FIGHT_DISTANCE = 150f, 
 		ACCELEROMETER_THRESHOLD = (float) (Math.PI/6);
     private TerrainManager terrainManager;
+    private TextField debug;
     
     public WorldMapScreen(CritterCaptors game) {
     	this(game, false);
@@ -33,6 +36,15 @@ public class WorldMapScreen extends AbstractScreen {
 		if(isNewCharacter)
 			stage.addActor(new NewCharacterWindow(skin));
 		stage.addActor(new SideWindow(game, skin, this));
+		if(game.getOptions().getOptionBoolean(OptionEnum.Debug)){
+			Window debugWindow = new Window(skin);
+			debugWindow.width = 400;
+			debugWindow.height = 50;
+			debug = new TextField("debug text hurrah", skin);
+			debug.width = 400;
+			debugWindow.addActor(debug);
+			stage.addActor(debugWindow);
+		}
 	}
 	
 	@Override public void render (float arg0) {
@@ -98,6 +110,8 @@ public class WorldMapScreen extends AbstractScreen {
 				movement.add(camera.direction.tmp().mul(-Gdx.graphics.getDeltaTime()*degree));
 			}
 		}
+		if(game.getOptions().getOptionBoolean(OptionEnum.Debug))
+			debug.setText("Az=" + (int)Gdx.input.getAzimuth() + " loc x=" + (int)camera.position.x + " y=" + (int)camera.position.y + " z=" + (int)camera.position.z);
 		if(game.getOptions().getOptionBoolean(OptionEnum.Gps)){
 			//TODO verify gps
 			camera.direction.x = (float)(Math.cos(Gdx.input.getAzimuth()));
