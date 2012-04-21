@@ -4,8 +4,16 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
 import java.net.URL;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.protocol.HttpContext;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -23,16 +31,16 @@ public class HTMLUtil {
 		return result;
 	}
 
-	public static String getHTML(String urlToRead) {
+	/*public static String getHTML(String urlToRead) {
 		try {
-			HttpURLConnection conn = (HttpURLConnection) new URL(urlToRead).openConnection();
+			java.net.HttpURLConnection conn = (HttpURLConnection) new URL(urlToRead).openConnection();
 			conn.setRequestMethod("GET");
 			return getString(conn.getInputStream());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return "";
-	}
+	}*/
 
 	/**
 	 * Apaches method, handles redirects etc.
@@ -44,7 +52,7 @@ public class HTMLUtil {
 	            + "&Elevation_Units=METERS&Source_Layer=-1&Elevation_Only=true"
 	 * @return http content of urlToRead
 	 */
-	/*
+	
 	public static String getHTML(String urlToRead) {
 		String result = "";
 	    HttpClient httpClient = new DefaultHttpClient();
@@ -55,10 +63,12 @@ public class HTMLUtil {
 	        HttpEntity entity = response.getEntity();
 	        if (entity != null)
 	            return getString(entity.getContent());
-	    } catch (ClientProtocolException e) {} 
+	    } catch (ClientProtocolException e) {
+	    	e.printStackTrace();
+	    } 
 	    catch (IOException e) {}
 	    return result;
-	}*/
+	}
 
 	public static class URLHandle extends FileHandle {
 		final URL url; 

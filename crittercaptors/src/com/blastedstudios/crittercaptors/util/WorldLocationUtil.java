@@ -86,8 +86,8 @@ public class WorldLocationUtil {
 	 * @return altitude in meters, clamped to -10 minimum
 	 */
 	public static double getAltitude(Double longitude, Double latitude) {
-		double result = Double.NaN;
-		String html = HTMLUtil.getHTML("http://cumulus.cr.usgs.gov/"
+		double result = -10;
+		String html = HTMLUtil.getHTML("http://gisdata.usgs.gov/"
 				+ "xmlwebservices2/elevation_service.asmx/"
 				+ "getElevation?X_Value=" + String.valueOf(longitude)
 				+ "&Y_Value=" + String.valueOf(latitude)
@@ -143,7 +143,8 @@ public class WorldLocationUtil {
 
 	private LocationStruct getInitialLocation(){
 		if(game.getOptions().getOptionBoolean(OptionEnum.Gps)){
-			while(!isGPSAcquired())
+			long gpsAcquireTimeout = System.currentTimeMillis();
+			while(!isGPSAcquired() && gpsAcquireTimeout + 10*1000 > System.currentTimeMillis())
 				try {
 					Thread.sleep(1000);
 					lastLoc.lat = Gdx.input.getGPSLatitude();
