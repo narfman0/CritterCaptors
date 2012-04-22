@@ -3,11 +3,11 @@ package com.blastedstudios.crittercaptors.ui.terrain;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector3;
-import com.blastedstudios.crittercaptors.CritterCaptors;
 import com.blastedstudios.crittercaptors.util.MathUtil;
 
 public class Terrain implements ITerrain{
@@ -36,10 +36,10 @@ public class Terrain implements ITerrain{
 		mesh.setIndices(chunk.indices);
 	}
 
-	public void render () {
+	public void render (Texture texture) {
 		Gdx.gl10.glEnable(GL10.GL_DEPTH_TEST);
 		Gdx.gl10.glEnable(GL10.GL_TEXTURE_2D);
-		CritterCaptors.getTexture("grass").bind();
+		texture.bind();
 		Gdx.gl10.glPushMatrix();
 		Gdx.gl10.glTranslatef(location.x-chunk.width*scale/2, location.y, location.z-chunk.width*scale/2);
 		mesh.render(GL10.GL_TRIANGLES);

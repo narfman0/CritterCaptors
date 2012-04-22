@@ -13,7 +13,6 @@ import com.blastedstudios.crittercaptors.CritterCaptors;
 import com.blastedstudios.crittercaptors.creature.AffinityCalculator;
 import com.blastedstudios.crittercaptors.creature.AffinityEnum;
 import com.blastedstudios.crittercaptors.ui.terrain.Terrain;
-import com.blastedstudios.crittercaptors.ui.terrain.TerrainManager;
 import com.blastedstudios.crittercaptors.util.OptionsUtil.OptionEnum;
 
 /**
@@ -81,13 +80,22 @@ public class WorldLocationUtil {
 		return currentWorldAffinities;
 	}
 	
+	public AffinityEnum getPrimaryWorldAffinity(){
+		AffinityEnum primary = AffinityEnum.physical;
+		for(AffinityEnum theEnum : currentWorldAffinities.keySet())
+			if(!currentWorldAffinities.containsKey(primary) || 
+					currentWorldAffinities.get(theEnum) > currentWorldAffinities.get(primary))
+				primary = theEnum;
+		return primary;
+	}
+	
 	/**
 	 * Found at http://stackoverflow.com/questions/1995998/android-get-altitude-by-longitude-and-latitude
 	 * Note alternative: http://www.earthtools.org/webservices.htm#height
 	 * @return altitude in meters, clamped to TerrainManager.MIN_HEIGHT minimum
 	 */
 	public static double getAltitude(Double longitude, Double latitude) {
-		double result = TerrainManager.MIN_HEIGHT;
+		double result = 0;
 		String html = HTMLUtil.getHTML("http://gisdata.usgs.gov/"
 				+ "xmlwebservices2/elevation_service.asmx/"
 				+ "getElevation?X_Value=" + String.valueOf(longitude)
@@ -101,7 +109,7 @@ public class WorldLocationUtil {
 			String value = html.substring(start, end);
 			result = Double.parseDouble(value);
 		}
-		return Math.max(TerrainManager.MIN_HEIGHT, result);
+		return Math.max(0, result);
 	}
 
 	private class AltitudeThread implements Runnable {

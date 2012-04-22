@@ -3,12 +3,12 @@ package com.blastedstudios.crittercaptors.ui.terrain;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector3;
 import com.blastedstudios.crittercaptors.CritterCaptors;
 import com.blastedstudios.crittercaptors.util.OptionsUtil.OptionEnum;
 
 public class TerrainManager {
-	public static float MIN_HEIGHT = -10f;
 	private static final List<ITerrain> terrains = new ArrayList<ITerrain>();
 	
 	/**
@@ -23,7 +23,7 @@ public class TerrainManager {
 		this.game = game;
 		baseTerrain = new Terrain(
 				new float[(Terrain.DEFAULT_WIDTH + 1) * (Terrain.DEFAULT_WIDTH + 1)], 
-				new Vector3(0,MIN_HEIGHT,0), SCALE);
+				new Vector3(), SCALE);
 		BASE_TERRAIN_STRIDE = Terrain.DEFAULT_WIDTH*SCALE;
 		if(game.getOptions().getOptionBoolean(OptionEnum.GetHeightmap))
 			add(new Vector3());
@@ -38,17 +38,17 @@ public class TerrainManager {
 			terrains.add(new Terrain(game.getWorldLocationManager().getHeightmap(location), location, SCALE));
 	}
 
-	public void render(Vector3 playerLocation) {
+	public void render(Vector3 playerLocation, Texture texture) {
 		int addX = ((int)playerLocation.x/BASE_TERRAIN_STRIDE)*BASE_TERRAIN_STRIDE,
 			addZ = ((int)playerLocation.z/BASE_TERRAIN_STRIDE)*BASE_TERRAIN_STRIDE;
 		for(int x=(int)(-1.5*BASE_TERRAIN_STRIDE); x<BASE_TERRAIN_STRIDE*2; x+=BASE_TERRAIN_STRIDE)
 			for(int z=(int)(-1.5*BASE_TERRAIN_STRIDE); z<BASE_TERRAIN_STRIDE*2; z+=BASE_TERRAIN_STRIDE){
 				baseTerrain.location.x = addX+x;
 				baseTerrain.location.z = addZ+z;
-				baseTerrain.render();
+				baseTerrain.render(texture);
 			}
 		for(ITerrain terrain : terrains)
-			terrain.render();
+			terrain.render(texture);
 	}
 	
 	/**

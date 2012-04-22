@@ -64,7 +64,7 @@ public class WorldMapScreen extends AbstractScreen {
 		Gdx.gl10.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 		processInput();
 		RenderUtil.drawSky(CritterCaptors.getModel("skydome"), CritterCaptors.getTexture("skydome"), camera.position);
-		terrainManager.render(camera.position);
+		terrainManager.render(camera.position, CritterCaptors.getTexture(game.getWorldLocationManager().getPrimaryWorldAffinity().texture));
 		for(Creature creature : game.getCreatureManager().getCreatures()){
 			Vector3 position = creature.camera.position.tmp();
 			position.y += terrainManager.getHeight(position.x, position.z);
