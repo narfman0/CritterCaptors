@@ -8,7 +8,7 @@ import com.blastedstudios.crittercaptors.CritterCaptors;
 import com.blastedstudios.crittercaptors.util.OptionsUtil.OptionEnum;
 
 public class TerrainManager {
-	public static float MIN_HEIGHT = 10f;
+	public static float MIN_HEIGHT = -10f;
 	private static final List<ITerrain> terrains = new ArrayList<ITerrain>();
 	
 	/**
