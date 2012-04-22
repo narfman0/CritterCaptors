@@ -68,7 +68,7 @@ public class RenderUtil {
 			Class<?> bitmapFactoryClass = Class.forName("android.graphics.BitmapFactory");
 			Method meth = bitmapFactoryClass.getMethod("decodeStream", InputStream.class);
 			Object bitmap = meth.invoke(bitmapFactoryClass, url.openStream());
-			Method getPixelMethod = bitmap.getClass().getMethod("getPixel", Integer.class, Integer.class);
+			Method getPixelMethod = bitmap.getClass().getMethod("getPixel", int.class, int.class);
 			for(int y=0; y<width; y++)
 				for(int x=0; x<width; x++){
 					int col = (Integer) getPixelMethod.invoke(bitmap, x, y);
