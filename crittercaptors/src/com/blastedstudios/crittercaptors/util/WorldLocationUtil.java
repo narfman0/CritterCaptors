@@ -80,14 +80,23 @@ public class WorldLocationUtil {
 		return currentWorldAffinities;
 	}
 	
+	public AffinityEnum getPrimaryWorldAffinity(){
+		AffinityEnum primary = AffinityEnum.physical;
+		for(AffinityEnum theEnum : currentWorldAffinities.keySet())
+			if(!currentWorldAffinities.containsKey(primary) || 
+					currentWorldAffinities.get(theEnum) > currentWorldAffinities.get(primary))
+				primary = theEnum;
+		return primary;
+	}
+	
 	/**
 	 * Found at http://stackoverflow.com/questions/1995998/android-get-altitude-by-longitude-and-latitude
 	 * Note alternative: http://www.earthtools.org/webservices.htm#height
-	 * @return altitude in meters, clamped to -10 minimum
+	 * @return altitude in meters, clamped to TerrainManager.MIN_HEIGHT minimum
 	 */
 	public static double getAltitude(Double longitude, Double latitude) {
-		double result = Double.NaN;
-		String html = HTMLUtil.getHTML("http://cumulus.cr.usgs.gov/"
+		double result = 0;
+		String html = HTMLUtil.getHTML("http://gisdata.usgs.gov/"
 				+ "xmlwebservices2/elevation_service.asmx/"
 				+ "getElevation?X_Value=" + String.valueOf(longitude)
 				+ "&Y_Value=" + String.valueOf(latitude)
@@ -100,7 +109,7 @@ public class WorldLocationUtil {
 			String value = html.substring(start, end);
 			result = Double.parseDouble(value);
 		}
-		return Math.max(-10, result);
+		return Math.max(0, result);
 	}
 
 	private class AltitudeThread implements Runnable {
@@ -143,7 +152,8 @@ public class WorldLocationUtil {
 
 	private LocationStruct getInitialLocation(){
 		if(game.getOptions().getOptionBoolean(OptionEnum.Gps)){
-			while(!isGPSAcquired())
+			long gpsAcquireTimeout = System.currentTimeMillis();
+			while(!isGPSAcquired() && gpsAcquireTimeout + 10*1000 > System.currentTimeMillis())
 				try {
 					Thread.sleep(1000);
 					lastLoc.lat = Gdx.input.getGPSLatitude();

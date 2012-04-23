@@ -3,13 +3,14 @@ package com.blastedstudios.crittercaptors.ui.terrain;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector3;
 import com.blastedstudios.crittercaptors.CritterCaptors;
-import com.blastedstudios.crittercaptors.util.MathUtil;
 import com.blastedstudios.crittercaptors.util.OptionsUtil.OptionEnum;
 
 public class TerrainManager {
 	private static final List<ITerrain> terrains = new ArrayList<ITerrain>();
+	
 	/**
 	 * baseTerrain is the bottom layer of terrain to ensure the players never 
 	 * see less black void of terrain-less worlds
@@ -24,7 +25,7 @@ public class TerrainManager {
 				new float[(Terrain.DEFAULT_WIDTH + 1) * (Terrain.DEFAULT_WIDTH + 1)], 
 				new Vector3(), SCALE);
 		BASE_TERRAIN_STRIDE = Terrain.DEFAULT_WIDTH*SCALE;
-		if(game.getOptions().getOptionBoolean(OptionEnum.Gps))
+		if(game.getOptions().getOptionBoolean(OptionEnum.GetHeightmap))
 			add(new Vector3());
 	}
 	
@@ -37,17 +38,17 @@ public class TerrainManager {
 			terrains.add(new Terrain(game.getWorldLocationManager().getHeightmap(location), location, SCALE));
 	}
 
-	public void render(Vector3 playerLocation) {
+	public void render(Vector3 playerLocation, Texture texture) {
 		int addX = ((int)playerLocation.x/BASE_TERRAIN_STRIDE)*BASE_TERRAIN_STRIDE,
 			addZ = ((int)playerLocation.z/BASE_TERRAIN_STRIDE)*BASE_TERRAIN_STRIDE;
 		for(int x=(int)(-1.5*BASE_TERRAIN_STRIDE); x<BASE_TERRAIN_STRIDE*2; x+=BASE_TERRAIN_STRIDE)
 			for(int z=(int)(-1.5*BASE_TERRAIN_STRIDE); z<BASE_TERRAIN_STRIDE*2; z+=BASE_TERRAIN_STRIDE){
 				baseTerrain.location.x = addX+x;
 				baseTerrain.location.z = addZ+z;
-				baseTerrain.render();
+				baseTerrain.render(texture);
 			}
 		for(ITerrain terrain : terrains)
-			terrain.render();
+			terrain.render(texture);
 	}
 	
 	/**
@@ -61,9 +62,9 @@ public class TerrainManager {
 				terrain.getLocation().x - Terrain.DEFAULT_WIDTH_DIV2*terrain.getScale() <= x &&
 				terrain.getLocation().z + Terrain.DEFAULT_WIDTH_DIV2*terrain.getScale() >= z &&
 				terrain.getLocation().z - Terrain.DEFAULT_WIDTH_DIV2*terrain.getScale() <= z )
-				return MathUtil.clamp(terrain.getHeight(
+				return terrain.getHeight(
 						x-terrain.getLocation().x+Terrain.DEFAULT_WIDTH_DIV2*terrain.getScale(), 
-						z-terrain.getLocation().z+Terrain.DEFAULT_WIDTH_DIV2*terrain.getScale()), 0, 1000);
+						z-terrain.getLocation().z+Terrain.DEFAULT_WIDTH_DIV2*terrain.getScale());
 		return 0;
 	}
 	

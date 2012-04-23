@@ -6,6 +6,8 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.blastedstudios.crittercaptors.CritterCaptors;
 import com.blastedstudios.crittercaptors.character.Base;
 import com.blastedstudios.crittercaptors.creature.Creature;
@@ -20,8 +22,9 @@ public class WorldMapScreen extends AbstractScreen {
     private Camera camera;
     public static final float MOVE_SPEED = 10f, TURN_RATE = 100f,
 		REMOVE_DISTANCE = 1000000f, FIGHT_DISTANCE = 150f, 
-		ACCELEROMETER_THRESHOLD = (float) (Math.PI/6);
+		ACCELEROMETER_THRESHOLD = (float) (Math.PI/6), SMOOTHING_FACTOR = .85f;
     private TerrainManager terrainManager;
+    private TextField debug;
     
     public WorldMapScreen(CritterCaptors game) {
     	this(game, false);
@@ -33,6 +36,15 @@ public class WorldMapScreen extends AbstractScreen {
 		if(isNewCharacter)
 			stage.addActor(new NewCharacterWindow(skin));
 		stage.addActor(new SideWindow(game, skin, this));
+		if(game.getOptions().getOptionBoolean(OptionEnum.Debug)){
+			Window debugWindow = new Window(skin);
+			debugWindow.width = 400;
+			debugWindow.height = 50;
+			debug = new TextField("debug text hurrah", skin);
+			debug.width = 400;
+			debugWindow.addActor(debug);
+			stage.addActor(debugWindow);
+		}
 	}
 	
 	@Override public void render (float arg0) {
@@ -52,7 +64,7 @@ public class WorldMapScreen extends AbstractScreen {
 		Gdx.gl10.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 		processInput();
 		RenderUtil.drawSky(CritterCaptors.getModel("skydome"), CritterCaptors.getTexture("skydome"), camera.position);
-		terrainManager.render(camera.position);
+		terrainManager.render(camera.position, CritterCaptors.getTexture(game.getWorldLocationManager().getPrimaryWorldAffinity().texture));
 		for(Creature creature : game.getCreatureManager().getCreatures()){
 			Vector3 position = creature.camera.position.tmp();
 			position.y += terrainManager.getHeight(position.x, position.z);
@@ -98,16 +110,20 @@ public class WorldMapScreen extends AbstractScreen {
 				movement.add(camera.direction.tmp().mul(-Gdx.graphics.getDeltaTime()*degree));
 			}
 		}
+		if(game.getOptions().getOptionBoolean(OptionEnum.Debug))
+			debug.setText("Az=" + (int)Gdx.input.getAzimuth() + " loc x=" + (int)camera.position.x + " y=" + (int)camera.position.y + " z=" + (int)camera.position.z + 
+					" dir x=" + camera.direction.x + " y=" + camera.direction.y + " z=" + camera.direction.z);
 		if(game.getOptions().getOptionBoolean(OptionEnum.Gps)){
-			//TODO verify gps
-			camera.direction.x = (float)(Math.cos(Gdx.input.getAzimuth()));
-			camera.direction.z = (float)(Math.sin(Gdx.input.getAzimuth()));
+			Vector3 compassDirection = new Vector3((float)(Math.cos(Math.toRadians(Gdx.input.getAzimuth()))), camera.direction.y, (float)(Math.sin(Math.toRadians(Gdx.input.getAzimuth()))));
+			camera.direction.mul(SMOOTHING_FACTOR);
+			camera.direction.add(compassDirection.mul(1-SMOOTHING_FACTOR));
 			camera.direction.nor();
 			Gdx.app.debug("Compass direction", "bearing=" + Gdx.input.getGPSBearing());
 			
 			double[] coords = MercatorUtil.toPixel(game.getWorldLocationManager().getRelativeLatLon());
-			camera.position.x = (float) coords[0];
-			camera.position.z = (float) coords[1];
+			Vector3 gpsPosition = new Vector3((float) coords[0], camera.position.y, (float) coords[1]); 
+			camera.position.mul(SMOOTHING_FACTOR);
+			camera.position.add(gpsPosition.mul(1-SMOOTHING_FACTOR));
 			Gdx.app.debug("GPS movement", "Azimuth=" + Gdx.input.getAzimuth() + " cam loc is x=" + camera.position.x + " y=" + camera.position.y + " z=" + camera.position.z);
 		}else
 			camera.position.add(movement.mul(MOVE_SPEED));

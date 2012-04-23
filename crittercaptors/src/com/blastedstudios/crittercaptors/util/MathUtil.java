@@ -12,11 +12,6 @@ public class MathUtil {
 		return Math.max(.75f, Math.min(multiplier, 1.25f));
 	}
 	
-	public static float clamp(float value, float min, float max){
-		float val = Math.max(max, Math.min(min, value)); 
-		return val == Float.NaN ? 0 : val;
-	}
-	
 	@Test
 	public void testGestureScoreToDamageModifier(){
 		float[] multipliers = new float[20];

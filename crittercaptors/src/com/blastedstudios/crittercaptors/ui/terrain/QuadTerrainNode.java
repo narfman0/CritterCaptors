@@ -3,11 +3,11 @@ package com.blastedstudios.crittercaptors.ui.terrain;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Mesh;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector3;
-import com.blastedstudios.crittercaptors.CritterCaptors;
 
 /**
  * More complex terrain organized in quadtree structure with lod. 
@@ -80,10 +80,10 @@ public class QuadTerrainNode implements ITerrain{
 		mesh.setIndices(chunk.indices);
 	}
 
-	public void render () {
+	public void render (Texture texture) {
 		Gdx.gl10.glEnable(GL10.GL_DEPTH_TEST);
 		Gdx.gl10.glEnable(GL10.GL_TEXTURE_2D);
-		CritterCaptors.getTexture("grass").bind();
+		texture.bind();
 		Gdx.gl10.glPushMatrix();
 		//Gdx.gl10.glTranslatef(location.x-width*scaleX/2, location.y, location.z-width*scaleZ/2);
 		Gdx.gl10.glTranslatef(location.x, location.y, location.z);
@@ -91,7 +91,7 @@ public class QuadTerrainNode implements ITerrain{
 		Gdx.gl10.glPopMatrix();
 		if(children != null)
 			for(QuadTerrainNode child : children)
-				child.render();
+				child.render(texture);
 	}
 
 	public float getHeight(float x, float z) {
